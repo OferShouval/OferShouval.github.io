@@ -56,8 +56,11 @@
     </p>
     <br>
     <br>
+
     <div class="container">
       <iframe class="responsive-iframe" src="https://player.vimeo.com/video/573319415" frameborder=0 allowfullscreen></iframe>
+      
+
     </div>
     <br>
     <p>
@@ -354,13 +357,13 @@
 
       console.log(tablinks[0].style.display);
       // tab expanded
-      if (tablinks[0].style.display == "none"||tablinks[0].style.display == "") {
+      if (tablinks[0].style.display == "none" || tablinks[0].style.display == "") {
 
         for (var i = 0; i < tablinks.length; i++) {
           tablinks[i].style.display = "block";
 
         }
-console.log(tablinks[0].style.display);
+        console.log(tablinks[0].style.display);
         for (var i = 0; i < tabcontent.length; i++) {
           tabcontent[i].style.paddingLeft = "8%";
           tabcontent[i].style.paddingRight = "8%";
@@ -391,7 +394,7 @@ console.log(tablinks[0].style.display);
         for (var i = 0; i < tabcontent.length; i++) {
           tabcontent[i].style.width = "100%"
           tabcontent[i].style.marginLeft = "0%"
-          if (window.innerWidth > 700){
+          if (window.innerWidth > 700) {
             tabcontent[i].style.paddingLeft = "12%";
             tabcontent[i].style.paddingRight = "12%";
           }
