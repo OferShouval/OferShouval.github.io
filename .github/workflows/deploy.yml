@@ -25,7 +25,8 @@ jobs:
         with:
           node-version: 20
           cache: npm
-      - run: npm ci
+      # (Without install scripts: ml5's runs patch-package, which isn't installed, and it has no patches anyway)
+      - run: npm ci --ignore-scripts
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1' # (Playwright's only for local screenshots)
       - run: npm run build
