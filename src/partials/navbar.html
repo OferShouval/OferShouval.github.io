@@ -1,0 +1,54 @@
+<div class="navbar">
+    <ul>
+      <a href="/" data-section="/" aria-label="home"><svg class="home-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1.5 7.5 8 1.5l6.5 6M3.5 6v8.5h9V6"/></svg></a>
+      <a href="/art/" data-section="/art/">art</a>
+      <a href="/music/" data-section="/music/">music</a>
+      <a href="/bio/" data-section="/bio/">bio</a>
+      <div class="nav-menu">
+        <button class="nav-menu-button" aria-expanded="false" aria-controls="nav-menu-list" aria-label="menu"><svg class="menu-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+        <div class="nav-menu-list" id="nav-menu-list" hidden>
+          <div class="nav-menu-group">
+            <a href="/art/">art</a>
+            <a href="/art/luminin.html">live visuals</a>
+            <a href="/art/interactive-installations.html">installations</a>
+            <a href="/art/film-animation.html">film/animation</a>
+          </div>
+          <div class="nav-menu-group">
+            <a href="/music/">music</a>
+            <a href="/music/images.html">images</a>
+            <a href="/music/unfamiliar-state.html">recordings</a>
+            <a href="/music/videos.html">videos</a>
+            <a href="/music/contact.html">contact</a>
+          </div>
+          <div class="nav-menu-group">
+            <a href="/bio/">bio</a>
+          </div>
+        </div>
+      </div>
+    </ul>
+  </div>
+  <script>
+    // The menu at the right of the navbar: opens and closes with its button, and closes on a press anywhere else or Escape
+    (() => {
+      const button = document.querySelector('.nav-menu-button');
+      const list = button.nextElementSibling;
+      const open = (on) => {
+        button.setAttribute('aria-expanded', String(on));
+        list.hidden = !on;
+      };
+      // Kept to itself, so the sketches behind it don't take the press as theirs
+      for (const type of ['pointerdown', 'mousedown', 'touchstart']) button.addEventListener(type, (event) => event.stopPropagation());
+      button.addEventListener('click', (event) => {
+        event.stopPropagation();
+        open(list.hidden);
+      });
+      list.addEventListener('pointerdown', (event) => event.stopPropagation());
+      document.addEventListener('pointerdown', () => open(false));
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && !list.hidden) {
+          open(false);
+          button.focus();
+        }
+      });
+    })();
+  </script>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Film/Animation – Ofer Shouval</title>
+  <!-- @include head.html -->
+</head>
+
+<body bgcolor="#171717">
+  <!-- @include navbar.html -->
+
+  <!-- As the animation page was before the renovation: the 2017 reel (from the 2019 site) and the grip loop (from the 2021 site) -->
+  <main class="page">
+    <h1>animation</h1>
+    <p>my origins as a visual artist</p>
+
+    <!-- The reel is 4:3, so its frame is too (over .container's 16:9) -->
+    <div class="container" style="padding-top: min(75%, 525px)">
+      <iframe class="responsive-iframe" src="https://player.vimeo.com/video/204968685" title="My Reel (2017)" frameborder="0" allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    </div>
+
+    <video data-src="/media/gripgif_10.mp4" poster="/media/gripgif_10_poster.jpg" autoplay muted loop playsinline></video>
+
+    <!-- Moved here from its own page (art/point-in-passing.html), which nothing linked to once the list of everything was archived -->
+    <section class="feature" id="point-in-passing">
+      <h2>point in passing website</h2>
+      <p>In the summer of 2019, I collaborated with John Soat and Effie Rieper on an experimental website for their design studio</p>
+      <video data-src="/media/PiPWebsite1.mp4" poster="/media/PiPWebsite1_poster.jpg" autoplay muted loop playsinline></video>
+      <p>The result was <a href="https://pointinpassing.com/">this</a>. A website that can be "played" so to speak.
+        Each time the site reloads there, a different algorithm controls the elements that populate the screen. </p>
+      <video data-src="/media/PiPWebsite2.mp4" poster="/media/PiPWebsite2_poster.jpg" autoplay muted loop playsinline></video>
+      <p>
+        Many of the mathematical principles which run this site I later modified and adapted
+        to create the visuals in the Luminin
+      </p>
+    </section>
+  </main>
+</body>
+
+</html>

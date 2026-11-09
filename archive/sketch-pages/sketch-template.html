@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Sketch Title – Ofer Shouval</title>
+  <!-- @include head.html -->
+</head>
+
+<body bgcolor="#171717">
+  <!-- @include navbar.html -->
+
+  <!--
+    Template for one sketch page. To add a sketch:
+    1. Copy src/sketchbook/template.js to src/sketchbook/<name>.js and write the sketch.
+    2. Copy this file to art/sketchbook/<name>.html and set data-sketch="<name>" below.
+    3. Add a card for it in art/sketchbook/index.html.
+  -->
+  <main class="page">
+    <a class="back-link" href="/art/sketchbook/">&larr; sketchbook</a>
+    <h1>sketch title</h1>
+
+    <div class="sketch sketch-large" data-sketch="template"></div>
+
+    <p>TODO: a line or two about the sketch.</p>
+    <p><span class="card-meta">try:</span> TODO: how to interact — move, click, drag, keys.</p>
+    <p><span class="card-meta">origin:</span> TODO: year, and e.g. "began as a demo for Creative Code, 2023".</p>
+    <p><span class="card-meta">code:</span> TODO: link to the source (GitHub or the p5 editor).</p>
+  </main>
+
+  <script type="module" src="/src/scripts/mount_sketches.js"></script>
+</body>
+
+</html>

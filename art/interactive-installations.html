@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Selected Installations – Ofer Shouval</title>
+  <!-- @include head.html -->
+</head>
+
+<body bgcolor="#171717">
+  <!-- @include navbar.html -->
+
+
+  <!-- The page opens on a simulation of Sun Deity, the first installation on it: a port of what was projected (see
+       src/sketches/sun_deity.js), with a label saying so, which leads to its section -->
+  <section class="sun-opening">
+    <canvas class="sun-field" aria-label="Sun Deity, simulated: a glowing particle sun on fluorescent orange. Moving the pointer to the side blows it sideways; moving it fast, or pressing, stirs it up."></canvas>
+    <div class="sun-heading">
+      <h1>selected installations</h1>
+      <nav class="installations-index" aria-label="installations">
+        <a href="#sun-deity">sun deity</a>
+        <a href="#ghost-harp">ghost harp</a>
+        <a href="#refracture">refracture</a>
+      </nav>
+    </div>
+    <a class="sun-label" href="#sun-deity">sun deity (2019), simulated · <span class="for-mouse">move to blow it, press to stir it</span><span class="for-touch">drag sideways to blow it, tap to stir it</span></a>
+  </section>
+
+  <main class="page">
+    <!-- All the installations, one after another. The old pages for each one forward to its section here. -->
+    <section class="feature installation" id="sun-deity">
+      <h2>sun deity</h2>
+      <p>
+        “Sun Deity” is an interactive installation that puts the audience in charge of an algorithmically generated ‘sun’.
+      </p>
+      <p>
+        Using a gestural controller, the user can manipulate the movement and flow of the particle field
+        which is projected onto a fluorescent acrylic sheet that hangs from the ceiling.
+      </p>
+      <dl class="specs">
+        <dt>year</dt>
+        <dd>2019</dd>
+        <dt>type</dt>
+        <dd>interactive installation</dd>
+        <dt>materials</dt>
+        <dd>fluorescent acrylic sheet, projector, handheld gestural controller</dd>
+        <dt>software</dt>
+        <dd>TouchDesigner</dd>
+      </dl>
+      <div class="imageGrid">
+        <img width="1400" height="1400" src="/media/sunDeity3_wideShot.jpg" alt="Sun Deity, a wide view of the installation" loading="lazy">
+        <img width="1400" height="1400" src="/media/sunDeity4_close.jpg" alt="Sun Deity, close up" loading="lazy">
+      </div>
+      <p>
+        'Sun Deity’ is about the thrill of creation, the burning sense of power that
+        occurs when an artist (or any variety of creative human) senses that they’ve accessed something interesting.
+      </p>
+      <img width="1400" height="1119" src="/media/sunDeity2_mk.jpg" alt="Sun Deity" loading="lazy">
+      <p>
+        However, its two-dimensional form and artificial materiality serve to undercut these notions, suggesting instead that this
+        particular set of human experiences can sometimes prove flatter and more vapid than we like to think.
+      </p>
+      <img width="1400" height="1147" src="/media/sunDeity1_peter.jpg" alt="Sun Deity" loading="lazy">
+      <div class="container">
+        <iframe class="responsive-iframe" data-vimeo="569220387" title="Sun Deity (2019)" frameborder="0" allow="autoplay; fullscreen; picture-in-picture"></iframe>
+      </div>
+    </section>
+
+    <section class="feature installation" id="ghost-harp">
+      <h2>ghost harp</h2>
+      <p>'Ghost Harp' is an interactive audio-visual sculpture originally constructed in 2019.</p>
+      <!-- The harp on the left, and more about it on the right -->
+      <div class="ghost-harp-top">
+        <!-- A simulation of it (see src/sketches/ghost_harp.js) -->
+        <figure class="ghost-harp-sim">
+          <canvas aria-label="Ghost Harp, simulated: 72 small light panels hanging on wires in a column, lighting up with the notes of a generative soundscape. Drag to turn it; click a panel to play its note."></canvas>
+          <div class="ghost-harp-sound" data-sound></div>
+          <p class="sim-label">ghost harp (2019), simulated · drag to turn it, click a panel to play it</p>
+          <figcaption class="ghost-harp-controls">
+            <span class="ghost-harp-mode" aria-live="polite">playing its own soundscape</span>
+            <button class="ghost-harp-midi">play it from a MIDI instrument</button>
+          </figcaption>
+        </figure>
+        <div class="ghost-harp-text">
+          <p>
+            Consisting of 72 LED backlights suspended from the ceiling with copper wire, creating a columnal form,
+            the piece takes MIDI input and uses it to animate the LEDs, creating a mesmerizing, ghostlike visual interpretation
+            of whatever music it is fed.
+          </p>
+          <p>
+            It has two modes. In the first, a Raspberry Pi running Sonic Pi plays a generative soundscape, and sends its notes
+            as MIDI to an Arduino Leonardo, which lights the LEDs to match. In the second, MIDI comes straight from an instrument
+            or a DAW, and the harp lights up with whatever's being played.
+          </p>
+          <dl class="specs">
+            <dt>year</dt>
+            <dd>2019</dd>
+            <dt>type</dt>
+            <dd>interactive audio-visual sculpture</dd>
+            <dt>materials</dt>
+            <dd>72 LED backlights, copper wire</dd>
+            <dt>hardware</dt>
+            <dd>Raspberry Pi, Arduino Leonardo</dd>
+            <dt>software</dt>
+            <dd>Sonic Pi</dd>
+            <dt>input</dt>
+            <dd>its own generative soundscape, or live MIDI from an instrument or DAW</dd>
+          </dl>
+        </div>
+      </div>
+      <div class="imageGrid">
+        <video width="720" height="900" data-src="/media/ghostHarp1_upflow.mp4" poster="/media/ghostHarp1_upflow_poster.jpg" autoplay muted loop playsinline></video>
+        <video width="720" height="900" data-src="/media/ghostHarp4_debussy.mp4" poster="/media/ghostHarp4_debussy_poster.jpg" autoplay muted loop playsinline></video>
+      </div>
+      <img width="1400" height="933" src="/media/ghostHarp3_detail.jpg" alt="Ghost Harp, detail of the LEDs" loading="lazy">
+      <img width="1400" height="934" src="/media/ghostHarp2_sunset.jpg" alt="Ghost Harp's suspended LED column" loading="lazy">
+      <img width="1400" height="1244" src="/media/ghostHarp6_gallery2.jpg" alt="Ghost Harp in the gallery" loading="lazy">
+      <div class="imageGrid">
+        <img width="1400" height="1050" style="--ratio: 1.333" src="/media/ghostHarp7_install.jpg" alt="Ghost Harp being installed" loading="lazy">
+        <img width="1053" height="1400" style="--ratio: 0.752" src="/media/ghostHarp5_gallery1.jpg" alt="Ghost Harp in the gallery" loading="lazy">
+      </div>
+      <div class="container">
+        <iframe class="responsive-iframe" data-vimeo="569212802" title="Ghost Harp (2019)" frameborder="0" allow="autoplay; fullscreen; picture-in-picture"></iframe>
+      </div>
+    </section>
+
+    <section class="feature installation" id="refracture">
+      <h2>refracture</h2>
+      <p>"Refracture" was an interactive installation that I designed in 2018.</p>
+      <p>
+        It consisted of a mac mini running a Processing sketch that took a webcam input, chopped it up,
+        and back-projected it onto a paper screen that hung from the ceiling.
+      </p>
+      <!-- The original Processing sketch, ported, on a video of Ofer, or on the viewer's own camera (see src/sketches/refracture.js) -->
+      <figure class="refracture">
+        <canvas tabindex="0" aria-label="Refracture, simulated: a video chopped up into colored lines along its brightest parts, as if projected onto a paper screen. The arrow keys change how."></canvas>
+        <p class="sim-label">refracture (2018), simulated</p>
+        <button class="refracture-camera">turn on your camera</button>
+        <p class="refracture-readout"></p>
+      </figure>
+      <dl class="specs">
+        <dt>year</dt>
+        <dd>2018</dd>
+        <dt>type</dt>
+        <dd>interactive installation</dd>
+        <dt>materials</dt>
+        <dd>paper screen, webcam, back projection, Mac mini</dd>
+        <dt>software</dt>
+        <dd>Processing</dd>
+      </dl>
+      <p>
+        The same line-drawing sketch went on to make O. Wake's music video for
+        <a href="https://www.youtube.com/watch?v=quHGGdSkpLs" target="_blank" rel="noopener">“Riper Than Ripe”</a>.
+      </p>
+      <img width="1400" height="1050" src="/media/refracture1_peter.jpg" alt="Refracture" loading="lazy">
+      <div class="imageGrid">
+        <img width="1400" height="1400" src="/media/refracture5_noth.jpg" alt="Refracture" loading="lazy">
+        <img width="1400" height="1400" src="/media/refracture4_hoda.jpg" alt="Refracture" loading="lazy">
+      </div>
+      <p>The algorithm driving it inspired me to create a series of several video filters.</p>
+      <figure>
+        <video width="533" height="300" data-src="/media/refracture2.mp4" poster="/media/refracture2_poster.jpg" autoplay muted loop playsinline></video>
+        <figcaption>refracture</figcaption>
+      </figure>
+      <figure>
+        <video width="800" height="600" data-src="/media/refracture7_mirror.mp4" poster="/media/refracture7_mirror_poster.jpg" autoplay muted loop playsinline></video>
+        <figcaption>box boil</figcaption>
+      </figure>
+      <figure>
+        <video width="533" height="300" data-src="/media/refracture6_linearBoil.mp4" poster="/media/refracture6_linearBoil_poster.jpg" autoplay muted loop playsinline></video>
+        <figcaption>linear boil demo</figcaption>
+      </figure>
+    </section>
+  </main>
+  <script type="module" src="/src/sketches/sun_deity.js"></script>
+  <script type="module" src="/src/scripts/sound.js"></script>
+  <script type="module" src="/src/sketches/ghost_harp.js"></script>
+  <script type="module" src="/src/sketches/refracture.js"></script>
+</body>
+
+</html>

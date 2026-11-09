@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Sketch Test – Ofer Shouval</title>
+  <!-- @include head.html -->
+</head>
+
+<body bgcolor="black">
+  <!--
+    For trying out one sketch by itself, full screen: /art/sketchbook/test.html?sketch=<name>,
+    where <name> is the file's name in src/sketchbook/ or src/wormhole/ (without .js). It can be written either way: as
+    plain p5 (function setup, function draw), the way it comes from the p5 editor, or converted
+    (export default function). Only converted ones can go in the sketchbook itself. If a sketch can't
+    run, the error shows here.
+  -->
+  <main class="sketch sketch-fullscreen"></main>
+  <p id="problem" hidden style="position: fixed; z-index: 1; margin: 16px; color: white; font-family: 'Source Code Pro', monospace;"></p>
+
+  <script type="module">
+    import p5 from 'p5';
+
+    p5.disableFriendlyErrors = import.meta.env.PROD;
+
+    const sources = import.meta.glob(['/src/wormhole/*.js', '/src/sketchbook/*.js'], { query: '?raw', import: 'default' });
+    const name = new URLSearchParams(location.search).get('sketch');
+    const problem = document.getElementById('problem');
+    const show = (message) => {
+      problem.textContent = message;
+      problem.hidden = false;
+    };
+
+    window.addEventListener('error', (event) => show(`${name}: ${event.message}`));
+    window.addEventListener('unhandledrejection', (event) => show(`${name}: ${event.reason?.message}`));
+
+    const load = sources[`/src/wormhole/${name}.js`] ?? sources[`/src/sketchbook/${name}.js`];
+    if (!name) {
+      show('Add the sketch to the address, like test.html?sketch=psychworm');
+    } else if (!load) {
+      show(`No sketch named "${name}" in src/wormhole/ or src/sketchbook/`);
+    } else {
+      load().then((source) => {
+        if (!source.trim()) {
+          show(`${name}.js is empty. Has it been saved?`);
+        } else if (/export\s+default/.test(source)) {
+          document.querySelector('main').dataset.sketch = name;
+          import('../../src/scripts/mount_sketches.js');
+        } else {
+          // Plain p5: run it as an ordinary script, then start p5 the way a page of its own would
+          window.p5 = p5;
+          const script = document.createElement('script');
+          script.textContent = source;
+          document.body.append(script);
+          new p5();
+        }
+      });
+    }
+  </script>
+</body>
+
+</html>

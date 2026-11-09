@@ -1,0 +1,60 @@
+<!doctype html>
+<html><body style="margin:0;background:#222">
+<canvas id="sheet" width="1600" height="1000"></canvas>
+<script type="importmap">{ "imports": { "three": "/node_modules/three/build/three.module.js", "three/addons/": "/node_modules/three/examples/jsm/" } }</script>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
+import { buildModel, applyPose, setPose, bakeSwing, SWING_TIMES, NEUTRAL } from '/src/sketches/luminin_puppet_model.js';
+
+const mode = new URLSearchParams(location.search).get('mode') || 'poses';
+const model = buildModel();
+const clip = bakeSwing(model);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setSize(400, 500);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xd8dde2);
+scene.add(new THREE.HemisphereLight(0xffffff, 0x666670, 1.6));
+const key = new THREE.DirectionalLight(0xffffff, 2.2);
+key.position.set(2, 4, 3);
+scene.add(key);
+const rim = new THREE.DirectionalLight(0xbfdfff, 1.2);
+rim.position.set(-3, 2, -3);
+scene.add(rim);
+scene.add(model.root);
+const floor = new THREE.Mesh(new THREE.CircleGeometry(1.2, 48).rotateX(-Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0xb8bec4 }));
+scene.add(floor);
+const camera = new THREE.PerspectiveCamera(30, 400 / 500, 0.1, 50);
+
+const sheet = document.getElementById('sheet').getContext('2d');
+function shot(k, label, angle, t, rows = 2) {
+  if (t != null) applyPose(model, t);
+  model.root.updateMatrixWorld(true);
+  const d = 4.6;
+  camera.position.set(Math.sin(angle) * d, 1.05, Math.cos(angle) * d);
+  camera.lookAt(0, 0.92, 0.05);
+  renderer.render(scene, camera);
+  const x = (k % 4) * 400, y = Math.floor(k / 4) * 500;
+  sheet.drawImage(renderer.domElement, x, y);
+  sheet.fillStyle = '#222';
+  sheet.font = '26px sans-serif';
+  sheet.fillText(label, x + 12, y + 34);
+}
+
+if (mode === 'turn') {
+  // Standing, playing, all the way round
+  [0, 0.8, 1.57, 2.4, 3.14, 3.9, 4.7, 5.5].forEach((a, k) => shot(k, `${Math.round((a * 180) / Math.PI)}°`, a, 0));
+} else if (mode === 'poses') {
+  // The swing's eight poses, from the side, as in the sprite sheet (performer facing right)
+  SWING_TIMES.forEach((t, k) => shot(k, `${k + 1}`, -Math.PI / 2 + 0.6, t));
+}
+if (mode === 'export') {
+  setPose(model, NEUTRAL); // At rest, standing neutral
+  scene.remove(model.root);
+  const gltf = await new GLTFExporter().parseAsync(model.root, { binary: true, animations: [clip] });
+  await fetch('/save?name=luminin-performer.glb', { method: 'POST', body: gltf });
+}
+document.title = 'done';
+</script></body></html>

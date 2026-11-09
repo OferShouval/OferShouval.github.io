@@ -1,0 +1,19 @@
+<!doctype html><html><body style="margin:0">
+<canvas id="sheet" width="1600" height="500"></canvas>
+<script type="importmap">{ "imports": { "three": "/node_modules/three/build/three.module.js", "three/addons/": "/node_modules/three/examples/jsm/" } }</script>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+const gltf = await new GLTFLoader().loadAsync('./out/luminin-performer.glb');
+const r = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true }); r.setSize(400, 500); r.outputColorSpace = THREE.SRGBColorSpace;
+const scene = new THREE.Scene(); scene.background = new THREE.Color(0xe8e2d8);
+scene.add(new THREE.HemisphereLight(0xffffff, 0x666670, 1.6)); const k = new THREE.DirectionalLight(0xffffff, 2); k.position.set(2,4,3); scene.add(k);
+scene.add(gltf.scene);
+const cam = new THREE.PerspectiveCamera(30, 0.8, 0.1, 50); cam.position.set(-4.3, 1.05, 1.6); cam.lookAt(0, 0.92, 0.05);
+const mixer = new THREE.AnimationMixer(gltf.scene); const clip = gltf.animations[0]; mixer.clipAction(clip).play();
+const s = document.getElementById('sheet').getContext('2d');
+[0, 0.98, 1.48, 2.45].forEach((t, i) => { mixer.setTime(t); r.render(scene, cam); s.drawImage(r.domElement, i * 400, 0); s.font='22px sans-serif'; s.fillText(`glb t=${t}`, i*400+10, 30); });
+let tris = 0, meshes = 0; gltf.scene.traverse(o => { if (o.isMesh) { meshes++; tris += (o.geometry.index ? o.geometry.index.count : o.geometry.attributes.position.count) / 3; } });
+s.fillText(`${clip.name} ${clip.duration.toFixed(2)}s, ${clip.tracks.length} tracks, ${meshes} meshes, ${Math.round(tris)} tris`, 10, 490);
+document.title = 'done';
+</script></body></html>

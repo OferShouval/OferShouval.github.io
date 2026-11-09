@@ -1,0 +1,1925 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+/* The same crosshair as the home page's sketch, on every page. Links still get the pointing hand. */
+
+html {
+  cursor: crosshair;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+canvas {
+  display: block;
+}
+
+h1 {
+  color: white;
+  display: inline;
+  text-decoration: none;
+  font-family: 'Major Mono Display', monospace;
+  padding: 0;
+}
+
+a {
+  color: white;
+  font-family: 'Source Code Pro', monospace;
+  font-weight: 200;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: rgba(200, 200, 200, 0);
+}
+
+
+/* Navbar */
+
+.navbar {
+  border: 1px solid #ccc;
+  display: block;
+  background-color: #171717;
+  position: sticky;
+  top: 0;
+  width: 100%;
+  z-index: 2;
+}
+
+/* Home, art, music, bio, the menu, in five equal tabs */
+.navbar ul {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  overflow: visible; /* So the menu's list can hang below it (lists hide what spills out, elsewhere on the site) */
+}
+
+.navbar a,
+.nav-menu-button {
+  font-family: 'Major Mono Display', monospace;
+  color: white;
+  text-decoration: none;
+}
+
+.navbar ul > a,
+.nav-menu {
+  flex: none;
+  width: 20%;
+}
+
+.navbar ul > a,
+.nav-menu-button {
+  display: block;
+  box-sizing: border-box;
+  text-align: center;
+  padding: 16px 14px;
+}
+
+.nav-menu-button {
+  width: 100%;
+}
+
+.navbar a:hover,
+.nav-menu-button:hover,
+.nav-menu-button[aria-expanded='true'] {
+  background-color: rgba(100, 100, 100, 0.6);
+}
+
+/* The menu on the right: three lines, which open a list of every page below the navbar */
+.nav-menu {
+  position: relative;
+}
+
+.nav-menu-button {
+  height: 100%;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font-size: inherit;
+}
+
+.menu-icon {
+  width: 1.1em;
+  height: 1.1em;
+  margin: -0.55em 0; /* So it doesn't make its tab taller than the others */
+  vertical-align: middle;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1;
+}
+
+.nav-menu-list {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  display: flex;
+  gap: 28px;
+  padding: 16px 22px;
+  border: 1px solid #ccc;
+  background-color: #171717;
+}
+
+.nav-menu-list[hidden] {
+  display: none;
+}
+
+.nav-menu-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.nav-menu-group a {
+  padding: 2px 6px;
+  font-size: 14px;
+  opacity: 0.75;
+}
+
+/* Each group's first link is its section */
+.nav-menu-group a:first-child {
+  font-size: 16px;
+  opacity: 1;
+  margin-bottom: 4px;
+}
+
+.nav-menu-group a:hover,
+.nav-menu-group a:focus-visible {
+  opacity: 1;
+}
+
+@media screen and (max-width: 500px) {
+  .nav-menu-list {
+    flex-direction: column;
+    gap: 16px;
+  }
+}
+
+.navbar a[aria-current="page"] {
+  background-color: rgba(100, 100, 100, 0.4);
+}
+
+/* A house in the same thin, even line as the navbar's font */
+
+.home-icon {
+  width: 1.1em;
+  height: 1.1em;
+  margin: -0.55em 0; /* So it doesn't make its tab taller than the others */
+  vertical-align: middle;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1;
+}
+
+@media screen and (max-width: 500px) {
+  .navbar ul > a,
+  .nav-menu-button {
+    padding: 16px 0;
+    font-size: 12px;
+  }
+}
+
+
+/* Bio footer links */
+
+.socialBar {
+  border: 1px solid #ccc;
+  overflow: hidden;
+  display: block;
+  background-color: #171717;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 2;
+}
+
+.socialBar ul {
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+.socialBar a {
+  font-family: 'Major Mono Display', monospace;
+  color: white;
+  flex: 1 1 50%;
+  min-width: 0; /* So a long address shrinks to its half instead of running into the other link */
+  box-sizing: border-box;
+  display: block;
+  text-align: center;
+  padding: 16px 14px;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+/* Room at the bottom of the page for the bar, so it doesn't cover the end of the text */
+body:has(.socialBar) {
+  padding-bottom: 64px;
+}
+
+@media screen and (max-width: 500px) {
+  .socialBar a {
+    padding: 14px 8px;
+    font-size: 12px;
+  }
+
+  /* The address is the long one, so it gets more of the bar */
+  .socialBar a:first-child {
+    flex: 1.7 1 0;
+  }
+
+  .socialBar a:last-child {
+    flex: 1 1 0;
+  }
+}
+
+.socialBar a:hover {
+  background-color: rgba(100, 100, 100, 0.6);
+}
+
+
+/* Home page caption */
+
+.footer {
+  font-family: 'Quicksand', sans-serif;
+  position: fixed;
+  color: white;
+  text-align: right;
+  bottom: 10px;
+  right: 10px;
+  width: 90%;
+}
+
+
+/* The art landing page is black on white, the opposite of the rest of the site */
+
+.light .navbar {
+  background-color: white;
+  border-color: #171717;
+}
+
+.light .navbar a,
+.light .nav-menu-button {
+  color: black;
+}
+
+.light .nav-menu-list {
+  background-color: white;
+  border-color: #171717;
+}
+
+
+/* How to walk the art landing page's mouse: shown once it's walked on, until it's first moved (see
+   showInstructions() in art_walk.js) */
+
+.art-instructions {
+  position: fixed;
+  top: 62px;
+  left: 16px;
+  right: 16px;
+  z-index: 1;
+  margin: 0;
+  text-align: center;
+  font-family: 'Source Code Pro', monospace;
+  font-weight: 200;
+  font-size: 15px;
+  color: black;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.8s;
+}
+
+.art-instructions.showing {
+  opacity: 1;
+}
+
+.art-instructions span {
+  padding: 3px 8px;
+  background-color: white;
+}
+
+.art-instructions-touch {
+  display: none;
+}
+
+/* Where there's a finger instead of a mouse and keys */
+@media (hover: none) {
+  .art-instructions-mouse {
+    display: none;
+  }
+
+  .art-instructions-touch {
+    display: inline;
+  }
+}
+
+
+/* The holes in the art landing page's ground, with their signposts: the sketch draws them (see
+   showHole() and showSign() in art_walk.js), and moves these links to match */
+
+.art-hole {
+  position: fixed;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: max-content;
+  transform: translate(-50%, -100%);
+  color: black;
+  font-family: 'Major Mono Display', monospace;
+  text-decoration: none;
+}
+
+.art-hole-name {
+  padding: 0.35em 0.7em;
+  max-width: max(30vw, 190px);
+  line-height: 1.2;
+  text-align: center;
+}
+
+.art-hole:hover .art-hole-name,
+.art-hole:focus-visible .art-hole-name {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.art-hole-mouth {
+  display: block;
+}
+
+/* A hole behind the mouse, off the bottom of the screen: a tag at the bottom pointing down to it, like home on the music
+   page (see holeBehind in art_walk.js) */
+.art-hole-behind {
+  gap: 2px;
+  font-size: 16px;
+}
+
+.art-hole-behind .art-hole-name {
+  padding: 0.2em 0.6em;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(0, 0, 0, 0.45);
+}
+
+.art-hole-behind:hover .art-hole-name,
+.art-hole-behind:focus-visible .art-hole-name {
+  text-decoration-color: black;
+}
+
+.art-hole-behind .art-hole-mouth {
+  display: none;
+}
+
+/* Long and narrow, pointing down */
+.art-hole-behind::after {
+  content: '';
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 16px solid rgba(0, 0, 0, 0.8);
+}
+
+
+/* Fades a video in behind the crowd (see src/scripts/fade_link.js) */
+
+.fade-background {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  opacity: 0;
+  background-color: #171717;
+}
+
+.fade-background video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* The crowd's canvas is white: multiplying it over the video drops the white and keeps the figures */
+.fading canvas {
+  mix-blend-mode: multiply;
+}
+
+.fading .navbar,
+.fading .navbar a {
+  transition: background-color 1.5s, border-color 1.5s, color 1.5s, opacity 1.5s;
+}
+
+
+/* The Luminin page's background: the same video, dimmed so the page can be read over it */
+
+.luminin-background {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.4;
+  /* The page's background is in greyscale (leaving the colour to the Luminin itself), and dark */
+  filter: grayscale(1) brightness(0.45);
+}
+
+
+/* The teaser on the left of the text column, words to its right; stacked on a narrow screen */
+.luminin-intro { display: flex; align-items: center; gap: 24px; max-width: 700px; margin: 24px auto; }
+.luminin-intro .container.luminin-teaser { flex: 0 0 50%; width: 50%; margin: 0; }
+.page .luminin-intro p { margin: 0; }
+.page .luminin-intro p + p { margin-top: 16px; }
+@media (max-width: 640px) {
+  .luminin-intro { flex-direction: column; align-items: stretch; }
+  .luminin-intro .container.luminin-teaser { width: 100%; }
+}
+
+/* The teaser is square: as tall as the page's other videos, centred (over .container's 16:9) */
+.container.luminin-teaser {
+  width: min(100%, 393.75px);
+  padding-top: 0;
+  aspect-ratio: 1 / 1;
+  margin: 0 auto 24px;
+}
+
+/* Over it, while the simulation plays, the light of its screens, diffused over the whole page (luminin_background.js) */
+.luminin-glow {
+  filter: brightness(0.45); /* As dark as the video under it */
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.8s;
+  pointer-events: none;
+}
+.luminin-glow.lit {
+  opacity: 0.6;
+}
+
+/* The line drawing of the Luminin 1.0 system (src/partials/luminin_system.html). On a narrow screen
+   it scrolls sideways, since its labels would be too small to read if it shrank to fit. */
+
+.system-diagram {
+  margin: 40px auto;
+  overflow-x: auto;
+  background-color: #171717;
+}
+
+.system-diagram svg {
+  display: block;
+  width: 100%;
+  min-width: 760px;
+  fill: none;
+  stroke: white;
+  stroke-width: 1.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.system-diagram .thin {
+  stroke-width: 0.8;
+}
+
+.system-diagram .dash {
+  stroke-dasharray: 2 5;
+}
+
+.system-diagram .solid {
+  fill: #171717;
+}
+
+.system-diagram .noline {
+  stroke: none;
+}
+
+.system-diagram pattern circle {
+  stroke-width: 0.7;
+}
+
+.system-diagram text {
+  fill: white;
+  stroke: none;
+  font-family: 'Source Code Pro', monospace;
+  font-weight: 200;
+  font-size: 13px;
+}
+
+.system-diagram text.small {
+  font-size: 11.5px;
+}
+
+.system-diagram text.title {
+  font-family: 'Major Mono Display', monospace;
+  font-weight: normal;
+  font-size: 20px;
+}
+
+.system-diagram figcaption {
+  padding: 0 16px 16px;
+  color: #a0a0a0;
+  font-family: 'Inconsolata', monospace;
+  font-size: 13px;
+  text-align: center;
+}
+
+
+/* Content pages (art, music, teaching) */
+
+/* The opening of the installations page: Sun Deity, ported (see src/sketches/sun_deity.js), on a sheet of fluorescent
+   orange acrylic, no taller than about the proportions of the real sheet, with the page's title and what's on it, and a
+   label at the bottom saying what it is. What's below just shows underneath, so it's clear there's more. */
+
+.sun-opening {
+  position: relative;
+  width: min(100%, 700px);
+  height: max(min(78vh, 737px), 360px);
+  margin: 0 auto;
+  overflow: hidden;
+  background-color: #e83e08;
+}
+
+@media (min-width: 701px) {
+  .sun-opening {
+    margin-top: 32px;
+  }
+}
+
+.sun-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* On a phone, dragging sideways across the sun blows it, and up and down still scrolls the page */
+.sun-opening {
+  touch-action: pan-y;
+}
+
+/* The label says what to do with a mouse, or with a finger */
+.sun-label .for-touch {
+  display: none;
+}
+
+@media (hover: none) {
+  .sun-label .for-mouse {
+    display: none;
+  }
+
+  .sun-label .for-touch {
+    display: inline;
+  }
+}
+
+/* The title, and the index under it, however many lines the title takes */
+.sun-heading {
+  position: absolute;
+  top: 28px;
+  left: 16px;
+  right: 16px;
+  pointer-events: none;
+}
+
+.sun-opening h1 {
+  display: block; /* (Headings are inline elsewhere on the site) */
+  margin: 0 0 14px;
+  text-align: center;
+  color: #171717;
+}
+
+.installations-index {
+  pointer-events: auto;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px 28px;
+  font-family: 'Major Mono Display', monospace;
+  font-size: 15px;
+}
+
+.installations-index a,
+.sun-label {
+  color: #171717;
+  text-decoration: none;
+}
+
+.installations-index a:hover,
+.installations-index a:focus-visible,
+.sun-label:hover,
+.sun-label:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Like a label on a gallery wall */
+.sun-label {
+  position: absolute;
+  right: 14px;
+  bottom: 12px;
+  left: 14px;
+  text-align: right;
+  font-family: 'Inconsolata', monospace;
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+/* Ghost Harp, simulated (see src/sketches/ghost_harp.js): the column hanging in the dark, with its sound switch, and
+   what it's playing under it */
+.installation .ghost-harp-sim {
+  position: relative;
+  max-width: 700px;
+  margin: 32px auto 40px;
+}
+
+.ghost-harp-sim canvas {
+  display: block;
+  width: 100%;
+  height: max(calc(100vh - 150px), 420px); /* All of it on the screen at once, under the navbar, with its controls below */
+  touch-action: pan-y; /* Dragging sideways turns it, and up and down still scrolls the page */
+  cursor: grab;
+}
+
+.ghost-harp-sound {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  color: white;
+}
+
+.installation .ghost-harp-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px 16px;
+  margin-top: 10px;
+}
+
+.ghost-harp-midi {
+  padding: 4px 12px;
+  border: 1px solid #555;
+  border-radius: 999px;
+  background: none;
+  color: white;
+  font-family: 'Inconsolata', monospace;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.ghost-harp-midi:hover,
+.ghost-harp-midi:focus-visible {
+  border-color: white;
+}
+
+/* ...on the left, with its description and details on the right, staying in view while the harp scrolls by. Its name
+   and first line go above both. On narrow screens, one after the other. */
+@media (min-width: 800px) {
+  .ghost-harp-top {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 40px;
+    align-items: start;
+    margin-top: 32px;
+  }
+
+  /* Its name and first line, lined up with the harp's left edge */
+  .page #ghost-harp > h2,
+  .page #ghost-harp > p {
+    max-width: none;
+    margin-left: 0;
+  }
+
+  .installation .ghost-harp-top .ghost-harp-sim {
+    margin: 0;
+  }
+
+  .ghost-harp-text {
+    position: sticky;
+    top: 72px;
+  }
+
+  .ghost-harp-text p,
+  .ghost-harp-text .specs {
+    max-width: none;
+  }
+
+  .ghost-harp-text p:first-of-type {
+    margin-top: 0;
+  }
+}
+
+/* Each installation, one after another, with a line between them */
+.installation {
+  scroll-margin-top: 72px; /* So its name isn't under the navbar when it's jumped to */
+}
+
+.installation + .installation {
+  padding-top: 72px;
+  border-top: 1px solid #333;
+}
+
+.installation figure {
+  max-width: 700px;
+  margin: 24px auto;
+}
+
+.installation figure video {
+  margin: 0 auto;
+}
+
+.installation figcaption {
+  margin-top: 6px;
+  color: #7a7a7a;
+  font-family: 'Inconsolata', monospace;
+  font-size: 13px;
+}
+
+/* Refracture, running live from the viewer's camera (see src/sketches/refracture.js) */
+
+/* A label in the corner of a simulation, saying what it's a simulation of (the sun's is .sun-label) */
+.page .sim-label {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  max-width: calc(100% - 140px);
+  margin: 0;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: 'Inconsolata', monospace;
+  font-size: 12px;
+  font-weight: normal;
+  line-height: 1.4;
+  pointer-events: none;
+}
+
+/* The Luminin's is a caption above its stage, clear of the sketch in its corner */
+.page .luminin-stage .sim-label {
+  position: static;
+  max-width: none;
+  margin: 0 0 8px;
+}
+
+/* The harp's is at the bottom, clear of its ceiling box (and above its controls) */
+.page .ghost-harp-sim .sim-label {
+  top: auto;
+  bottom: 52px;
+  max-width: 30%; /* Left of the harp */
+}
+
+.refracture {
+  position: relative;
+  max-width: 700px;
+  margin: 24px auto;
+}
+
+.refracture canvas {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background-color: black;
+  outline: none;
+}
+
+.refracture .refracture-camera {
+  display: block;
+  margin: 12px auto 0;
+  padding: 8px 16px;
+  border: 1px solid #ccc;
+  background: none;
+  color: white;
+  font-family: 'Major Mono Display', monospace;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.refracture .refracture-camera:hover {
+  background-color: rgba(100, 100, 100, 0.6);
+}
+
+
+.page .refracture-readout {
+  margin: 8px auto 0;
+  color: #7a7a7a;
+  font-family: 'Inconsolata', monospace;
+  font-size: 13px;
+  font-weight: normal;
+  text-align: center;
+}
+
+/* A piece shown in full at the top of a page, with its details and then its video */
+
+.feature {
+  margin-bottom: 72px;
+}
+
+.page .feature h2 {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 0;
+  text-align: left;
+  color: white;
+  font-family: 'Major Mono Display', monospace;
+  font-weight: normal;
+}
+
+.specs {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 6px 24px;
+  max-width: 700px;
+  margin: 32px auto;
+  font-family: 'Inconsolata', monospace;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.specs dt {
+  color: #7a7a7a;
+}
+
+.specs dd {
+  margin: 0;
+  color: white;
+}
+
+.page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 48px 16px 96px;
+}
+
+.page h1 {
+  text-align: center;
+  display: block;
+  margin-bottom: 40px;
+}
+
+.page h2 {
+  color: white;
+  font-family: 'Major Mono Display', monospace;
+  font-weight: normal;
+  text-align: center;
+  margin: 64px 0 24px;
+}
+
+.page h3 {
+  color: white;
+  font-family: 'Source Code Pro', monospace;
+  font-weight: 200;
+  font-size: 18px;
+  margin: 0 0 8px;
+}
+
+.page p {
+  color: white;
+  font-family: 'Source Code Pro', monospace;
+  font-weight: 100;
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 700px;
+  margin: 24px auto;
+  display: block;
+}
+
+.page img, .page video {
+  width: 100%;
+  height: auto; /* Their width and height attributes keep their room on the page before they've loaded */
+  display: block;
+  margin: 24px auto;
+  border: 0px solid white;
+  max-width: 700px;
+}
+
+.back-link {
+  display: block;
+  max-width: 700px;
+  margin: 0 auto 24px;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+/* Photos or videos side by side, across the same 700px column as everything else, edge to edge with it. Each one
+   grows in proportion to its --ratio (width / height, 1 if not given), so a wide one next to a tall one still comes
+   out the same height. */
+.imageGrid {
+  display: flex;
+  gap: 16px;
+  max-width: 700px;
+  margin: 24px auto;
+}
+
+.page .imageGrid img, .page .imageGrid video {
+  flex: var(--ratio, 1) 1 0;
+  min-width: 0;
+  width: auto;
+  margin: 0;
+}
+
+.container {
+  max-width: 700px;
+  position: relative;
+  margin: 24px auto;
+  overflow: hidden;
+  width: 100%;
+  padding-top: min(56.25%, 393.75px); /* 16:9 aspect ratio, capped at max-width */
+}
+
+.responsive-iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Live p5 sketches (see src/scripts/mount_sketches.js) */
+
+.sketch {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background-color: black;
+  overflow: hidden;
+}
+
+.card .sketch {
+  border-bottom: 1px solid #ccc;
+}
+
+.sketch-large {
+  max-height: 80vh;
+  margin: 24px auto;
+  border: 1px solid #ccc;
+}
+
+/* The wormhole: one full-screen sketch that turns into the next (see src/wormhole/wormhole.js) */
+
+.sketch-fullscreen {
+  position: fixed;
+  inset: 0;
+  width: auto;
+  aspect-ratio: auto;
+  touch-action: none; /* So dragging on a phone plays the sketch rather than scrolling the page */
+}
+
+.wormhole-caption,
+.wormhole-marks,
+.wormhole-sound-spot {
+  position: absolute;
+  left: 16px;
+  max-width: calc(100% - 32px);
+  z-index: 1;
+  margin: 0;
+  padding: 2px 10px;
+  color: white;
+  background-color: rgba(23, 23, 23, 0.8); /* Stays readable whatever's been painted behind it */
+  font-family: 'Source Code Pro', monospace;
+  font-weight: 200;
+  font-size: 14px;
+}
+
+/* The welcome on the first stage: "welcome to my wormhole" fades in and out, then "press anywhere..." fades in
+   in its place and stays, until someone presses to begin (see wormhole.js) */
+.wormhole-intro {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  color: white;
+  font-family: 'Major Mono Display', monospace;
+  font-size: 20px;
+  line-height: 1.6;
+  text-align: center;
+  pointer-events: none; /* Presses go through it to the sketch */
+  transition: opacity 1s;
+}
+
+.wormhole-intro.gone {
+  opacity: 0;
+}
+
+.wormhole-intro-lines {
+  display: grid;
+  place-items: center;
+}
+
+.wormhole-intro-lines > * {
+  grid-area: 1 / 1; /* One after another in the same place (see runIntro() in wormhole.js) */
+}
+
+.wormhole-intro-lines > * {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 1.2s ease-in-out, visibility 0s 1.2s;
+}
+
+.wormhole-intro-lines > .showing {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 1.2s ease-in-out, visibility 0s;
+}
+
+.wormhole-intro-lines > .showing {
+  opacity: 0.8;
+}
+
+.wormhole-caption {
+  bottom: 60px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media screen and (max-width: 500px) {
+  .wormhole-caption-name {
+    display: block;
+  }
+}
+
+.wormhole-caption.showing {
+  animation: wormhole-caption 7s ease-in-out;
+}
+
+.wormhole-caption-name {
+  font-family: 'Major Mono Display', monospace;
+  font-size: 24px;
+  margin-right: 12px;
+}
+
+@keyframes wormhole-caption {
+  15%, 70% {
+    opacity: 1;
+  }
+}
+
+.wormhole-marks {
+  bottom: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+}
+
+.wormhole-marks button,
+.wormhole-marks a {
+  padding: 6px 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  opacity: 0.65;
+  cursor: pointer;
+}
+
+.wormhole-marks button:hover,
+.wormhole-marks button:focus-visible,
+.wormhole-marks a:hover,
+.wormhole-marks a:focus-visible {
+  opacity: 1;
+}
+
+/* Straight to the art page, past the rest of the wormhole */
+.wormhole-marks .wormhole-skip {
+  text-decoration: none;
+}
+
+/* The sound switch, in the middle at the bottom */
+.wormhole-sound-spot {
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: opacity 1.2s, visibility 0s;
+}
+
+.wormhole-sound-spot.waiting {
+  opacity: 0;
+  visibility: hidden;
+  transition: none;
+}
+
+/* Here it's a speaker and a switch, rather than "sound?" */
+.wormhole-sound-spot .sound-button {
+  position: relative;
+  padding-right: 42px;
+}
+
+.wormhole-sound-spot .sound-button .sound-ask,
+.wormhole-sound-spot .sound-button.nudging .sound-ask {
+  display: none;
+}
+
+.wormhole-sound-spot .sound-button::before,
+.wormhole-sound-spot .sound-button::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  transition: right 0.25s ease-in-out, background-color 0.25s;
+}
+
+/* The track */
+.wormhole-sound-spot .sound-button::before {
+  right: 0;
+  width: 30px;
+  height: 16px;
+  margin-top: -9px;
+  border: 1px solid currentColor;
+  border-radius: 9px;
+}
+
+/* The knob: left for off, right for on */
+.wormhole-sound-spot .sound-button::after {
+  right: 16px;
+  width: 10px;
+  height: 10px;
+  margin-top: -5px;
+  border-radius: 50%;
+  background-color: currentColor;
+}
+
+.wormhole-sound-spot .sound-button[aria-pressed='true']::before {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.wormhole-sound-spot .sound-button[aria-pressed='true']::after {
+  right: 4px;
+}
+
+/* The site's sound switch (see src/scripts/sound.js): a speaker, with waves while it's on and a cross while it's
+   off. Until it's been tried, it pulses gently, with "sound?" beside it. */
+.sound-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  opacity: 0.65;
+  cursor: pointer;
+}
+
+.sound-button:hover,
+.sound-button:focus-visible,
+.sound-button[aria-pressed='true'] {
+  opacity: 1;
+}
+
+.sound-button svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.sound-waves,
+.sound-button[aria-pressed='true'] .sound-off,
+.sound-ask {
+  display: none;
+}
+
+.sound-button[aria-pressed='true'] .sound-waves {
+  display: inline;
+}
+
+.sound-button.nudging .sound-ask {
+  display: inline;
+  font-family: 'Source Code Pro', monospace;
+  font-weight: 200;
+  font-size: 13px;
+}
+
+.sound-button.nudging {
+  animation: sound-nudge 2.4s ease-in-out infinite;
+}
+
+@keyframes sound-nudge {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Where it goes on the full-screen pages: the bottom left corner */
+.sound-corner {
+  position: fixed;
+  left: 16px;
+  bottom: 8px;
+  z-index: 3;
+  color: white;
+}
+
+.light .sound-corner {
+  color: black;
+}
+
+.page .card h3 a {
+  font-size: inherit;
+  text-decoration: none;
+}
+
+.page .card h3 a:hover {
+  text-decoration: underline;
+}
+
+
+/* Card grids (art, music releases, courses, student work) */
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 24px;
+}
+
+.card {
+  display: block;
+  border: 1px solid #ccc;
+  text-decoration: none;
+  color: white;
+  transition: background-color 0.3s;
+}
+
+a.card:hover {
+  background-color: rgba(100, 100, 100, 0.2);
+}
+
+.page .card img, .card-image {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  margin: 0;
+  max-width: none;
+}
+
+.card-body {
+  padding: 16px;
+}
+
+.page .card p {
+  margin: 0;
+  max-width: none;
+  color: #a0a0a0;
+}
+
+.card-meta {
+  font-family: 'Inconsolata', monospace;
+  font-size: 13px;
+  color: #7a7a7a;
+  margin-bottom: 8px;
+}
+
+
+/* Placeholders: visible boxes marking content still to be added */
+
+.placeholder {
+  border: 1px dashed #7a7a7a;
+  color: #7a7a7a;
+  font-family: 'Inconsolata', monospace;
+  font-size: 14px;
+  padding: 24px;
+  max-width: 700px;
+  margin: 24px auto;
+  text-align: center;
+}
+
+.card-image.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  max-width: none;
+  border: none;
+  border-bottom: 1px dashed #7a7a7a;
+}
+
+
+/* Timeline (e.g. Luminin since 2021) */
+
+.timeline {
+  max-width: 700px;
+  margin: 0 auto;
+  border-left: 1px solid #ccc;
+  padding-left: 24px;
+}
+
+.timeline-item {
+  margin-bottom: 40px;
+}
+
+.page .timeline-item p {
+  margin: 8px 0;
+}
+
+
+/* Shows list */
+
+.shows {
+  max-width: 700px;
+  margin: 0 auto;
+  width: 100%;
+  border-collapse: collapse;
+  color: white;
+  font-family: 'Source Code Pro', monospace;
+  font-weight: 200;
+  font-size: 14px;
+}
+
+.shows td {
+  padding: 12px 8px;
+  border-bottom: 1px solid #333;
+}
+
+.shows td:first-child {
+  font-family: 'Inconsolata', monospace;
+  color: #7a7a7a;
+  white-space: nowrap;
+}
+
+
+/* Bio page */
+
+.grid-flex {
+  height: 90vh;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.col {
+  flex: 1;
+}
+
+.col-text {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.Aligner-item {
+  width: 90%;
+}
+
+.col-text p {
+  color: white;
+  font-family: 'Source Code Pro', monospace;
+  font-size: 2vh;
+  line-height: 1.5;
+}
+
+.col-image {
+  background-size: cover;
+  background-position: center;
+}
+
+@media (max-width: 700px) {
+  .grid-flex {
+    height: 60em;
+    flex-direction: column;
+  }
+
+  .col-text div p {
+    line-height: 1.2;
+  }
+
+  .Aligner-item {
+    width: 95%;
+  }
+}
+
+/* Luminin page */
+.page .luminin-lede { font-size: 1.2em; text-align: left; }
+/* The title and section headings on the text column's left edge, over what they head */
+.luminin-page > h1, .luminin-page > h2 { max-width: 700px; text-align: left; }
+.luminin-page > h1 { margin: 0 auto 24px; }
+.luminin-page > h2 { margin: 64px auto 24px; }
+/* Sub-headings in the text column, close above what they head; captions close under their videos */
+.luminin-page > h3 { max-width: 700px; margin: 48px auto 8px; }
+/* Sub-headings in the headings' typeface */
+.luminin-page h3 { font-family: 'Major Mono Display', monospace; font-weight: normal; }
+.luminin-page > .container + p, .luminin-page > video + p { margin-top: 8px; }
+.luminin-sim { position: relative; max-width: 700px; margin: 24px auto 0; }
+.luminin-sim canvas { display: block; width: 100% !important; height: auto !important; aspect-ratio: 8 / 3; background-color: black; outline: none; cursor: crosshair; }
+.luminin-stage { position: relative; max-width: 700px; margin: 24px auto 0; }
+/* The stage, its descriptions and its buttons fit the window's height together: the stage shrinks (keeping its shape,
+   centred) when the window's too short for it */
+.luminin-stage canvas { display: block; width: auto; max-width: 100%; max-height: calc(100svh - 200px); margin: 0 auto; height: auto; background-color: rgba(11, 11, 13, 0.6); outline: none; cursor: grab; }
+.luminin-stage canvas:active { cursor: grabbing; }
+.luminin-gestures { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; margin: 10px 0 24px; }
+.luminin-gestures button { user-select: none; -webkit-user-select: none; padding: 4px 7px; white-space: nowrap; border: 1px solid #7a7a7a; background: none; color: white; font-family: 'Inconsolata', monospace; font-size: 13px; cursor: pointer; }
+.luminin-gestures button:hover { background-color: rgba(100, 100, 100, 0.6); }
+/* Held down, by the pointer or its key */
+.luminin-gestures button:active, .luminin-gestures button.pressed { background-color: rgba(255, 255, 255, 0.85); color: black; }
+/* The key that plays it */
+.luminin-gestures kbd { display: inline-block; min-width: 1.4em; margin-left: 3px; padding: 0 3px; border: 1px solid rgba(255, 255, 255, 0.5); border-radius: 3px; font-family: inherit; font-size: 11px; line-height: 1.4; text-align: center; }
+/* On touch there are no keys: their badges go */
+@media (hover: none) {
+  .luminin-gestures kbd { display: none; }
+}
+/* How it works: a paragraph per part, the text wrapping round a small line drawing of it */
+.how-parts p { overflow: hidden; } /* Each paragraph holds its own drawing */
+.part-drawing { width: 160px; max-width: 42%; height: auto; margin: 2px 0 10px; }
+.part-drawing.right { float: right; margin-left: 20px; }
+.part-drawing.left { float: left; margin-right: 20px; }
+.part-drawing .lines { fill: none; stroke: rgba(255, 255, 255, 0.85); stroke-width: 1.2; stroke-linejoin: round; stroke-linecap: round; }
+.part-drawing .waves { stroke: rgba(255, 255, 255, 0.5); }
+.part-drawing .dots { fill: rgba(255, 255, 255, 0.6); }
+
+/* The concept's three points, in the same column and type as the page's paragraphs */
+.page .luminin-ideas { max-width: 700px; margin: 24px auto; padding-left: 0; list-style: none; color: rgba(255, 255, 255, 0.8); font-family: 'Source Code Pro', monospace; font-weight: 100; font-size: 14px; line-height: 1.6; }
+.luminin-ideas li { margin-bottom: 0.6em; }
+.luminin-ideas strong { color: white; font-weight: inherit; }
+/* Close-ups: a gallery in the text column, three to a row (two on a narrow screen), each clip the same shape with its
+   song's name under it */
+.closeups { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; max-width: 700px; margin: 24px auto 48px; }
+@media (max-width: 640px) { .closeups { grid-template-columns: repeat(2, 1fr); } }
+.closeups .luminin-pair { display: contents; } /* Its two tiles sit in the gallery like the rest */
+.closeup { margin: 0; }
+.page .closeup video, .closeup canvas { display: block; width: 100%; aspect-ratio: 4 / 3; margin: 0; background-color: black; }
+.page .closeup video { object-fit: cover; }
+.closeup canvas { object-fit: contain; }
+.closeup figcaption { margin-top: 6px; color: white; font-family: 'Major Mono Display', monospace; font-size: 13px; }
+/* A close-up with its simulation beside it, and the words below */
+.riper-sim { position: relative; margin: 0; }
+.riper-sim canvas { display: block; width: 100%; height: auto; background-color: black; }
+
+
+/* Album player (see src/scripts/album_player.js): a bar of controls over the list of tracks */
+
+.album-player {
+  max-width: 700px;
+  margin: 24px auto;
+  font-family: 'Inconsolata', monospace;
+  color: white;
+}
+
+/* The album's cover beside its player, together in the middle of the first screen; one above the other on narrow screens */
+.album {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 48px;
+  min-height: calc(100svh - 52px - 48px - 40px); /* The screen, less the navbar, the page's top padding and the back link */
+  padding: 24px 0;
+}
+
+.page .album-cover {
+  width: 100%;
+  max-width: none;
+  aspect-ratio: 1;
+  object-fit: cover;
+  margin: 0;
+}
+
+.album .album-player {
+  margin: 0;
+  max-width: none;
+}
+
+.page .album h1 {
+  text-align: left;
+  margin: 0 0 8px;
+  font-size: 28px;
+}
+
+.album .card-meta {
+  margin-bottom: 16px;
+}
+
+.album-feat {
+  color: #7a7a7a;
+  font-size: 13px;
+  margin-left: 6px;
+}
+
+.album-player.loading .album-play {
+  animation: album-loading 1s ease-in-out infinite alternate;
+}
+
+@keyframes album-loading {
+  to { opacity: 0.3; }
+}
+
+@media (max-width: 760px) {
+  .album {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    min-height: 0;
+  }
+
+  .page .album-cover {
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  .page .album h1 {
+    text-align: center;
+  }
+
+  .album .card-meta {
+    text-align: center;
+  }
+}
+
+.album-bar {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 16px 0;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+}
+
+.album-buttons {
+  display: flex;
+  gap: 4px;
+}
+
+.album-player button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+.album-buttons button {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.album-buttons button:hover,
+.album-buttons button:focus-visible {
+  background-color: rgba(255, 255, 255, 0.12);
+  outline: none;
+}
+
+.album-buttons svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.album-play .album-pause-icon,
+.album-player.playing .album-play .album-play-icon {
+  display: none;
+}
+
+.album-player.playing .album-play .album-pause-icon {
+  display: block;
+}
+
+.album-now {
+  font-family: 'Source Code Pro', monospace;
+  font-weight: 200;
+  font-size: 14px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.album-progress {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: #a0a0a0;
+  font-variant-numeric: tabular-nums;
+}
+
+.album-scrub {
+  flex: 1;
+  min-width: 0;
+  height: 20px;
+  margin: 0;
+  background: none;
+  cursor: pointer;
+  accent-color: white;
+}
+
+.album-tracks {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  counter-reset: track;
+}
+
+.album-player .album-track {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 2.5em 1fr auto;
+  align-items: baseline;
+  gap: 8px;
+  padding: 10px 8px;
+  text-align: left;
+  font-size: 15px;
+  color: #a0a0a0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.album-track::before {
+  counter-increment: track;
+  content: counter(track);
+  color: #7a7a7a;
+}
+
+.album-player .album-track:hover,
+.album-player .album-track:focus-visible {
+  color: white;
+  background-color: rgba(100, 100, 100, 0.2);
+  outline: none;
+}
+
+.album-player .album-track[aria-current] {
+  color: white;
+}
+
+.album-track[aria-current]::before {
+  content: '▸';
+  color: white;
+}
+
+.album-track-length {
+  color: #7a7a7a;
+  font-variant-numeric: tabular-nums;
+}
+
+
+.album-page .back-link {
+  max-width: none;
+}
+
+
+/* Videos (see src/scripts/youtube_cards.js): thumbnails in a grid, each turning into YouTube's player when clicked */
+
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: 32px 24px;
+}
+
+.page .video-card {
+  margin: 0;
+}
+
+.video-thumb,
+.video-frame {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
+  margin: 0;
+}
+
+.video-thumb {
+  position: relative;
+  padding: 0;
+  background-color: black;
+  background-size: cover;
+  background-position: center;
+  cursor: pointer;
+}
+
+/* A play triangle in a thin circle, brighter on hover */
+.video-thumb::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 56px;
+  height: 56px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.45) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M5 3l8 5-8 5z' fill='white'/%3E%3C/svg%3E") center / 22px no-repeat;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.video-thumb:hover::after,
+.video-thumb:focus-visible::after {
+  background-color: rgba(0, 0, 0, 0.7);
+  transform: scale(1.08);
+}
+
+.video-card figcaption {
+  padding: 12px 0 0;
+}
+
+.video-card h3 {
+  margin-bottom: 4px;
+}
+
+.page .video-more {
+  text-align: center;
+  margin-top: 48px;
+}
+
+
+/* Holding a finger down on a phone: no text selection, magnifier or link and image previews on the full-screen
+   sketch pages (front, art, music) or on any sketch, where holding is part of playing (see also media.js) */
+
+.sketch-page,
+.sketch-page *,
+canvas {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* The Luminin page's sketches are only tapped, never dragged, so a finger on them still scrolls the page. (p5 puts
+   touch-action: none on every canvas it draws on, right on the element, hence !important.) */
+.luminin-glow,
+.luminin-page canvas {
+  touch-action: manipulation !important;
+}
+
+
+/* The art landing page inverted: white on black (the sketch turns its own drawing inside out, see inverted in
+   art_walk.js). To go back to black on white, give its body "light" instead of "art-inverted". */
+
+body.art-inverted {
+  background-color: black;
+}
+
+.art-inverted .art-hole,
+.art-inverted .art-instructions {
+  color: white;
+}
+
+.art-inverted .art-instructions span {
+  background-color: black;
+}
+
+.art-inverted .art-hole-behind .art-hole-name {
+  text-decoration-color: rgba(255, 255, 255, 0.45);
+}
+
+.art-inverted .art-hole-behind:hover .art-hole-name,
+.art-inverted .art-hole-behind:focus-visible .art-hole-name {
+  text-decoration-color: white;
+}
+
+
+/* The art page's signs in a column at the top right of the screen: clicking one sends the mouse to its hole, and pointing
+   at one shows the hole's name at the top middle (see signsAtSide in art_walk.js) */
+
+.art-signs {
+  position: fixed;
+  z-index: 2;
+  right: 16px;
+  top: 66px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.art-sign {
+  padding: 4px 10px;
+  font-family: 'Major Mono Display', monospace;
+  font-size: 15px;
+  color: black;
+  background-color: white;
+  border: 1px solid black;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.art-sign:hover,
+.art-sign:focus-visible {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+/* On phones, the signs are a row along the bottom instead, above the sound button: clear of the instructions and
+   the holes, in reach of a thumb, and big enough to tap */
+@media screen and (max-width: 600px) {
+  .art-signs {
+    top: auto;
+    left: 12px;
+    right: 12px;
+    bottom: 46px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .art-sign {
+    display: flex;
+    align-items: center;
+    min-height: 38px;
+    box-sizing: border-box;
+    padding: 0 10px;
+    font-size: 14px;
+  }
+}
+
+/* ...with the holes' own names hidden, and the name of the one pointed at at the top of the screen instead */
+.art-signs-at-side .art-hole-name {
+  visibility: hidden;
+}
+
+.art-hole-title {
+  position: fixed;
+  z-index: 2;
+  top: 92px;
+  left: 16px;
+  right: 16px;
+  margin: 0;
+  text-align: center;
+  font-family: 'Major Mono Display', monospace;
+  font-size: 26px;
+  color: black;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.art-hole-title.shown {
+  opacity: 1;
+}
+
+.art-inverted .art-hole-title {
+  color: white;
+}
+
+/* (A hole behind the mouse has no tag: its sign's in the column) */
+.art-signs-at-side .art-hole-behind {
+  visibility: hidden;
+}
+
+.art-inverted .art-sign {
+  color: white;
+  background-color: black;
+  border-color: white;
+}
+
+
+/* Pointers to the art page's holes that are off the screen, at the edge they're past (see pointTo() in art_walk.js) */
+
+.art-pointer {
+  position: fixed;
+  z-index: 2;
+  padding: 3px 8px;
+  font-family: 'Major Mono Display', monospace;
+  font-size: 15px;
+  color: black;
+  background-color: white;
+  border: 1px solid black;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.art-pointer[data-way='up'],
+.art-pointer[data-way='down'] {
+  transform: translateX(-50%);
+}
+
+.art-pointer[data-way='left'],
+.art-pointer[data-way='right'] {
+  transform: translateY(-50%);
+}
+
+.art-pointer:hover,
+.art-pointer:focus-visible {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.art-pointer[hidden] {
+  display: none;
+}

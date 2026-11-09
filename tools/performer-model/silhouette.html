@@ -1,0 +1,33 @@
+<!doctype html>
+<html><body style="margin:0;background:#fff">
+<script type="importmap">{ "imports": { "three": "/node_modules/three/build/three.module.js", "three/addons/": "/node_modules/three/examples/jsm/" } }</script>
+<script type="module">
+// The performer as a flat black silhouette on white, as in the sprite sheets, to compare with them.
+// ?pose=neutral (or ?t=<seconds into the swing>), ?p=<JSON of changes to the neutral pose>, ?angle=<radians round
+// from the front>
+import * as THREE from 'three';
+import { buildModel, setPose, applyPose, NEUTRAL } from '/src/sketches/luminin_puppet_model.js';
+
+const q = new URLSearchParams(location.search);
+const model = buildModel();
+q.has('t') ? applyPose(model, Number(q.get('t'))) : setPose(model, { ...NEUTRAL, ...JSON.parse(q.get('p') || '{}') });
+const black = new THREE.MeshBasicMaterial({ color: 0x000000 });
+model.root.traverse((o) => { if (o.isMesh) o.material = black; });
+
+const size = [600, 800];
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(1);
+renderer.setSize(...size);
+document.body.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xffffff);
+scene.add(model.root);
+// From far off and narrow, so it's nearly flat, like a drawing
+const angle = Number(q.get('angle') ?? -Math.PI / 2 + 0.6);
+const camera = new THREE.PerspectiveCamera(8, size[0] / size[1], 1, 100);
+const d = 16;
+camera.position.set(Math.sin(angle) * d, 1.0, Math.cos(angle) * d);
+camera.lookAt(0, 0.92, 0);
+renderer.render(scene, camera);
+document.title = 'done';
+</script></body></html>

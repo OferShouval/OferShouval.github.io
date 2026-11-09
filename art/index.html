@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Art – Ofer Shouval</title>
+  <!-- @include head.html -->
+</head>
+
+<body class="light sketch-page">
+  <!-- @include navbar.html -->
+
+  <p class="art-instructions">
+    <span class="art-instructions-mouse">Use the arrow keys or click to walk the mouse into a hole.</span>
+    <span class="art-instructions-touch">Tap, or hold and drag, to walk the mouse into a hole.</span>
+  </p>
+
+  <!-- The holes in the ground, scattered anew each visit (see standHoles() in src/sketches/art_walk.js). -->
+  <a class="art-hole" href="/art/luminin.html"><span class="art-hole-name">live visuals</span><span class="art-hole-mouth"></span></a>
+  <a class="art-hole" href="/art/interactive-installations.html"><span class="art-hole-name">installations</span><span class="art-hole-mouth"></span></a>
+  <a class="art-hole" href="/art/film-animation.html"><span class="art-hole-name">film/animation</span><span class="art-hole-mouth"></span></a>
+  <a class="art-hole" href="/"><span class="art-hole-name">home</span><span class="art-hole-mouth"></span></a>
+  <a class="art-hole" href="/music/"><span class="art-hole-name">music</span><span class="art-hole-mouth"></span></a>
+
+  <div class="sound-corner" data-sound></div>
+  <script type="module" src="/src/scripts/sound.js"></script>
+  <script type="module" src="/src/sketches/art_walk.js"></script>
+  <script type="module" src="/src/sketches/hole_worm.js"></script>
+</body>
+
+</html>

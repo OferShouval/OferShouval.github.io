@@ -1,0 +1,196 @@
+<figure class="system-diagram">
+  <svg viewBox="0 0 1150 585" role="img" aria-labelledby="luminin-system-title luminin-system-desc">
+    <title id="luminin-system-title">The Luminin 1.0 system</title>
+    <desc id="luminin-system-desc">A controller on a guitar headstock sends motion data over the air by ESP-NOW to a Wemos D1 Mini, which passes it to a Raspberry Pi as serial JSON strings. The Pi runs a Processing sketch and a Fadecandy server, which sends pixel data over USB to two Fadecandy boards, each driving a 512 LED screen.</desc>
+    <defs>
+      <!-- A slight wobble, so it looks drawn by hand -->
+      <filter id="luminin-pen" filterUnits="userSpaceOnUse" x="0" y="0" width="1150" height="585">
+        <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="4"/>
+        <feDisplacementMap in="SourceGraphic" scale="3"/>
+      </filter>
+      <!-- 1 tile = 1 LED, so each screen's 128 x 256 rectangle has 16 x 32 of them -->
+      <pattern id="luminin-leds" width="8" height="8" patternUnits="userSpaceOnUse" x="770" y="70">
+        <circle cx="4" cy="4" r="1.6"/>
+      </pattern>
+    </defs>
+    <g filter="url(#luminin-pen)">
+      <path d="M262 158 L60 238 M336 158 L278 238" class="thin dash"/>
+      <!-- The guitar neck and headstock, with six in-line tuners -->
+      <path d="M20 172 L122 170 M20 198 L122 198 M122 168 L122 200 M48 172 L48 198 M86 171 L86 198"/>
+      <path d="M122 168 C136 164 148 142 172 130 L252 112 C284 104 308 116 306 138 C304 158 284 166 262 174 C236 184 214 180 196 188 C172 198 146 200 122 200 Z" class="solid"/>
+      <circle cx="158" cy="150" r="3.5"/>
+      <path d="M122 173.0 L158 150" class="thin"/>
+      <path d="M158 146 L158 126"/><ellipse cx="158" cy="121" rx="4" ry="5.5"/>
+      <circle cx="177" cy="146" r="3.5"/>
+      <path d="M122 177.4 L177 146" class="thin"/>
+      <path d="M177 142 L177 122"/><ellipse cx="177" cy="117" rx="4" ry="5.5"/>
+      <circle cx="196" cy="142" r="3.5"/>
+      <path d="M122 181.8 L196 142" class="thin"/>
+      <path d="M196 138 L196 118"/><ellipse cx="196" cy="113" rx="4" ry="5.5"/>
+      <circle cx="215" cy="137" r="3.5"/>
+      <path d="M122 186.2 L215 137" class="thin"/>
+      <path d="M215 134 L215 113"/><ellipse cx="215" cy="108" rx="4" ry="5.5"/>
+      <circle cx="234" cy="133" r="3.5"/>
+      <path d="M122 190.6 L234 133" class="thin"/>
+      <path d="M234 130 L234 109"/><ellipse cx="234" cy="104" rx="4" ry="5.5"/>
+      <circle cx="253" cy="129" r="3.5"/>
+      <path d="M122 195.0 L253 129" class="thin"/>
+      <path d="M253 126 L253 105"/><ellipse cx="253" cy="100" rx="4" ry="5.5"/>
+      <!-- The controller, on the tip of the headstock -->
+      <rect x="262" y="112" width="74" height="46" rx="4" class="solid"/>
+      <circle cx="271" cy="123" r="2.2"/>
+      <circle cx="279" cy="123" r="2.2"/>
+      <circle cx="287" cy="123" r="2.2"/>
+      <circle cx="295" cy="123" r="2.2"/>
+      <circle cx="303" cy="123" r="2.2"/>
+      <circle cx="311" cy="123" r="2.2"/>
+      <circle cx="319" cy="123" r="2.2"/>
+      <circle cx="327" cy="123" r="2.2"/>
+      <circle cx="271" cy="131" r="2.2"/>
+      <circle cx="279" cy="131" r="2.2"/>
+      <circle cx="287" cy="131" r="2.2"/>
+      <circle cx="295" cy="131" r="2.2"/>
+      <circle cx="303" cy="131" r="2.2"/>
+      <circle cx="311" cy="131" r="2.2"/>
+      <circle cx="319" cy="131" r="2.2"/>
+      <circle cx="327" cy="131" r="2.2"/>
+      <circle cx="271" cy="139" r="2.2"/>
+      <circle cx="279" cy="139" r="2.2"/>
+      <circle cx="287" cy="139" r="2.2"/>
+      <circle cx="295" cy="139" r="2.2"/>
+      <circle cx="303" cy="139" r="2.2"/>
+      <circle cx="311" cy="139" r="2.2"/>
+      <circle cx="319" cy="139" r="2.2"/>
+      <circle cx="327" cy="139" r="2.2"/>
+      <circle cx="271" cy="147" r="2.2"/>
+      <circle cx="279" cy="147" r="2.2"/>
+      <circle cx="287" cy="147" r="2.2"/>
+      <circle cx="295" cy="147" r="2.2"/>
+      <circle cx="303" cy="147" r="2.2"/>
+      <circle cx="311" cy="147" r="2.2"/>
+      <circle cx="319" cy="147" r="2.2"/>
+      <circle cx="327" cy="147" r="2.2"/>
+      <!-- The controller taken apart -->
+      <text x="60" y="255" class="note">8 &#215; 4 neopixel featherwing</text>
+      <rect x="60" y="262" width="218" height="18" rx="2" class="solid"/>
+      <circle cx="100" cy="271" r="2.5"/>
+      <circle cx="120" cy="271" r="2.5"/>
+      <circle cx="140" cy="271" r="2.5"/>
+      <circle cx="160" cy="271" r="2.5"/>
+      <circle cx="180" cy="271" r="2.5"/>
+      <circle cx="200" cy="271" r="2.5"/>
+      <circle cx="220" cy="271" r="2.5"/>
+      <circle cx="240" cy="271" r="2.5"/>
+      <text x="60" y="301" class="note">feather esp8266</text>
+      <rect x="60" y="308" width="218" height="18" rx="2" class="solid"/>
+      <rect x="212" y="311" width="34" height="12"/><path d="M76 317 H192" class="thin"/>
+      <text x="60" y="347" class="note">mpu6050 accelerometer + gyroscope</text>
+      <rect x="60" y="354" width="218" height="18" rx="2" class="solid"/>
+      <rect x="150" y="357" width="38" height="12"/>
+      <text x="60" y="393" class="note">push button</text>
+      <rect x="60" y="400" width="218" height="18" rx="2" class="solid"/>
+      <rect x="155" y="403" width="24" height="12"/><circle cx="167" cy="409" r="3.5"/>
+      <text x="60" y="439" class="note">3.7v 1200mah lipo battery</text>
+      <rect x="60" y="446" width="218" height="26" rx="7" class="solid"/>
+      <!-- ESP-NOW, over the air -->
+      <path d="M347 122 Q354 135 347 148"/>
+      <path d="M354 111 Q368 135 354 159"/>
+      <path d="M362 100 Q382 135 362 170"/>
+      <!-- The brain: Wemos and Raspberry Pi on a foam board -->
+      <rect x="392" y="92" width="320" height="212" class="thin"/>
+      <rect x="420" y="128" width="66" height="112" rx="3" class="solid"/>
+      <rect x="434" y="136" width="38" height="44"/><path d="M439 143 h28 v6 h-28 v6 h28" class="thin"/>
+      <rect x="443" y="232" width="20" height="14"/>
+      <circle cx="426" cy="190" r="1.3"/><circle cx="480" cy="190" r="1.3"/>
+      <circle cx="426" cy="195" r="1.3"/><circle cx="480" cy="195" r="1.3"/>
+      <circle cx="426" cy="200" r="1.3"/><circle cx="480" cy="200" r="1.3"/>
+      <circle cx="426" cy="205" r="1.3"/><circle cx="480" cy="205" r="1.3"/>
+      <circle cx="426" cy="210" r="1.3"/><circle cx="480" cy="210" r="1.3"/>
+      <circle cx="426" cy="215" r="1.3"/><circle cx="480" cy="215" r="1.3"/>
+      <circle cx="426" cy="220" r="1.3"/><circle cx="480" cy="220" r="1.3"/>
+      <circle cx="426" cy="225" r="1.3"/><circle cx="480" cy="225" r="1.3"/>
+      <path d="M436 128 C436 78 560 78 560 134"/>
+      <path d="M446 128 C446 84 552 84 568 134"/>
+      <path d="M456 128 C456 90 544 90 576 134"/>
+      <path d="M466 128 C466 96 536 96 584 134"/>
+      <rect x="524" y="128" width="170" height="130" rx="6" class="solid"/>
+      <circle cx="538.0" cy="136" r="1.3"/><circle cx="538.0" cy="142" r="1.3"/>
+      <circle cx="544.6" cy="136" r="1.3"/><circle cx="544.6" cy="142" r="1.3"/>
+      <circle cx="551.2" cy="136" r="1.3"/><circle cx="551.2" cy="142" r="1.3"/>
+      <circle cx="557.8" cy="136" r="1.3"/><circle cx="557.8" cy="142" r="1.3"/>
+      <circle cx="564.4" cy="136" r="1.3"/><circle cx="564.4" cy="142" r="1.3"/>
+      <circle cx="571.0" cy="136" r="1.3"/><circle cx="571.0" cy="142" r="1.3"/>
+      <circle cx="577.6" cy="136" r="1.3"/><circle cx="577.6" cy="142" r="1.3"/>
+      <circle cx="584.2" cy="136" r="1.3"/><circle cx="584.2" cy="142" r="1.3"/>
+      <circle cx="590.8" cy="136" r="1.3"/><circle cx="590.8" cy="142" r="1.3"/>
+      <circle cx="597.4" cy="136" r="1.3"/><circle cx="597.4" cy="142" r="1.3"/>
+      <circle cx="604.0" cy="136" r="1.3"/><circle cx="604.0" cy="142" r="1.3"/>
+      <circle cx="610.6" cy="136" r="1.3"/><circle cx="610.6" cy="142" r="1.3"/>
+      <circle cx="617.2" cy="136" r="1.3"/><circle cx="617.2" cy="142" r="1.3"/>
+      <circle cx="623.8" cy="136" r="1.3"/><circle cx="623.8" cy="142" r="1.3"/>
+      <circle cx="630.4" cy="136" r="1.3"/><circle cx="630.4" cy="142" r="1.3"/>
+      <circle cx="637.0" cy="136" r="1.3"/><circle cx="637.0" cy="142" r="1.3"/>
+      <circle cx="643.6" cy="136" r="1.3"/><circle cx="643.6" cy="142" r="1.3"/>
+      <circle cx="650.2" cy="136" r="1.3"/><circle cx="650.2" cy="142" r="1.3"/>
+      <circle cx="656.8" cy="136" r="1.3"/><circle cx="656.8" cy="142" r="1.3"/>
+      <circle cx="663.4" cy="136" r="1.3"/><circle cx="663.4" cy="142" r="1.3"/>
+      <rect x="536" y="156" width="134" height="30" class="thin"/><path d="M603 186 V204 M599 199 L603 204 L607 199" class="thin"/><rect x="536" y="204" width="134" height="30" class="thin"/>
+      <rect x="694" y="150" width="20" height="24"/><rect x="694" y="186" width="20" height="24"/><rect x="694" y="222" width="20" height="26"/>
+      <path d="M680 258 V342"/><rect x="590" y="342" width="110" height="30"/>
+      <!-- Two screens: 16 x 32 LEDs in pine + plywood frames, each with a Fadecandy board -->
+      <rect x="770" y="70" width="128" height="256" class="thin"/>
+      <path d="M760 50 V352 M908 50 V352 M754 62 H914 M754 336 H914 M748 352 H772 M896 352 H920"/>
+      <rect x="770" y="70" width="128" height="256" fill="url(#luminin-leds)" class="noline"/>
+      <rect x="792" y="382" width="84" height="38" rx="2"/>
+      <path d="M799 382 L778 326" class="thin"/>
+      <path d="M809 382 L794 326" class="thin"/>
+      <path d="M819 382 L810 326" class="thin"/>
+      <path d="M829 382 L826 326" class="thin"/>
+      <path d="M839 382 L842 326" class="thin"/>
+      <path d="M849 382 L858 326" class="thin"/>
+      <path d="M859 382 L874 326" class="thin"/>
+      <path d="M869 382 L890 326" class="thin"/>
+      <rect x="946" y="70" width="128" height="256" class="thin"/>
+      <path d="M936 50 V352 M1084 50 V352 M930 62 H1090 M930 336 H1090 M924 352 H948 M1072 352 H1096"/>
+      <rect x="946" y="70" width="128" height="256" fill="url(#luminin-leds)" class="noline"/>
+      <rect x="968" y="382" width="84" height="38" rx="2"/>
+      <path d="M975 382 L954 326" class="thin"/>
+      <path d="M985 382 L970 326" class="thin"/>
+      <path d="M995 382 L986 326" class="thin"/>
+      <path d="M1005 382 L1002 326" class="thin"/>
+      <path d="M1015 382 L1018 326" class="thin"/>
+      <path d="M1025 382 L1034 326" class="thin"/>
+      <path d="M1035 382 L1050 326" class="thin"/>
+      <path d="M1045 382 L1066 326" class="thin"/>
+      <path d="M714 162 H744 V396 H792"/>
+      <path d="M714 198 H730 V446 H958 V401 H968"/>
+      <rect x="860" y="470" width="120" height="30"/>
+      <path d="M892 470 V326 M950 470 V326" class="thin"/>
+    </g>
+    <text x="20" y="34" class="title">controller</text>
+    <text x="392" y="34" class="title">brain</text>
+    <text x="770" y="34" class="title">displays</text>
+    <text x="346" y="74" class="note" text-anchor="middle">esp-now</text>
+    <text x="346" y="90" class="small" text-anchor="middle">over the air</text>
+    <text x="516" y="72" class="note" text-anchor="middle">serial: json strings</text>
+    <text x="453" y="262" class="note" text-anchor="middle">wemos d1 mini</text>
+    <text x="453" y="278" class="small" text-anchor="middle">esp8266 receiver</text>
+    <text x="609" y="276" class="note" text-anchor="middle">raspberry pi 3b+</text>
+    <text x="603" y="175" class="small" text-anchor="middle">processing sketch</text>
+    <text x="603" y="223" class="small" text-anchor="middle">fadecandy server</text>
+    <text x="645" y="362" class="note" text-anchor="middle">5v supply</text>
+    <text x="0" y="0" class="small" transform="translate(741 330) rotate(-90)">usb: pixel data</text>
+    <text x="834" y="405" class="note" text-anchor="middle">fadecandy</text>
+    <text x="1010" y="405" class="note" text-anchor="middle">fadecandy</text>
+    <text x="1058" y="396" class="small">8 ports</text>
+    <text x="1058" y="412" class="small">64 leds each</text>
+    <text x="920" y="490" class="note" text-anchor="middle">5v 40a supply</text>
+    <text x="770" y="530" class="small">512 ws2811 leds per screen, 16 &#215; 32</text>
+    <text x="770" y="550" class="small">foam board, pine + plywood frames, paper diffusers</text>
+    <text x="20" y="530" class="small">mounted on a guitar headstock:</text>
+    <text x="20" y="550" class="small">tilts, swings and jolts become data</text>
+    <text x="392" y="530" class="small">a relay and a brain, on one foam board:</text>
+    <text x="392" y="550" class="small">data in, processing sketch, pixels out</text>
+  </svg>
+  <figcaption>the luminin 1.0, as built in 2021</figcaption>
+</figure>

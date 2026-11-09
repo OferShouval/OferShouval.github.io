@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>The Luminin – Ofer Shouval</title>
+  <!-- @include head.html -->
+  <style>@view-transition { navigation: auto; }</style>
+</head>
+
+<body bgcolor="#171717">
+  <!-- @include navbar.html -->
+
+  <video id="luminin-background" class="luminin-background" src="/media/lumininSmear.mp4" muted loop playsinline></video>
+  <script type="module" src="/src/scripts/luminin_background.js"></script>
+
+  <main class="page luminin-page">
+    <a class="back-link" href="/art/">&larr; art</a>
+
+    <!-- 1. What it is -->
+    <h1>the luminin</h1>
+    <p class="luminin-lede">
+      A visual instrument: it turns a performer's motion into light.
+    </p>
+
+    <!-- 2. Playing it, straight away: the Luminin, simulated: the guitar with the controller, the sketch it plays, and the screens
+         (see src/sketches/luminin_sim.js and luminin_performer.js) -->
+    <p>
+      A simulation of the first Luminin. Move the guitar, and the controller on its headstock drives the sketch, which
+      lights the two screens.
+    </p>
+    <figure class="luminin-stage">
+      <p class="sim-label">pattern</p>
+      <canvas tabindex="0" aria-label="A Fender Mustang guitar in silhouette with the Luminin controller on its headstock, under the sketch it plays (Unfamiliar State), dotted where its LEDs take their colour from. While it's on screen, the down and up arrows jolt the guitar down and up, holding S or W tilts it down or up, and holding A or D twists it side to side; clicking the controller, or pressing N, moves to the next pattern."></canvas>
+      <div class="luminin-gestures">
+        <button data-move="down">jolt down <kbd>&darr;</kbd></button>
+        <button data-move="up">jolt up <kbd>&uarr;</kbd></button>
+        <button data-move="tiltDown">tilt down (hold) <kbd>S</kbd></button>
+        <button data-move="tiltUp">tilt up (hold) <kbd>W</kbd></button>
+        <button data-move="sway">side to side (hold) <kbd>A</kbd> <kbd>D</kbd></button>
+        <button data-action="next">next pattern <kbd>N</kbd></button>
+      </div>
+    </figure>
+    <!-- Where the sketch itself draws; the stage shows what it needs of it, so this stays hidden -->
+    <figure class="luminin-sim" hidden></figure>
+    <script type="module" src="/src/sketches/luminin_sim.js"></script>
+
+    <!-- The teaser (it's square, so its frame is too), with the words from its Vimeo page beside it -->
+    <div class="luminin-intro">
+      <div class="container luminin-teaser">
+        <iframe class="responsive-iframe" src="https://player.vimeo.com/video/573319415" title="The Luminin: teaser" frameborder="0" allow="fullscreen; picture-in-picture" allowfullscreen></iframe>
+      </div>
+      <div>
+        <p>
+          Just as a musical instrument transmutes the movements of a skilled musician into intricate arrangements of sonic
+          vibrations, the Luminin, a &ldquo;visual instrument,&rdquo; converts the physical motions of its performer into a
+          dazzling light show.
+        </p>
+        <p>
+          And it isn't tied to its own screens: from a club stage to a gallery, it can play whatever lights and video a
+          venue has, as it did at Baby's All Right.
+        </p>
+      </div>
+    </div>
+
+    <!-- In real settings: the Luminin on stage, and on film -->
+    <h3>on stage &mdash; baby's all right</h3>
+    <div class="container">
+      <iframe class="responsive-iframe" src="https://www.youtube-nocookie.com/embed/NiE04l1cDr4" title="Using the Luminin at Baby's All Right" frameborder="0" allow="fullscreen; picture-in-picture; encrypted-media" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <p>The Luminin behind O. Wake at the <em>Unfamiliar State</em> album release, Baby's All Right, 1 February 2024.</p>
+    <!-- TODO: a sentence on the show. -->
+
+    <h3>on film &mdash; odysseus</h3>
+    <div class="container">
+      <iframe class="responsive-iframe" src="https://www.youtube-nocookie.com/embed/1tQot8G7MDU" title="O. Wake - Odysseus (Official Music Video)" frameborder="0" allow="fullscreen; picture-in-picture; encrypted-media" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <p>The Luminin lighting the set of O. Wake's video for "Odysseus", as both its light and its backdrop.</p>
+    <!-- TODO: the video's year. -->
+
+    <!-- 3. How it works -->
+    <h2>how it works</h2>
+    <div class="how-parts">
+      <p>
+      <svg class="part-drawing right" viewBox="0 0 170 100" role="img" aria-label="The controller on the guitar's headstock">
+        <g class="lines">
+          <path d="M0 58 H38 C48 56 56 46 70 44 L128 38 C140 37 150 44 151 54 C152 64 144 70 134 71 L82 78 C70 80 62 86 56 90 C50 94 42 89 42 82 L41 72 H0"/>
+          <path d="M70 44.0 v-7"/><circle cx="70" cy="34.0" r="3.2"/><path d="M81 43.4 v-7"/><circle cx="81" cy="33.4" r="3.2"/><path d="M92 42.8 v-7"/><circle cx="92" cy="32.8" r="3.2"/><path d="M103 42.2 v-7"/><circle cx="103" cy="32.2" r="3.2"/><path d="M114 41.6 v-7"/><circle cx="114" cy="31.6" r="3.2"/><path d="M125 41.0 v-7"/><circle cx="125" cy="31.0" r="3.2"/>
+          <rect x="108" y="44" width="50" height="24" rx="2" transform="rotate(-6 133 56)"/>
+          <path d="M160 30 q6 8 0 16 M165 26 q9 12 0 24" class="waves"/>
+        </g>
+        <g class="dots" transform="rotate(-6 133 56)"><circle cx="113.5" cy="48.5" r="1.3"/><circle cx="113.5" cy="53.5" r="1.3"/><circle cx="113.5" cy="58.5" r="1.3"/><circle cx="113.5" cy="63.5" r="1.3"/><circle cx="119.1" cy="48.5" r="1.3"/><circle cx="119.1" cy="53.5" r="1.3"/><circle cx="119.1" cy="58.5" r="1.3"/><circle cx="119.1" cy="63.5" r="1.3"/><circle cx="124.7" cy="48.5" r="1.3"/><circle cx="124.7" cy="53.5" r="1.3"/><circle cx="124.7" cy="58.5" r="1.3"/><circle cx="124.7" cy="63.5" r="1.3"/><circle cx="130.3" cy="48.5" r="1.3"/><circle cx="130.3" cy="53.5" r="1.3"/><circle cx="130.3" cy="58.5" r="1.3"/><circle cx="130.3" cy="63.5" r="1.3"/><circle cx="135.9" cy="48.5" r="1.3"/><circle cx="135.9" cy="53.5" r="1.3"/><circle cx="135.9" cy="58.5" r="1.3"/><circle cx="135.9" cy="63.5" r="1.3"/><circle cx="141.5" cy="48.5" r="1.3"/><circle cx="141.5" cy="53.5" r="1.3"/><circle cx="141.5" cy="58.5" r="1.3"/><circle cx="141.5" cy="63.5" r="1.3"/><circle cx="147.1" cy="48.5" r="1.3"/><circle cx="147.1" cy="53.5" r="1.3"/><circle cx="147.1" cy="58.5" r="1.3"/><circle cx="147.1" cy="63.5" r="1.3"/><circle cx="152.7" cy="48.5" r="1.3"/><circle cx="152.7" cy="53.5" r="1.3"/><circle cx="152.7" cy="58.5" r="1.3"/><circle cx="152.7" cy="63.5" r="1.3"/></g>
+      </svg>
+      The controller sits on the guitar's headstock. Inside it, a motion sensor (an accelerometer and gyroscope) feels
+      how the guitar tilts, swings and jolts, twenty times a second, and its own small grid of lights shows what it feels.
+      </p>
+      <p>
+      <svg class="part-drawing left" viewBox="0 0 170 100" role="img" aria-label="The receiver, wired to the Raspberry Pi">
+        <g class="lines">
+          <rect x="4" y="26" width="100" height="66" rx="4"/>
+          <rect x="12.0" y="29" width="2.6" height="2.6"/><rect x="12.0" y="33.5" width="2.6" height="2.6"/><rect x="16.3" y="29" width="2.6" height="2.6"/><rect x="16.3" y="33.5" width="2.6" height="2.6"/><rect x="20.6" y="29" width="2.6" height="2.6"/><rect x="20.6" y="33.5" width="2.6" height="2.6"/><rect x="24.9" y="29" width="2.6" height="2.6"/><rect x="24.9" y="33.5" width="2.6" height="2.6"/><rect x="29.2" y="29" width="2.6" height="2.6"/><rect x="29.2" y="33.5" width="2.6" height="2.6"/><rect x="33.5" y="29" width="2.6" height="2.6"/><rect x="33.5" y="33.5" width="2.6" height="2.6"/><rect x="37.8" y="29" width="2.6" height="2.6"/><rect x="37.8" y="33.5" width="2.6" height="2.6"/><rect x="42.1" y="29" width="2.6" height="2.6"/><rect x="42.1" y="33.5" width="2.6" height="2.6"/><rect x="46.4" y="29" width="2.6" height="2.6"/><rect x="46.4" y="33.5" width="2.6" height="2.6"/><rect x="50.7" y="29" width="2.6" height="2.6"/><rect x="50.7" y="33.5" width="2.6" height="2.6"/><rect x="55.0" y="29" width="2.6" height="2.6"/><rect x="55.0" y="33.5" width="2.6" height="2.6"/><rect x="59.3" y="29" width="2.6" height="2.6"/><rect x="59.3" y="33.5" width="2.6" height="2.6"/><rect x="63.6" y="29" width="2.6" height="2.6"/><rect x="63.6" y="33.5" width="2.6" height="2.6"/><rect x="67.9" y="29" width="2.6" height="2.6"/><rect x="67.9" y="33.5" width="2.6" height="2.6"/><rect x="72.2" y="29" width="2.6" height="2.6"/><rect x="72.2" y="33.5" width="2.6" height="2.6"/><rect x="76.5" y="29" width="2.6" height="2.6"/><rect x="76.5" y="33.5" width="2.6" height="2.6"/><rect x="80.8" y="29" width="2.6" height="2.6"/><rect x="80.8" y="33.5" width="2.6" height="2.6"/><rect x="85.1" y="29" width="2.6" height="2.6"/><rect x="85.1" y="33.5" width="2.6" height="2.6"/><rect x="89.4" y="29" width="2.6" height="2.6"/><rect x="89.4" y="33.5" width="2.6" height="2.6"/><rect x="93.7" y="29" width="2.6" height="2.6"/><rect x="93.7" y="33.5" width="2.6" height="2.6"/>
+          <rect x="34" y="50" width="22" height="22"/>
+          <rect x="100" y="30" width="16" height="16"/><rect x="100" y="50" width="16" height="16"/><rect x="100" y="70" width="16" height="18"/>
+          <circle cx="10" cy="86" r="2"/><circle cx="96" cy="86" r="2"/>
+          <rect x="132" y="44" width="30" height="42" rx="2"/>
+          <rect x="138" y="50" width="18" height="12"/>
+          <path d="M147 44 v-10"/>
+          <path d="M139 24 q8 -8 16 0 M134 18 q13 -13 26 0" class="waves"/>
+          <path d="M132 76 C122 76 124 64 116 62"/>
+        </g>
+      </svg>
+      It sends those readings through the air to a small receiver wired to a Raspberry Pi. The Pi runs a Processing
+      sketch, which turns them into a series of animations, live.
+      </p>
+      <p>
+      <svg class="part-drawing right" viewBox="0 0 170 150" role="img" aria-label="The two LED screens">
+        <g class="lines">
+          <rect x="28" y="6" width="54" height="138"/>
+          <rect x="88" y="6" width="54" height="138"/>
+        </g>
+        <g class="dots"><circle cx="33.5" cy="11.5" r="1.2"/><circle cx="33.5" cy="19.9" r="1.2"/><circle cx="33.5" cy="28.3" r="1.2"/><circle cx="33.5" cy="36.7" r="1.2"/><circle cx="33.5" cy="45.1" r="1.2"/><circle cx="33.5" cy="53.5" r="1.2"/><circle cx="33.5" cy="61.9" r="1.2"/><circle cx="33.5" cy="70.3" r="1.2"/><circle cx="33.5" cy="78.7" r="1.2"/><circle cx="33.5" cy="87.1" r="1.2"/><circle cx="33.5" cy="95.5" r="1.2"/><circle cx="33.5" cy="103.9" r="1.2"/><circle cx="33.5" cy="112.3" r="1.2"/><circle cx="33.5" cy="120.7" r="1.2"/><circle cx="33.5" cy="129.1" r="1.2"/><circle cx="33.5" cy="137.5" r="1.2"/><circle cx="39.7" cy="11.5" r="1.2"/><circle cx="39.7" cy="19.9" r="1.2"/><circle cx="39.7" cy="28.3" r="1.2"/><circle cx="39.7" cy="36.7" r="1.2"/><circle cx="39.7" cy="45.1" r="1.2"/><circle cx="39.7" cy="53.5" r="1.2"/><circle cx="39.7" cy="61.9" r="1.2"/><circle cx="39.7" cy="70.3" r="1.2"/><circle cx="39.7" cy="78.7" r="1.2"/><circle cx="39.7" cy="87.1" r="1.2"/><circle cx="39.7" cy="95.5" r="1.2"/><circle cx="39.7" cy="103.9" r="1.2"/><circle cx="39.7" cy="112.3" r="1.2"/><circle cx="39.7" cy="120.7" r="1.2"/><circle cx="39.7" cy="129.1" r="1.2"/><circle cx="39.7" cy="137.5" r="1.2"/><circle cx="45.9" cy="11.5" r="1.2"/><circle cx="45.9" cy="19.9" r="1.2"/><circle cx="45.9" cy="28.3" r="1.2"/><circle cx="45.9" cy="36.7" r="1.2"/><circle cx="45.9" cy="45.1" r="1.2"/><circle cx="45.9" cy="53.5" r="1.2"/><circle cx="45.9" cy="61.9" r="1.2"/><circle cx="45.9" cy="70.3" r="1.2"/><circle cx="45.9" cy="78.7" r="1.2"/><circle cx="45.9" cy="87.1" r="1.2"/><circle cx="45.9" cy="95.5" r="1.2"/><circle cx="45.9" cy="103.9" r="1.2"/><circle cx="45.9" cy="112.3" r="1.2"/><circle cx="45.9" cy="120.7" r="1.2"/><circle cx="45.9" cy="129.1" r="1.2"/><circle cx="45.9" cy="137.5" r="1.2"/><circle cx="52.1" cy="11.5" r="1.2"/><circle cx="52.1" cy="19.9" r="1.2"/><circle cx="52.1" cy="28.3" r="1.2"/><circle cx="52.1" cy="36.7" r="1.2"/><circle cx="52.1" cy="45.1" r="1.2"/><circle cx="52.1" cy="53.5" r="1.2"/><circle cx="52.1" cy="61.9" r="1.2"/><circle cx="52.1" cy="70.3" r="1.2"/><circle cx="52.1" cy="78.7" r="1.2"/><circle cx="52.1" cy="87.1" r="1.2"/><circle cx="52.1" cy="95.5" r="1.2"/><circle cx="52.1" cy="103.9" r="1.2"/><circle cx="52.1" cy="112.3" r="1.2"/><circle cx="52.1" cy="120.7" r="1.2"/><circle cx="52.1" cy="129.1" r="1.2"/><circle cx="52.1" cy="137.5" r="1.2"/><circle cx="58.3" cy="11.5" r="1.2"/><circle cx="58.3" cy="19.9" r="1.2"/><circle cx="58.3" cy="28.3" r="1.2"/><circle cx="58.3" cy="36.7" r="1.2"/><circle cx="58.3" cy="45.1" r="1.2"/><circle cx="58.3" cy="53.5" r="1.2"/><circle cx="58.3" cy="61.9" r="1.2"/><circle cx="58.3" cy="70.3" r="1.2"/><circle cx="58.3" cy="78.7" r="1.2"/><circle cx="58.3" cy="87.1" r="1.2"/><circle cx="58.3" cy="95.5" r="1.2"/><circle cx="58.3" cy="103.9" r="1.2"/><circle cx="58.3" cy="112.3" r="1.2"/><circle cx="58.3" cy="120.7" r="1.2"/><circle cx="58.3" cy="129.1" r="1.2"/><circle cx="58.3" cy="137.5" r="1.2"/><circle cx="64.5" cy="11.5" r="1.2"/><circle cx="64.5" cy="19.9" r="1.2"/><circle cx="64.5" cy="28.3" r="1.2"/><circle cx="64.5" cy="36.7" r="1.2"/><circle cx="64.5" cy="45.1" r="1.2"/><circle cx="64.5" cy="53.5" r="1.2"/><circle cx="64.5" cy="61.9" r="1.2"/><circle cx="64.5" cy="70.3" r="1.2"/><circle cx="64.5" cy="78.7" r="1.2"/><circle cx="64.5" cy="87.1" r="1.2"/><circle cx="64.5" cy="95.5" r="1.2"/><circle cx="64.5" cy="103.9" r="1.2"/><circle cx="64.5" cy="112.3" r="1.2"/><circle cx="64.5" cy="120.7" r="1.2"/><circle cx="64.5" cy="129.1" r="1.2"/><circle cx="64.5" cy="137.5" r="1.2"/><circle cx="70.7" cy="11.5" r="1.2"/><circle cx="70.7" cy="19.9" r="1.2"/><circle cx="70.7" cy="28.3" r="1.2"/><circle cx="70.7" cy="36.7" r="1.2"/><circle cx="70.7" cy="45.1" r="1.2"/><circle cx="70.7" cy="53.5" r="1.2"/><circle cx="70.7" cy="61.9" r="1.2"/><circle cx="70.7" cy="70.3" r="1.2"/><circle cx="70.7" cy="78.7" r="1.2"/><circle cx="70.7" cy="87.1" r="1.2"/><circle cx="70.7" cy="95.5" r="1.2"/><circle cx="70.7" cy="103.9" r="1.2"/><circle cx="70.7" cy="112.3" r="1.2"/><circle cx="70.7" cy="120.7" r="1.2"/><circle cx="70.7" cy="129.1" r="1.2"/><circle cx="70.7" cy="137.5" r="1.2"/><circle cx="76.9" cy="11.5" r="1.2"/><circle cx="76.9" cy="19.9" r="1.2"/><circle cx="76.9" cy="28.3" r="1.2"/><circle cx="76.9" cy="36.7" r="1.2"/><circle cx="76.9" cy="45.1" r="1.2"/><circle cx="76.9" cy="53.5" r="1.2"/><circle cx="76.9" cy="61.9" r="1.2"/><circle cx="76.9" cy="70.3" r="1.2"/><circle cx="76.9" cy="78.7" r="1.2"/><circle cx="76.9" cy="87.1" r="1.2"/><circle cx="76.9" cy="95.5" r="1.2"/><circle cx="76.9" cy="103.9" r="1.2"/><circle cx="76.9" cy="112.3" r="1.2"/><circle cx="76.9" cy="120.7" r="1.2"/><circle cx="76.9" cy="129.1" r="1.2"/><circle cx="76.9" cy="137.5" r="1.2"/><circle cx="93.5" cy="11.5" r="1.2"/><circle cx="93.5" cy="19.9" r="1.2"/><circle cx="93.5" cy="28.3" r="1.2"/><circle cx="93.5" cy="36.7" r="1.2"/><circle cx="93.5" cy="45.1" r="1.2"/><circle cx="93.5" cy="53.5" r="1.2"/><circle cx="93.5" cy="61.9" r="1.2"/><circle cx="93.5" cy="70.3" r="1.2"/><circle cx="93.5" cy="78.7" r="1.2"/><circle cx="93.5" cy="87.1" r="1.2"/><circle cx="93.5" cy="95.5" r="1.2"/><circle cx="93.5" cy="103.9" r="1.2"/><circle cx="93.5" cy="112.3" r="1.2"/><circle cx="93.5" cy="120.7" r="1.2"/><circle cx="93.5" cy="129.1" r="1.2"/><circle cx="93.5" cy="137.5" r="1.2"/><circle cx="99.7" cy="11.5" r="1.2"/><circle cx="99.7" cy="19.9" r="1.2"/><circle cx="99.7" cy="28.3" r="1.2"/><circle cx="99.7" cy="36.7" r="1.2"/><circle cx="99.7" cy="45.1" r="1.2"/><circle cx="99.7" cy="53.5" r="1.2"/><circle cx="99.7" cy="61.9" r="1.2"/><circle cx="99.7" cy="70.3" r="1.2"/><circle cx="99.7" cy="78.7" r="1.2"/><circle cx="99.7" cy="87.1" r="1.2"/><circle cx="99.7" cy="95.5" r="1.2"/><circle cx="99.7" cy="103.9" r="1.2"/><circle cx="99.7" cy="112.3" r="1.2"/><circle cx="99.7" cy="120.7" r="1.2"/><circle cx="99.7" cy="129.1" r="1.2"/><circle cx="99.7" cy="137.5" r="1.2"/><circle cx="105.9" cy="11.5" r="1.2"/><circle cx="105.9" cy="19.9" r="1.2"/><circle cx="105.9" cy="28.3" r="1.2"/><circle cx="105.9" cy="36.7" r="1.2"/><circle cx="105.9" cy="45.1" r="1.2"/><circle cx="105.9" cy="53.5" r="1.2"/><circle cx="105.9" cy="61.9" r="1.2"/><circle cx="105.9" cy="70.3" r="1.2"/><circle cx="105.9" cy="78.7" r="1.2"/><circle cx="105.9" cy="87.1" r="1.2"/><circle cx="105.9" cy="95.5" r="1.2"/><circle cx="105.9" cy="103.9" r="1.2"/><circle cx="105.9" cy="112.3" r="1.2"/><circle cx="105.9" cy="120.7" r="1.2"/><circle cx="105.9" cy="129.1" r="1.2"/><circle cx="105.9" cy="137.5" r="1.2"/><circle cx="112.1" cy="11.5" r="1.2"/><circle cx="112.1" cy="19.9" r="1.2"/><circle cx="112.1" cy="28.3" r="1.2"/><circle cx="112.1" cy="36.7" r="1.2"/><circle cx="112.1" cy="45.1" r="1.2"/><circle cx="112.1" cy="53.5" r="1.2"/><circle cx="112.1" cy="61.9" r="1.2"/><circle cx="112.1" cy="70.3" r="1.2"/><circle cx="112.1" cy="78.7" r="1.2"/><circle cx="112.1" cy="87.1" r="1.2"/><circle cx="112.1" cy="95.5" r="1.2"/><circle cx="112.1" cy="103.9" r="1.2"/><circle cx="112.1" cy="112.3" r="1.2"/><circle cx="112.1" cy="120.7" r="1.2"/><circle cx="112.1" cy="129.1" r="1.2"/><circle cx="112.1" cy="137.5" r="1.2"/><circle cx="118.3" cy="11.5" r="1.2"/><circle cx="118.3" cy="19.9" r="1.2"/><circle cx="118.3" cy="28.3" r="1.2"/><circle cx="118.3" cy="36.7" r="1.2"/><circle cx="118.3" cy="45.1" r="1.2"/><circle cx="118.3" cy="53.5" r="1.2"/><circle cx="118.3" cy="61.9" r="1.2"/><circle cx="118.3" cy="70.3" r="1.2"/><circle cx="118.3" cy="78.7" r="1.2"/><circle cx="118.3" cy="87.1" r="1.2"/><circle cx="118.3" cy="95.5" r="1.2"/><circle cx="118.3" cy="103.9" r="1.2"/><circle cx="118.3" cy="112.3" r="1.2"/><circle cx="118.3" cy="120.7" r="1.2"/><circle cx="118.3" cy="129.1" r="1.2"/><circle cx="118.3" cy="137.5" r="1.2"/><circle cx="124.5" cy="11.5" r="1.2"/><circle cx="124.5" cy="19.9" r="1.2"/><circle cx="124.5" cy="28.3" r="1.2"/><circle cx="124.5" cy="36.7" r="1.2"/><circle cx="124.5" cy="45.1" r="1.2"/><circle cx="124.5" cy="53.5" r="1.2"/><circle cx="124.5" cy="61.9" r="1.2"/><circle cx="124.5" cy="70.3" r="1.2"/><circle cx="124.5" cy="78.7" r="1.2"/><circle cx="124.5" cy="87.1" r="1.2"/><circle cx="124.5" cy="95.5" r="1.2"/><circle cx="124.5" cy="103.9" r="1.2"/><circle cx="124.5" cy="112.3" r="1.2"/><circle cx="124.5" cy="120.7" r="1.2"/><circle cx="124.5" cy="129.1" r="1.2"/><circle cx="124.5" cy="137.5" r="1.2"/><circle cx="130.7" cy="11.5" r="1.2"/><circle cx="130.7" cy="19.9" r="1.2"/><circle cx="130.7" cy="28.3" r="1.2"/><circle cx="130.7" cy="36.7" r="1.2"/><circle cx="130.7" cy="45.1" r="1.2"/><circle cx="130.7" cy="53.5" r="1.2"/><circle cx="130.7" cy="61.9" r="1.2"/><circle cx="130.7" cy="70.3" r="1.2"/><circle cx="130.7" cy="78.7" r="1.2"/><circle cx="130.7" cy="87.1" r="1.2"/><circle cx="130.7" cy="95.5" r="1.2"/><circle cx="130.7" cy="103.9" r="1.2"/><circle cx="130.7" cy="112.3" r="1.2"/><circle cx="130.7" cy="120.7" r="1.2"/><circle cx="130.7" cy="129.1" r="1.2"/><circle cx="130.7" cy="137.5" r="1.2"/><circle cx="136.9" cy="11.5" r="1.2"/><circle cx="136.9" cy="19.9" r="1.2"/><circle cx="136.9" cy="28.3" r="1.2"/><circle cx="136.9" cy="36.7" r="1.2"/><circle cx="136.9" cy="45.1" r="1.2"/><circle cx="136.9" cy="53.5" r="1.2"/><circle cx="136.9" cy="61.9" r="1.2"/><circle cx="136.9" cy="70.3" r="1.2"/><circle cx="136.9" cy="78.7" r="1.2"/><circle cx="136.9" cy="87.1" r="1.2"/><circle cx="136.9" cy="95.5" r="1.2"/><circle cx="136.9" cy="103.9" r="1.2"/><circle cx="136.9" cy="112.3" r="1.2"/><circle cx="136.9" cy="120.7" r="1.2"/><circle cx="136.9" cy="129.1" r="1.2"/><circle cx="136.9" cy="137.5" r="1.2"/></g>
+      </svg>
+      The animations play across two hand-built 26 &times; 52 inch LED screens: 512 lights each, behind paper that
+      softens them into fields of colour.
+      </p>
+    </div>
+
+    <video data-src="/media/lumininGif_demonstration.mp4" poster="/media/lumininGif_demonstration_poster.jpg" autoplay muted loop playsinline></video>
+    <p>Tilting the guitar shifts the sketch's colours.</p>
+
+    <!-- 4. The concept -->
+    <h2>the concept</h2>
+    <ul class="luminin-ideas">
+      <li><strong>Played live.</strong> The light comes from a performer's movement in the moment, so it keeps the risk and life of live playing.</li>
+      <li><strong>A score, not eye candy.</strong> A light show is to a song what a film score is to a film: it serves the music.</li>
+      <li><strong>Screens as canvas.</strong> Sprites are brushes leaving temporary trails of paint; how long trails last, their colour and motion set the mood.</li>
+    </ul>
+    <p>
+      By tying movement to visual output, and bestowing a performer with power to modify and manipulate their
+      visual environment with a flick of the wrist, the Luminin opens the door for a new artistic
+      language: a syntax for the choreography of light and image.
+    </p>
+    <p>
+      Modular in design and built with cheap, easy to obtain materials,
+      the Luminin is a proof of concept for a DIY platform which would provide musicians and performers with the tools to design and
+      innovate the visual aspects of their performance while on a budget.
+    </p>
+    <p>
+      The first Luminin was my MFA thesis at Pratt, in 2021. The thesis goes far deeper into the technical details and
+      philosophical motivations behind the project: <a href="/media/G_21SP_ShouvalO_Thesis-signedLB.pdf" download>download the pdf</a>.
+    </p>
+
+    <!-- 5. More from the shows -->
+    <!-- Still to come, shown once they're filled in:
+    <h3>from the shows</h3>
+    Short clips of specific songs: one .live-clip per song. Compress to a few MB, mp4, in public/media/.
+    <div class="imageGrid">
+      <div class="placeholder">TODO: clip — song title, venue, date</div>
+      <div class="placeholder">TODO: clip — song title, venue, date</div>
+      <div class="placeholder">TODO: clip — song title, venue, date</div>
+      <div class="placeholder">TODO: clip — song title, venue, date</div>
+    </div>
+    Photos of the band with the panels behind: lazy-loaded jpgs, about 1600px wide.
+    <div class="imageGrid">
+      <div class="placeholder">TODO: photo</div>
+      <div class="placeholder">TODO: photo</div>
+      <div class="placeholder">TODO: photo</div>
+      <div class="placeholder">TODO: photo</div>
+    </div>
+    -->
+
+    <!-- 6. Close-ups: one song per row. TODO: check titles and write a line on each song's mood (each row's <p>). -->
+    <h2>close-ups</h2>
+    <!-- A gallery of the screens up close, a song per clip -->
+    <div class="closeups">
+      <figure class="closeup">
+        <video data-src="/media/lumininGif1_intro.mp4" poster="/media/lumininGif1_intro_poster.jpg" autoplay muted loop playsinline></video>
+        <figcaption>intro</figcaption>
+      </figure>
+      <!-- The close-up, and beside it the 1.0 sketch, simulated, following the video's colours (see src/sketches/riper_sim.js) -->
+      <div class="luminin-pair">
+        <figure class="closeup">
+          <video data-src="/media/lumininGif3_riper.mp4" poster="/media/lumininGif3_riper_poster.jpg" autoplay muted loop playsinline></video>
+          <figcaption>riper than ripe</figcaption>
+        </figure>
+        <figure class="closeup riper-sim">
+          <canvas aria-label="The two LED screens, simulated, showing the same letters and colours as the screens in the riper than ripe clip."></canvas>
+          <figcaption>riper than ripe, simulated</figcaption>
+        </figure>
+      </div>
+      <figure class="closeup">
+        <video data-src="/media/lumininGif4_unfamiliar.mp4" poster="/media/lumininGif4_unfamiliar_poster.jpg" autoplay muted loop playsinline></video>
+        <figcaption>unfamiliar state</figcaption>
+      </figure>
+      <figure class="closeup">
+        <video data-src="/media/lumininGif2_jkolitm.mp4" poster="/media/lumininGif2_jkolitm_poster.jpg" autoplay muted loop playsinline></video>
+        <figcaption>just keep on living in the moment</figcaption>
+      </figure>
+      <figure class="closeup">
+        <video data-src="/media/lumininGif6_red.mp4" poster="/media/lumininGif6_red_poster.jpg" autoplay muted loop playsinline></video>
+        <figcaption>red</figcaption>
+      </figure>
+      <figure class="closeup">
+        <video data-src="/media/lumininGif5_hdme.mp4" poster="/media/lumininGif5_hdme_poster.jpg" autoplay muted loop playsinline></video>
+        <figcaption>henry david, motivation expert</figcaption>
+      </figure>
+    </div>
+    <script type="module" src="/src/sketches/riper_sim.js"></script>
+
+    <!-- 7. Close with the music -->
+    <h2>the music</h2>
+    <p>
+      The Luminin exists to serve songs. Hear them on the <a href="/music/">music page</a>,
+      and follow <a href="https://www.instagram.com/o.wake_music/">O. Wake on instagram</a> for updates.
+    </p>
+  </main>
+</body>
+
+</html>

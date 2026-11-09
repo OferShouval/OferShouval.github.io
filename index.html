@@ -3,49 +3,19 @@
 
 <head>
   <title>Ofer Shouval</title>
-
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <script src="p5.min.js"></script>
-  <script src="p5.dom.min.js"></script>
-  <script src="p5.sound.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="style.css">
-  <link href="https://fonts.googleapis.com/css?family=Major+Mono+Display" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css?family=Inconsolata|Quicksand" rel="stylesheet">
-  <meta charset="utf-8">
-
-
-  <style type="text/css">
-    .footer {
-      font-family: 'Quicksand', sans-serif;
-      position: fixed;
-      color: white;
-      text-align: right;
-      bottom: 10px;
-      right: 10px;
-      width: 90%;
-    }
-  </style>
-
+  <!-- @include head.html -->
 </head>
 
-<body>
+<body class="sketch-page" bgcolor="black">
+  <!-- @include navbar.html -->
 
-  <script src="wake.js"></script>
-<div class = "navbar">
-  <ul>
-    <a href="index.html">home</a>
-    <a href="projects.html">projects</a>
-    <a href="https://www.youtube.com/@o.wakeband"> music </a>
-    <a href="bio.html">bio</a>
+  <!-- The way in is the pond (src/wormhole/pond.js), which hands over to the wormhole: its stages, and how they turn
+       into each other, are in src/wormhole/wormhole.js. It ends in three portals, to art, music and bio (see
+       src/wormhole/spiral-worm.js). -->
+  <main class="sketch sketch-fullscreen" data-sketch="pond">
+  </main>
 
-  </ul>
-</div>
-
-
-  <div class="footer">"Wake" - 2019 </div>
-
-
+  <script type="module" src="/src/scripts/mount_sketches.js"></script>
 </body>
 
 </html>

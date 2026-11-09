@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Unfamiliar State – O. Wake</title>
+  <!-- @include head.html -->
+</head>
+
+<body bgcolor="#171717">
+  <!-- @include navbar.html -->
+
+  <main class="page album-page">
+    <a class="back-link" href="/music/">&larr; back</a>
+
+    <!-- The album, its cover beside its player, in the middle of the first screen. The songs are in
+         public/sounds/unfamiliar-state, each with its true length in samples from its WAV, so they can play
+         back to back with no gaps (see src/scripts/album_player.js). -->
+    <section class="album">
+      <img class="album-cover" src="/media/unfamiliar-state-cover.jpg" width="1000" height="1000" alt="Unfamiliar State cover: O. Wake in pixel letters over nine circles joined in a square, and 'unfamiliar state' beneath">
+      <div class="album-player" data-album="Unfamiliar State" data-artist="O. Wake" data-cover="/media/unfamiliar-state-cover.jpg">
+        <h1>unfamiliar state</h1>
+        <div class="card-meta">O. Wake · album · 2024</div>
+        <div class="album-bar">
+          <div class="album-buttons">
+            <button class="album-previous" aria-label="previous"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 2h2v12H3zM14 2v12L6 8z"/></svg></button>
+            <button class="album-play" aria-label="play or pause"><svg class="album-play-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2l10 6-10 6z"/></svg><svg class="album-pause-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 2h3.5v12H3zM9.5 2H13v12H9.5z"/></svg></button>
+            <button class="album-next" aria-label="next"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M11 2h2v12h-2zM2 2v12l8-6z"/></svg></button>
+          </div>
+          <div class="album-now">Unfamiliar State</div>
+          <div class="album-progress">
+            <span class="album-elapsed">0:00</span>
+            <input class="album-scrub" type="range" min="0" max="1000" value="0" aria-label="position in the song">
+            <span class="album-total">3:50</span>
+          </div>
+        </div>
+        <ol class="album-tracks">
+          <li><button class="album-track" data-src="/sounds/unfamiliar-state/01-unfamiliar-state.m4a" data-frames="10144722" data-title="Unfamiliar State"><span>Unfamiliar State</span><span class="album-track-length">3:50</span></button></li>
+          <li><button class="album-track" data-src="/sounds/unfamiliar-state/02-riper-than-ripe.m4a" data-frames="10532373" data-title="Riper Than Ripe"><span>Riper Than Ripe</span><span class="album-track-length">3:58</span></button></li>
+          <li><button class="album-track" data-src="/sounds/unfamiliar-state/03-odysseus.m4a" data-frames="9139088" data-title="Odysseus"><span>Odysseus</span><span class="album-track-length">3:27</span></button></li>
+          <li><button class="album-track" data-src="/sounds/unfamiliar-state/04-lets-all-get-pessimistic.m4a" data-frames="9609152" data-title="Let's All Get Pessimistic"><span>Let's All Get Pessimistic</span><span class="album-track-length">3:37</span></button></li>
+          <li><button class="album-track" data-src="/sounds/unfamiliar-state/05-henry-david-motivation-expert.m4a" data-frames="10072246" data-title="Henry David, Motivation Expert"><span>Henry David, Motivation Expert</span><span class="album-track-length">3:48</span></button></li>
+          <li><button class="album-track" data-src="/sounds/unfamiliar-state/06-lightning-in-a-bottle.m4a" data-frames="8339506" data-title="Lightning in a Bottle"><span>Lightning in a Bottle</span><span class="album-track-length">3:09</span></button></li>
+          <li><button class="album-track" data-src="/sounds/unfamiliar-state/07-youre-dead.m4a" data-frames="8439637" data-title="You're Dead? (feat. Shelby Cook)"><span>You're Dead? <span class="album-feat">feat. Shelby Cook</span></span><span class="album-track-length">3:11</span></button></li>
+          <li><button class="album-track" data-src="/sounds/unfamiliar-state/08-not-your-type.m4a" data-frames="11036921" data-title="Not Your Type (feat. Real-Time Isolation Friend)"><span>Not Your Type <span class="album-feat">feat. Real-Time Isolation Friend</span></span><span class="album-track-length">4:10</span></button></li>
+          <li><button class="album-track" data-src="/sounds/unfamiliar-state/09-little-drone.m4a" data-frames="12253245" data-title="Little Drone"><span>Little Drone</span><span class="album-track-length">4:37</span></button></li>
+          <li><button class="album-track" data-src="/sounds/unfamiliar-state/10-head-in-the-cloud.m4a" data-frames="8665814" data-title="Head in the Cloud"><span>Head in the Cloud</span><span class="album-track-length">3:16</span></button></li>
+          <li><button class="album-track" data-src="/sounds/unfamiliar-state/11-living-in-the-moment.m4a" data-frames="12325923" data-title="Just Keep On Living in the Moment"><span>Just Keep On Living in the Moment</span><span class="album-track-length">4:39</span></button></li>
+        </ol>
+      </div>
+    </section>
+    <script type="module" src="/src/scripts/album_player.js"></script>
+
+    <h2>about</h2>
+    <p>TODO: the story behind the album — what it's about, how it was made.</p>
+
+    <h2>live</h2>
+    <div class="container">
+      <iframe class="responsive-iframe" src="https://www.youtube-nocookie.com/embed/pXr-H7jDfHc" title="O. Wake live at Baby's All Right" frameborder="0" allow="fullscreen; picture-in-picture; encrypted-media" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <p>The album release show at Baby's All Right, 1 February 2024, with the <a href="/art/luminin.html">Luminin</a> behind the band.</p>
+
+    <h2>credits</h2>
+    <p>
+      Released 19 January 2024 by O. Wake.<br>
+      "You're Dead?" features Shelby Cook. "Not Your Type" features Real-Time Isolation Friend (RIF).<br>
+      Released earlier as singles: "Let's All Get Pessimistic" (10 May 2022), "Head in the Cloud" (28 February 2023),
+      "Henry David, Motivation Expert" and "Lightning in a Bottle" (28 November 2023).
+    </p>
+    <!-- TODO: players, producer, mixing/mastering, artwork, if there's more to credit. -->
+  </main>
+</body>
+
+</html>
