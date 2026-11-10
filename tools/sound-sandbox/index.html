@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sound Sandbox</title>
+  <link rel="stylesheet" href="./sandbox.css">
+</head>
+
+<body>
+  <nav class="sections" aria-label="Sections of the site">
+    <span class="app-name">sound sandbox</span>
+    <span id="sections-tabs" class="tabs"></span>
+  </nav>
+
+  <header class="bar">
+    <label class="field">patch
+      <select id="patch-list"></select>
+    </label>
+    <label class="field">name
+      <input id="patch-name" type="text" spellcheck="false">
+    </label>
+    <button id="save" class="primary">save</button>
+    <button id="revert" hidden title="Throw away the changes since it was last saved">revert</button>
+    <span id="status" class="status"></span>
+    <span class="spacer"></span>
+    <div class="mode-switch" role="group" aria-label="How many controls to show">
+      <button id="mode-simple" aria-pressed="true" title="Just the main controls">main controls</button>
+      <button id="mode-all" aria-pressed="false" title="Every setting there is">all controls</button>
+    </div>
+    <details class="more">
+      <summary title="More">⋯</summary>
+      <div class="menu">
+        <button id="copy">copy the patch (as JSON)</button>
+        <button id="fold-all">fold everything up</button>
+        <button id="open-all">open everything</button>
+        <p class="hint" id="saves-to"></p>
+      </div>
+    </details>
+  </header>
+
+  <main class="workspace" id="workspace">
+    <section class="preview card" id="preview">
+      <div class="card-head">
+        <button id="preview-hide" class="fold-text">▾ page</button>
+        <select id="preview-page" aria-label="Which page"></select>
+        <span class="spacer"></span>
+        <button id="preview-size" title="Make the page bigger or smaller">bigger</button>
+        <a id="preview-open" class="button" target="_blank" rel="noopener" title="Open it in its own tab">open ↗</a>
+      </div>
+      <div class="frame-holder"><iframe id="preview-frame" title="The page being worked on"></iframe></div>
+      <p class="hint">Click into the page to hear it. A page that plays a patch follows the sliders here.</p>
+    </section>
+
+    <section class="layers-column">
+      <div class="column-head">
+        <h2>layers</h2>
+        <div class="adders">
+          <button data-add="osc" title="A tone">+ wave</button>
+          <button data-add="noise" title="A burst of noise, or noise that keeps going">+ noise</button>
+          <button data-add="sample" title="One of your sound files (or drop files anywhere on the page)">+ sample</button>
+        </div>
+      </div>
+      <div id="layers"></div>
+      <p class="hint">Drop sound files anywhere on the page to add them as sample layers.</p>
+    </section>
+
+    <section class="shape-column">
+      <div id="sections"></div>
+      <p class="hint simple-only">These are the main controls. <b>all controls</b>, at the top, shows every setting.</p>
+      <details class="json all-only">
+        <summary>the patch as JSON (editable)</summary>
+        <textarea id="json" spellcheck="false"></textarea>
+      </details>
+      <p class="hint all-only" id="usage"></p>
+    </section>
+  </main>
+
+  <footer class="play">
+    <div class="play-controls">
+      <button id="sound-state" class="sound-state" title="The sandbox's own sound">sound: click to start</button>
+      <button id="play" class="play-button" aria-pressed="false">▶ play</button>
+      <label class="field small">as
+        <select id="play-mode">
+          <option value="rain">rain</option>
+          <option value="hold">one long note</option>
+          <option value="note">a note, over and over</option>
+          <option value="arp">an arpeggio</option>
+          <option value="chord">a chord</option>
+          <option value="low">a low note and a high one</option>
+        </select>
+      </label>
+      <label class="field small" title="Another saved patch playing along while you play: backgrounds as one long note, the rest as rain">with
+        <select id="with-patch"></select>
+      </label>
+      <span class="spacer"></span>
+      <canvas id="scope" width="400" height="80" aria-hidden="true"></canvas>
+      <span id="clip" class="clip">too loud</span>
+      <button id="keys-toggle" aria-expanded="true">▾ keys</button>
+    </div>
+    <div class="keys-drawer">
+      <div class="keys-controls">
+        <button id="octave-down" title="Octave down (Z)">◀</button>
+        <span id="octave-label"></span>
+        <button id="octave-up" title="Octave up (X)">▶</button>
+        <label class="field small">velocity
+          <input id="velocity" type="range" min="0.05" max="1" step="0.01" value="0.8">
+        </label>
+        <button id="midi">connect MIDI</button>
+        <span class="hint">or the computer's keys: A W S E D F T G Y H U J K O L P ; ' (Z and X change octave)</span>
+      </div>
+      <div id="keyboard" class="keyboard"></div>
+    </div>
+  </footer>
+
+  <div id="drop" class="drop">drop sounds to add them as sample layers</div>
+
+  <script type="module" src="./sandbox.js"></script>
+</body>
+
+</html>

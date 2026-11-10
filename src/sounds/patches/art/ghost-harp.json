@@ -1,0 +1,27 @@
+{
+  "name": "ghost harp",
+  "level": 0.11,
+  "ring": { "low": 2.6, "high": 0.7 },
+  "attack": 0.003,
+  "release": 0.3,
+  "wobble": { "depth": 0, "rate": 5 },
+  "filter": {
+    "type": "lowpass",
+    "q": 0.5,
+    "start": { "ratio": 14, "add": 0, "velocity": 2000 },
+    "end": { "ratio": 4, "add": 400 },
+    "delay": 0.02,
+    "time": 0.35
+  },
+  "layers": [
+    { "kind": "osc", "wave": "sine", "ratio": 1, "detune": 0, "level": 1, "fade": 1, "sustain": 0 },
+    { "kind": "osc", "wave": "sine", "ratio": 1.002, "detune": 0, "level": 0.35, "fade": 1, "sustain": 0 },
+    { "kind": "osc", "wave": "sine", "ratio": 2, "detune": 0, "level": 0.55, "fade": 1.6, "sustain": 0 },
+    { "kind": "osc", "wave": "sine", "ratio": 3, "detune": 0, "level": 0.3, "fade": 2.4, "sustain": 0 },
+    { "kind": "osc", "wave": "sine", "ratio": 4.02, "detune": 0, "level": 0.12, "fade": 3.5, "sustain": 0 },
+    { "kind": "osc", "wave": "sine", "ratio": 5.4, "detune": 0, "level": 0.06, "fade": 5, "sustain": 0 },
+    { "kind": "noise", "length": 0.03, "curve": 4, "ratio": 3, "q": 0.8, "level": 0.5 }
+  ],
+  "echo": { "time": 0.37, "feedback": 0.35, "wet": 0.25 },
+  "out": 0.5
+}

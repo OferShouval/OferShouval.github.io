@@ -1,0 +1,27 @@
+{
+  "name": "pond background",
+  "level": 0.5,
+  "ring": { "low": 2, "high": 2 },
+  "attack": 3,
+  "release": 2.5,
+  "spread": 0,
+  "wobble": { "depth": 0, "rate": 5 },
+  "range": { "low": 38, "high": 38, "scale": "any", "key": 2 },
+  "filter": {
+    "type": "lowpass",
+    "q": 0.5,
+    "start": { "ratio": 0, "add": 1800, "velocity": 0 },
+    "end": { "ratio": 0, "add": 1800 },
+    "delay": 0,
+    "time": 1,
+    "sway": { "depth": 7, "rate": 0.06 }
+  },
+  "layers": [
+    { "kind": "noise", "hold": true, "color": "brown", "length": 0.03, "curve": 4, "ratio": 5, "q": 0.4, "level": 0.6 },
+    { "kind": "noise", "hold": true, "color": "pink", "length": 0.03, "curve": 4, "ratio": 50, "q": 0.5, "level": 0.12 },
+    { "kind": "osc", "wave": "sine", "ratio": 1, "detune": 0, "glide": 0, "glideTime": 0.05, "level": 0.08, "fade": 0, "decay": 0, "sustain": 1 },
+    { "kind": "osc", "wave": "sine", "ratio": 1.5, "detune": 3, "glide": 0, "glideTime": 0.05, "level": 0.04, "fade": 0, "decay": 0, "sustain": 1 }
+  ],
+  "echo": { "time": 0.5, "feedback": 0.3, "wet": 0.1 },
+  "out": 1
+}

@@ -1,0 +1,23 @@
+{
+  "name": "glass pad",
+  "level": 0.08,
+  "ring": { "low": 3, "high": 2 },
+  "attack": 0.6,
+  "release": 1.2,
+  "wobble": { "depth": 6, "rate": 4.5 },
+  "filter": {
+    "type": "lowpass",
+    "q": 2,
+    "start": { "ratio": 2, "add": 200, "velocity": 600 },
+    "end": { "ratio": 6, "add": 800 },
+    "delay": 0.1,
+    "time": 0.8
+  },
+  "layers": [
+    { "kind": "osc", "wave": "sawtooth", "ratio": 1, "detune": -7, "level": 0.5, "fade": 1, "sustain": 0.7 },
+    { "kind": "osc", "wave": "sawtooth", "ratio": 1, "detune": 7, "level": 0.5, "fade": 1, "sustain": 0.7 },
+    { "kind": "osc", "wave": "sine", "ratio": 2, "detune": 0, "level": 0.3, "fade": 0.5, "sustain": 0.5 }
+  ],
+  "echo": { "time": 0.5, "feedback": 0.45, "wet": 0.3 },
+  "out": 0.5
+}

@@ -1116,6 +1116,122 @@ body:has(.socialBar) {
   opacity: 0.8;
 }
 
+/* The welcome's sound switch (see pond.js): under its words, which stay in the middle, fading in and out with them.
+   After entering it eases down to the bottom, where the one there, which looks just the same, takes over. */
+.sound-button.wormhole-sound-ask,
+.sound-button.wormhole-sound-ask[aria-pressed] /* Over the site's switch being bright while it's on */ {
+  position: absolute;
+  z-index: 2;
+  color: white;
+  /* Halfway between the bottom of the words (about 32px below the middle) and the bottom */
+  top: calc(50% + 32px + (50% - 32px) * 0.5);
+  left: 50%;
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, -50%);
+  transition: opacity 1.2s ease-in-out, visibility 0s 1.2s; /* As the words do */
+}
+
+.sound-button.wormhole-sound-ask.showing {
+  opacity: 0.8; /* As the words are */
+  visibility: visible;
+  transition: opacity 2s ease-in-out, visibility 0s; /* In over two seconds, so it's all the way in by four */
+}
+
+.sound-button.wormhole-sound-ask.showing.quick {
+  transition: opacity 0.3s, visibility 0s;
+}
+
+.sound-button.wormhole-sound-ask.showing[aria-pressed]:not(.leaving):hover,
+.sound-button.wormhole-sound-ask.showing[aria-pressed]:not(.leaving):focus-visible {
+  opacity: 1;
+}
+
+/* Thin, rounded boxes round the switch and "sound?" together (the switch's drawing runs from 12px to 36px down the
+   button, and "sound?" to about 55px, so they're centred about 34px down), always closing in on them from further out,
+   the way the rings on the water spread but backwards: each fades in, comes in, and fades as it gets close. They go as
+   it goes down to the bottom. */
+.sound-button.wormhole-sound-ask .switch-ring {
+  position: absolute;
+  top: 34px;
+  left: 50%;
+  width: 84px;
+  height: 62px;
+  box-sizing: border-box;
+  border: 1px solid currentColor;
+  border-radius: 16px;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+.sound-button.wormhole-sound-ask.showing:not(.leaving) .switch-ring {
+  animation: switch-ring-in 2.4s linear calc(var(--ring) * -0.8s) infinite;
+}
+
+@keyframes switch-ring-in {
+  0% {
+    width: 140px; /* 28px further out all round */
+    height: 118px;
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.55;
+  }
+  80% {
+    opacity: 0.45;
+  }
+  100% {
+    width: 84px;
+    height: 62px;
+    opacity: 0;
+  }
+}
+
+.sound-button.wormhole-sound-ask.leaving .switch-ring {
+  opacity: 0;
+}
+
+/* "sound?", under it while it's off, and not as it goes down to the bottom */
+.sound-button.wormhole-sound-ask .wormhole-sound-words {
+  position: absolute;
+  top: calc(100% - 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Source Code Pro', monospace;
+  font-weight: 200;
+  font-size: 13px;
+  letter-spacing: 2.2px; /* So "sound?" is as wide as the switch's drawing, about 55px */
+  padding-left: 2.2px; /* Evens out the spacing after the last letter, so it stays centred */
+  line-height: 1;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 1.2s ease-in-out;
+}
+
+.sound-button.wormhole-sound-ask .wormhole-sound-words {
+  opacity: 1;
+}
+
+.sound-button.wormhole-sound-ask[aria-pressed='true'] .wormhole-sound-words,
+.sound-button.wormhole-sound-ask.leaving .wormhole-sound-words {
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+/* Going down to the bottom, and then fading as the one there takes over */
+.sound-button.wormhole-sound-ask.leaving {
+  pointer-events: none;
+  opacity: 0.8;
+  visibility: visible;
+  transition: transform 1.6s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.3s;
+}
+
+.sound-button.wormhole-sound-ask.leaving.gone {
+  opacity: 0;
+}
+
 .wormhole-caption {
   bottom: 60px;
   opacity: 0;
@@ -1174,10 +1290,12 @@ body:has(.socialBar) {
   text-decoration: none;
 }
 
-/* The sound switch, in the middle at the bottom */
+/* The sound switch, in the middle at the bottom: just the switch, with no box behind it, as it is on the welcome */
 .wormhole-sound-spot {
   bottom: 12px;
   left: 50%;
+  padding: 0;
+  background: none;
   transform: translateX(-50%);
   transition: opacity 1.2s, visibility 0s;
 }
@@ -1188,52 +1306,67 @@ body:has(.socialBar) {
   transition: none;
 }
 
-/* Here it's a speaker and a switch, rather than "sound?" */
-.wormhole-sound-spot .sound-button {
-  position: relative;
-  padding-right: 42px;
+/* The one at the bottom, taking over from the welcome's as it gets there */
+.wormhole-sound-spot.arriving {
+  transition: opacity 0.3s, visibility 0s;
 }
 
-.wormhole-sound-spot .sound-button .sound-ask,
-.wormhole-sound-spot .sound-button.nudging .sound-ask {
-  display: none;
+/* A sound switch (soundButton({ track: true }) in sound.js): a speaker, crossed out while the sound's off and with
+   sound coming out of it while it's on, beside a track with a knob, left for off and right for on, in lines as thin as
+   the welcome's words. The wormhole's, on the welcome and at the bottom, are all this. */
+.sound-button.sound-switch {
+  display: block;
+  width: calc(70px * 0.85);
+  height: calc(28px * 0.85);
+  padding: 12px 8px; /* So it's easy to press */
+  box-sizing: content-box;
 }
 
-.wormhole-sound-spot .sound-button::before,
-.wormhole-sound-spot .sound-button::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  transition: right 0.25s ease-in-out, background-color 0.25s;
+.sound-button.sound-switch svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  stroke-width: 1px;
 }
 
-/* The track */
-.wormhole-sound-spot .sound-button::before {
-  right: 0;
-  width: 30px;
-  height: 16px;
-  margin-top: -9px;
-  border: 1px solid currentColor;
-  border-radius: 9px;
+.sound-button.sound-switch svg * {
+  vector-effect: non-scaling-stroke; /* So the lines stay as thin as the words', however big it's drawn */
 }
 
-/* The knob: left for off, right for on */
-.wormhole-sound-spot .sound-button::after {
-  right: 16px;
-  width: 10px;
-  height: 10px;
-  margin-top: -5px;
-  border-radius: 50%;
-  background-color: currentColor;
+.sound-button.sound-switch .sound-knob {
+  fill: currentColor;
+  stroke: none;
+  transition: transform 0.25s ease-in-out;
 }
 
-.wormhole-sound-spot .sound-button[aria-pressed='true']::before {
-  background-color: rgba(255, 255, 255, 0.3);
+.sound-button.sound-switch .sound-track {
+  transition: fill 0.25s;
 }
 
-.wormhole-sound-spot .sound-button[aria-pressed='true']::after {
-  right: 4px;
+.sound-button.sound-switch[aria-pressed='true'] .sound-knob {
+  transform: translateX(9px);
 }
+
+.sound-button.sound-switch[aria-pressed='true'] .sound-track {
+  fill: rgba(255, 255, 255, 0.3);
+}
+
+/* At the bottom it's smaller: two thirds of what the welcome's was before it was made 0.85 of that */
+.wormhole-sound-spot .sound-button.sound-switch {
+  width: calc(70px * 2 / 3);
+  height: calc(28px * 2 / 3);
+}
+
+/* It doesn't pulse in the wormhole; but going in without sound, the one at the bottom glows a few times, as a second chance */
+.sound-button.sound-switch.nudging {
+  animation: none;
+}
+
+.wormhole-sound-spot.inviting .sound-button.sound-switch[aria-pressed='false'] {
+  animation: sound-nudge 2.4s ease-in-out 1.5s 3;
+}
+
 
 /* The site's sound switch (see src/scripts/sound.js): a speaker, with waves while it's on and a cross while it's
    off. Until it's been tried, it pulses gently, with "sound?" beside it. */
@@ -1997,4 +2130,21 @@ body.art-inverted {
 
 .art-pointer[hidden] {
   display: none;
+}
+
+/* Teaching page: a big opening line, and short headings over the statement's steps */
+.teaching-page > h3 { max-width: 700px; margin: 40px auto 0; }
+.teaching-page > h3 + p { margin-top: 8px; }
+.page .teaching-lede {
+  font-family: 'Major Mono Display', monospace;
+  font-weight: normal;
+  font-size: 26px;
+  line-height: 1.4;
+  text-align: center;
+  text-transform: lowercase; /* Major Mono draws capitals as heavy blocks */
+  max-width: 820px;
+  margin: 0 auto 48px;
+}
+@media (max-width: 600px) {
+  .page .teaching-lede { font-size: 20px; }
 }

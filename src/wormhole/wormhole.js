@@ -1,6 +1,6 @@
 import p5 from 'p5';
 import spiralWorm from './spiral-worm.js';
-import { soundButton, startAudio, soundWanted, onSoundChange, setSound } from '../scripts/sound.js';
+import { soundButton, startAudio, soundWanted, onSoundChange } from '../scripts/sound.js';
 
 // The wormhole on the front page: old sketches from the sketchbook, as one continuous piece, that turn into each other on the same canvas.
 //
@@ -1296,7 +1296,7 @@ export default function wormhole(p, container, options = {}) {
     focus = { ...at };
     steer = { ...at };
 
-    soundSwitch = soundButton();
+    soundSwitch = soundButton({ track: true });
     onSoundChange((on) => (on ? startSound() : stopSound()));
     const skip = document.createElement('a');
     skip.className = 'wormhole-skip';
@@ -1311,10 +1311,9 @@ export default function wormhole(p, container, options = {}) {
     container.append(welcome, caption, marks, soundSpot);
 
     // Pressing anywhere, or a key, gets past the welcome and on to the next stage, with the worm forming at (x, y).
-    // It turns the sound on, too (and the switch at the bottom can turn it off again).
+    // Its sound starts too, unless it's been turned off (the switch at the bottom can change that).
     function begin(x = p.width / 2, y = p.height / 2) {
       if (begun) return;
-      if (!soundWanted()) setSound(true);
       begun = true;
       formAt = { x, y };
       formStart = seconds;

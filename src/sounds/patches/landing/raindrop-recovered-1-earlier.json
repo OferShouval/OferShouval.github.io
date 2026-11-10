@@ -1,0 +1,82 @@
+{
+  "name": "raindrop recovered 1 (earlier)",
+  "level": 0.35,
+  "ring": {
+    "low": 0.05,
+    "high": 0.5751019396356121
+  },
+  "attack": 0.001,
+  "release": 0.15738539835310333,
+  "spread": 1.374,
+  "wobble": {
+    "depth": 38.88,
+    "rate": 5
+  },
+  "range": {
+    "low": 42,
+    "high": 56,
+    "scale": "pentatonic",
+    "key": 2
+  },
+  "filter": {
+    "type": "lowpass",
+    "q": 1.2787788003725622,
+    "start": {
+      "ratio": 0,
+      "add": 2500,
+      "velocity": 14000
+    },
+    "end": {
+      "ratio": 6,
+      "add": 3000
+    },
+    "delay": 0.01,
+    "time": 0.5,
+    "sway": {
+      "depth": 0,
+      "rate": 0.1
+    }
+  },
+  "layers": [
+    {
+      "kind": "osc",
+      "wave": "sine",
+      "ratio": 0.689326878280717,
+      "detune": 0,
+      "glide": 9,
+      "glideTime": 0.06,
+      "level": 0.578,
+      "fade": 1,
+      "decay": 0.025,
+      "sustain": 0
+    },
+    {
+      "kind": "osc",
+      "wave": "sine",
+      "ratio": 6.3,
+      "detune": 0,
+      "glide": 12,
+      "glideTime": 0.03,
+      "level": 0.25,
+      "fade": 1,
+      "decay": 0.012,
+      "sustain": 0
+    },
+    {
+      "kind": "noise",
+      "hold": false,
+      "color": "white",
+      "length": 0.002,
+      "curve": 0.3,
+      "ratio": 1.105443737842079,
+      "q": 1.6133576354289323,
+      "level": 0
+    }
+  ],
+  "echo": {
+    "time": 0.10400524899861516,
+    "feedback": 0.69255,
+    "wet": 0.305
+  },
+  "out": 0.686
+}
