@@ -343,6 +343,81 @@ body:has(.socialBar) {
   text-align: center;
 }
 
+/* Tags instead of boards: just the name, close above its line (see signBoards in art_walk.js) */
+.art-sign-tags .art-hole-name {
+  padding: 0.15em 0.35em;
+  background-color: rgba(255, 255, 255, 0.88); /* So the crowd behind doesn't run through the letters */
+}
+
+.art-inverted.art-sign-tags .art-hole-name {
+  background-color: rgba(0, 0, 0, 0.88);
+}
+
+/* Line signs: the name in a plain white box with a thin black border, like the pointers at the edge of the screen
+   (.art-pointer), fading with distance so the crowd shows through the far ones (see signStyle and signFade in
+   art_walk.js, which draws the arrow down to the hole) */
+.art-sign-lines .art-hole-name {
+  position: relative;
+  isolation: isolate; /* (So the colours behind its name stay inside it, see below) */
+  padding: 0.2em 0.55em;
+  background-color: white;
+  border: 1px solid black;
+}
+
+/* Pointed at or picked, it fills with the Luminin's colours, like its hole: a canvas behind its name, drawn by
+   lightSign() in art_walk.js */
+.art-hole-name .art-sign-colours {
+  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+}
+
+.art-hole-name.lit .art-sign-colours {
+  display: block;
+}
+
+.art-hole-name.lit {
+  background-color: transparent;
+}
+
+.art-inverted.art-sign-lines .art-hole-name {
+  background-color: black;
+  border-color: white;
+}
+
+/* Trail signs: a wooden plank, its letters cut in and pale, with a pointed end aiming at its hole (see signStyle in
+   art_walk.js, which also draws the post) */
+.art-sign-trails .art-hole-name {
+  --point: 0.75em;
+  padding: 0.3em 0.8em;
+  color: #f2e4c2;
+  letter-spacing: 0.04em;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.45); /* As if routed into the wood */
+  background-color: #6e4a2a;
+  background-image: repeating-linear-gradient(178deg, rgba(0, 0, 0, 0.1) 0 2px, transparent 2px 7px),
+    linear-gradient(rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.15));
+}
+
+.art-sign-trails .art-hole-name[data-point='left'] {
+  padding-left: calc(0.8em + var(--point));
+  clip-path: polygon(var(--point) 0, 100% 0, 100% 100%, var(--point) 100%, 0 50%);
+}
+
+.art-sign-trails .art-hole-name[data-point='right'] {
+  padding-right: calc(0.8em + var(--point));
+  clip-path: polygon(0 0, calc(100% - var(--point)) 0, 100% 50%, calc(100% - var(--point)) 100%, 0 100%);
+}
+
+.art-sign-trails .art-hole:hover .art-hole-name,
+.art-sign-trails .art-hole:focus-visible .art-hole-name {
+  text-decoration: none;
+  color: white;
+  background-color: #84592f;
+}
+
 .art-hole:hover .art-hole-name,
 .art-hole:focus-visible .art-hole-name {
   text-decoration: underline;

@@ -249,10 +249,14 @@ export function paintMouseFace(sheet, { line = 1.1, eye = 2.6, nose = 1.8 } = {}
     for (let step = 0; step < mouseSteps; step++) {
       let { lines, face: features } = mousePose(step, Math.floor(row / mouseActions), row % mouseActions);
       context.setTransform(scale, 0, 0, scale, (step * mouseWidth + mouseFeetX) * scale, (row * mouseHeight + mouseFeetY) * scale);
-      // Its whiskers (see mousePose())
-      context.lineWidth = line;
-      for (let { points, key } of lines) {
-        if (key < 7990 || key > 8030) continue;
+      // Its whiskers (see mousePose()), and, turned away so its eyes don't show, its head's outline and ears too, so its
+      // head still stands out from its body
+      let headLines = features.eyes.length === 0;
+      for (let { points, key, weight } of lines) {
+        let whisker = key >= 7990 && key <= 8030;
+        let head = headLines && ((key >= 3000 && key < 4000) || (key >= 4985 && key <= 5015));
+        if (!whisker && !head) continue;
+        context.lineWidth = whisker ? line : line * (weight ?? 1);
         context.beginPath();
         points.forEach(([x, y]) => context.lineTo(x, y));
         context.stroke();

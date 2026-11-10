@@ -180,8 +180,16 @@ export function mousePose(step, view, action) {
     { outline: headOutline, depth: nearness(headMiddle) + 0.5 },
   ];
 
+  // Its neck, filling in between its shoulders and the back of its head, so there's no gap there when its head comes
+  // down in front of its body (it's only filled in, with no line of its own)
+  let neckCorners = outlineAround([
+    ...numbered(bothSides([[44, 8, 2], [44, 7, 18]]), onBody, 100),
+    ...numbered(bothSides([[-9, 6, -8], [-9, 10, 9]]), onHead, 110),
+  ]);
+  let neckOutline = curveThrough(neckCorners, true);
+
   let lines = [];
-  let fills = [bodyOutline, headOutline];
+  let fills = [bodyOutline, neckOutline, headOutline];
   let face = { eyes: [], nose: null }; // Where its eyes and nose are, when they're toward us
   // Add a line along a curve, which is at this depth, so it's hidden by any solid in front of that.
   // key: says which line this is, from one picture to the next
