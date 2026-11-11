@@ -1,6 +1,6 @@
 // The pond: the front page opens on it, and it's the way into the wormhole. Grey rain falls on dark water, each drop
 // starting a wormhole of rings, with "welcome to my wormhole" and then "click anywhere to enter" over it, and a sound
-// switch that turns the rain's sound on (see the welcome). Entering drops a drop in colour where it's pressed: the camera comes round to look straight down into
+// switch at the bottom that turns the rain's sound on (see the welcome). Entering drops a drop in colour where it's pressed: the camera comes round to look straight down into
 // its wormhole, which spins up and grows a worm out of its middle, and the worm springs forward. Once it's settled, the
 // wormhole (wormhole.js) takes over the screen, with the worm just where it is, and carries it on into its psychworm
 // stage, out in space, and on through the rest (see fromPond there).
@@ -885,20 +885,10 @@ export default function pond(p, container) {
   }
 
   // The welcome, as the wormhole has it: "welcome to my wormhole", and then, in the same place, "click anywhere to
-  // enter", which stays until someone enters. Below them, a sound switch with "sound?" under it fades in from two
-  // seconds after the first words, in by four, and stays, with rounded boxes always closing in on it, like the rings on the water going
-  // backwards. It's off unless they turned it on last time, and then there's just the switch at the bottom, from the start. Pressing it turns the sound
-  // on (or off again) and nothing else: they hear the rain, and can set how loud it is, before they go in. Clicking
-  // anywhere else, or a key, dives in at once, with sound or without; clicking before the switch has shown dives in
-  // without. Either way, the switch then eases down to the bottom of the screen, without its words, where it stays as
-  // the sound switch, so they can see it's still there; and if they've gone in without sound it glows a few times there, as a second chance.
-  // Not choosing isn't saved as a choice.
+  // enter", which stays until someone enters, with the sound switch at the bottom, which comes with the first words and
+  // stays. The sound's off unless they turned it on last time; not choosing isn't saved as a choice.
   const welcomeTime = 6; // How many seconds "welcome to my wormhole" is up for
   const introGap = 1.3; // How many seconds from it starting to fade out to the rest starting to fade in
-  const switchAfter = 2; // How many seconds after "welcome to my wormhole" the sound switch starts fading in (it's
-  // all the way in by 4: see .wormhole-sound-ask.showing in main.css)
-  const switchDelay = 0.3; // How many seconds after entering it starts down to the bottom...
-  const switchMove = 1.6; // ...and how many it takes (see .wormhole-sound-ask.leaving in main.css)
   const soundSpot = document.createElement('div');
   soundSpot.className = 'wormhole-sound-spot waiting'; // Hidden until it begins
   const welcome = document.createElement('div');
@@ -912,52 +902,7 @@ export default function pond(p, container) {
   lines.append(welcomeWords, pressWords);
   welcome.append(lines);
 
-  // The switch: the same as the one at the bottom (see soundButton in sound.js), which turns the sound on and off
-  const soundSwitch = soundButton({ track: true });
-  soundSwitch.classList.add('wormhole-sound-ask');
-  const switchWords = document.createElement('span'); // "sound?", under it
-  switchWords.className = 'wormhole-sound-words';
-  switchWords.textContent = 'sound?';
-  soundSwitch.append(switchWords);
-  // Boxes round them that keep closing in on them, like the rings spreading on the water, backwards (see .switch-ring
-  // in main.css)
-  const switchRings = 3; // A third of the way apart, so one's always on its way in
-  for (let ring = 0; ring < switchRings; ring++) {
-    const box = document.createElement('span');
-    box.className = 'switch-ring';
-    box.style.setProperty('--ring', ring);
-    soundSwitch.append(box);
-  }
-  let switchShown = false; // Whether it's shown yet
-  let alreadyOn = false; // Whether the sound's on from last time, in which case it's just the one at the bottom, from the start
-  let switchMoved = false; // Whether it's gone down to the bottom yet (as it does on entering, or on being pressed)
   onSoundChange((on) => on && loadDrips());
-  soundSwitch.addEventListener('click', () => moveSwitchDown()); // After it's turned the sound on or off
-
-  // After entering, or as soon as it's pressed: down to where the switch at the bottom is, shrinking to its size (a third
-  // smaller), and then that one, which looks just the same, takes over, and stays, whatever the words are doing
-  function moveSwitchDown() {
-    if (switchMoved) return;
-    switchMoved = true;
-    const button = soundSpot.querySelector('.sound-button');
-    const from = soundSwitch.querySelector('svg').getBoundingClientRect();
-    const to = (button?.querySelector('svg') ?? soundSpot).getBoundingClientRect();
-    const across = to.left + to.width / 2 - (from.left + from.width / 2);
-    const down = to.top + to.height / 2 - (from.top + from.height / 2);
-    const scale = to.height / from.height; // It's smaller there
-    setTimeout(() => {
-      soundSwitch.classList.add('leaving');
-      soundSwitch.style.transform = `translate(calc(-50% + ${across}px), calc(-50% + ${down}px)) scale(${scale})`;
-    }, switchDelay * 1000);
-    setTimeout(() => {
-      soundSpot.classList.add('arriving');
-      soundSpot.classList.remove('waiting');
-      if (dive && !soundWanted()) soundSpot.classList.add('inviting'); // A second chance
-      if (document.activeElement === soundSwitch) button?.focus(); // Pressed from the keyboard: still there to press
-      soundSwitch.classList.add('gone');
-      setTimeout(() => soundSwitch.remove(), 600);
-    }, (switchDelay + switchMove) * 1000);
-  }
   let introTimers = [];
 
   // The rain's sound: one of Ofer's drips (public/sounds/landing) as each drop lands, louder and further to the side
@@ -1001,30 +946,8 @@ export default function pond(p, container) {
 
   function runIntro() {
     const later = (time, then) => introTimers.push(setTimeout(then, time * 1000));
-    // The switch fades in a little after the first words, and stays. Fading out, it goes from however faded it is just then, partway through
-    // fading in and out on its own, rather than jumping back first.
-    const showSwitch = (on) => {
-      if (switchMoved) return; // It's at the bottom now, and stays
-      if (alreadyOn) {
-        // Just the one at the bottom, which comes with the first words and stays
-        if (on) soundSpot.classList.remove('waiting');
-        switchShown = true;
-        return;
-      }
-      if (on) {
-        soundSwitch.style.animation = '';
-        soundSwitch.classList.add('showing');
-        switchShown = true;
-        return;
-      }
-      soundSwitch.style.opacity = getComputedStyle(soundSwitch).opacity;
-      soundSwitch.style.animation = 'none';
-      void soundSwitch.offsetWidth; // So it starts fading from there
-      soundSwitch.classList.remove('showing');
-      soundSwitch.style.opacity = '';
-    };
     later(0.05, () => welcomeWords.classList.add('showing'));
-    later(0.05 + switchAfter, () => showSwitch(true)); // And it stays, as the words change over
+    later(0.05, () => soundSpot.classList.remove('waiting')); // And it stays
     later(welcomeTime, () => welcomeWords.classList.remove('showing'));
     later(welcomeTime + introGap, () => pressWords.classList.add('showing'));
   }
@@ -1053,21 +976,10 @@ export default function pond(p, container) {
   function enter(x, y) {
     if (dive) return; // Only once
     saveScore();
-    // In before the switch has shown: without sound, for now, as they haven't been offered it. It shows, and goes down.
-    if (!switchShown) {
-      if (soundWanted()) setSound(false, { remember: false });
-      if (alreadyOn) container.append(soundSwitch); // Not on after all, so it's offered, and goes down, as for anyone
-      alreadyOn = false;
-      soundSwitch.classList.add('showing', 'quick');
-      switchShown = true;
-    }
-    startAudio(); // With sound, if that's what's chosen (see the switch above); nothing, if not
+    startAudio(); // With sound, if that's what's chosen (see the switch at the bottom); nothing, if not
     introTimers.forEach(clearTimeout);
     welcome.classList.add('gone');
-    if (alreadyOn) soundSpot.classList.remove('waiting'); // It's there already
-    else if (switchMoved) {
-      if (!soundWanted()) soundSpot.classList.add('inviting'); // A second chance
-    } else moveSwitchDown();
+    soundSpot.classList.remove('waiting'); // In case it's not shown yet
     dropRain(x, y, true);
     dive = { start: p.millis() / 1000, at: { x, y }, from: horizon, fromFlat: flatness, glow: glowAt(y) };
   }
@@ -1084,10 +996,8 @@ export default function pond(p, container) {
     dropRain(p.width / 2, p.lerp(dropTop, dropBottom, 0.5) * p.height); // The first one, into the middle of where they land
     soundSpot.append(soundButton({ track: true }));
     // Off unless they turned it on last time, but only for now: not choosing isn't saved as a choice
-    alreadyOn = soundChosen() === 'on';
-    if (!alreadyOn) setSound(false, { remember: false });
+    if (soundChosen() !== 'on') setSound(false, { remember: false });
     container.append(welcome, soundSpot);
-    if (!alreadyOn) container.append(soundSwitch);
     runIntro();
     // Pressing anywhere, or a key, enters (a key drops it in the middle of where the rain lands)
     canvas.elt.addEventListener('pointerdown', (event) => {
@@ -1095,7 +1005,7 @@ export default function pond(p, container) {
       enter(event.clientX - box.left, event.clientY - box.top);
     });
     window.addEventListener('keydown', (event) => {
-      if (handedOver || event.target.closest?.('.wormhole-sound-spot, .wormhole-sound-ask')) return; // Their keys are their own
+      if (handedOver || event.target.closest?.('.wormhole-sound-spot')) return; // Their keys are their own
       if (!event.metaKey && !event.ctrlKey && event.key !== 'Tab') enter(p.width / 2, p.lerp(dropTop, dropBottom, 0.5) * p.height);
     });
   };
