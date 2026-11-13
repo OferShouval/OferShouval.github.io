@@ -118,8 +118,11 @@ const ringNearest = 0.05; // How near it can get, if the circle in its middle ha
 const ringBehind = 0; // How far the camera is above the worm once it's right behind it, as a share of the screen's height
 const ringLinedUp = 5.2; // How far away the flower is when the camera's lined up with it, which is before the worm's head gets to it
 const ringWash = 160; // How quickly the paint fades while the ring's there, so that the ring doesn't leave a smear behind it
+const portalSeeThrough = 0.5; // How see-through the flower is while the mouse isn't over it (1 = solid)
+const portalHoverEase = 0.15; // How quickly it turns solid or see-through, in seconds
 const ringSize = 1.7; // How wide the circle in its middle is, compared to the widest the worm can be
-const wormFollow = 0.55; // How closely the worm follows the mouse, at most (1 = exactly, 0 = not at all)
+const trailFade = 2.5; // How many seconds the trails left while holding take to fade once it's let go
+const wormFollow = 0.7; // How closely the worm follows the mouse, at most (1 = exactly, 0 = not at all)
 const steerFollow = 0.05; // How quickly the place it's following catches up with the mouse
 const focusFollow = 0.06; // How quickly the point the stars stream from catches up with where it's heading
 const starCount = 120;
@@ -234,6 +237,8 @@ export default function wormhole(p, container, options = {}) {
   let burstStart = null; // When the worm burst into flowers, having gone through the ring
   let bloomStart = null; // When it came through the ring, as the flower worm
   let heldFrom = 0; // When the mouse was pressed
+  let portalSeen = portalSeeThrough; // How solid the flower is now (see portalSeeThrough)
+  let releasedAt = -Infinity; // When the mouse was last let go, so the trails held fade out (see trailFade)
   let boost = 0; // How much extra speed there is from holding the mouse down
   let thrownOut = []; // The extra flowers it threw out
   let pathTime = 0; // How far along its path the worm's got, in seconds at its speed in space
@@ -788,17 +793,12 @@ export default function wormhole(p, container, options = {}) {
     soundSpot.classList.remove('waiting');
   }
 
-  // Skipping goes straight to the end of the wormhole, where the portals are (see spiral-worm.js)
-  function skipToPortals() {
-    if (handedOver) {
-      container.skipToPortals?.();
-      return;
-    }
-    begun = true;
-    stopIntro();
-    current = stages.findIndex(({ sketch }) => sketch);
-    history.replaceState(null, '', `#${slug(stages[current].name)}`);
-    handOver(stages[current].sketch, { atPortals: true });
+  // Skipping goes on to the next stage: past the welcome, from one stage to the next, and in the noisy spiral, to
+  // the portals (see spiral-worm.js)
+  function skipAhead() {
+    if (handedOver) container.skipToPortals?.();
+    else if (!begun) begin();
+    else goTo(current + 1);
   }
 
 
@@ -1022,8 +1022,12 @@ export default function wormhole(p, container, options = {}) {
   // stage's ground, which then fades away
   function drawRing() {
     const ring = ringPlace(pathTime);
+    const scale = (ringHole() * 2) / portal.middle;
+    // Semi-transparent, until the mouse is over it (easing between the two)
+    const over = Math.hypot(pointer.x - ring.x, pointer.y - ring.y) < portal.petalLength * scale;
+    portalSeen += ((over ? 1 : portalSeeThrough) - portalSeen) * (1 - Math.exp(-frameTime / portalHoverEase));
     // (Coming from the pond, it fades in with the stars: see pondSettle)
-    drawFlower(portal, ring.x, ring.y, (ringHole() * 2) / portal.middle, settled());
+    drawFlower(portal, ring.x, ring.y, scale, settled() * portalSeen);
   }
 
   // Where the place the worm's following was at a given time, in between the frames either side of it
@@ -1304,7 +1308,7 @@ export default function wormhole(p, container, options = {}) {
     skip.textContent = 'skip';
     skip.addEventListener('click', (event) => {
       event.preventDefault();
-      skipToPortals();
+      skipAhead();
     });
     marks.append(skip);
     soundSpot.append(soundSwitch);
@@ -1342,6 +1346,7 @@ export default function wormhole(p, container, options = {}) {
         explode(p.lerp(explodeLeast, explodeMost, charge) * Math.min(p.width, p.height));
       }
       pointer.down = false;
+      releasedAt = seconds;
     });
     window.addEventListener('pointercancel', () => (pointer.down = false));
     window.addEventListener('pointermove', (event) => {
@@ -1354,13 +1359,9 @@ export default function wormhole(p, container, options = {}) {
       pointer.lastMoved = seconds;
     });
     window.addEventListener('keydown', (event) => {
-      if (event.target === soundSwitch) return; // Pressing those from the keyboard is their own click
-      if (!begun) {
-        if (!event.metaKey && !event.ctrlKey && event.key !== 'Tab') begin();
-        return;
-      }
-      if (event.key === 'ArrowRight') goTo(current + 1);
-      if (event.key === 'ArrowLeft') goTo(current - 1);
+      if (event.target === soundSwitch || event.target === skip) return; // Pressing those from the keyboard is their own click
+      // A key gets past the welcome, and that's all: only the skip button skips ahead
+      if (!begun && !event.metaKey && !event.ctrlKey && event.key !== 'Tab') begin();
     });
 
     if (options.fromPond) {
@@ -1426,7 +1427,10 @@ export default function wormhole(p, container, options = {}) {
     for (const key in now) now[key] += (stages[current].settings[key] - now[key]) * drift;
     if (calm) now.space = 0; // The stars are too much motion for anyone who's asked for less
 
-    const wash = pointer.down ? now.washHeld : p.lerp(now.wash, Math.max(now.wash, ringWash), ringPull * now.space);
+    let wash = pointer.down ? now.washHeld : p.lerp(now.wash, Math.max(now.wash, ringWash), ringPull * now.space);
+    // Let go, the screen's wiped faintly at first and then more and more, so the trails fade out rather than vanish
+    const sinceLetGo = (seconds - releasedAt) / trailFade;
+    if (!pointer.down && sinceLetGo < 1) wash = p.lerp(Math.min(now.washHeld, wash), wash, sinceLetGo ** 2);
     groundTint *= Math.exp(-dt / ringFade);
     if (pointer.down && stages[current].settings.bloom) boost = Math.min(boostMost, boost + boostRise * dt);
     else boost *= Math.exp(-dt / boostFade);

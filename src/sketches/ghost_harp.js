@@ -1,12 +1,12 @@
 // A simulation of "Ghost Harp" (2019) for the installations page: 72 LED backlights, small white panels each with a
 // black cap, hanging at different heights from a plate on the ceiling by copper wires, so that together they make a
-// loose column. A note coming in as MIDI lights its panel for as long as it's held.
+// loose column. A note lights its panel for as long as it's held.
 //
-// Like the piece, it has two modes:
-//   its own soundscape: a generative stream of notes, standing in for the Raspberry Pi running Sonic Pi (slow wandering
-//     notes, a low drone, and every so often a quick, irregular flourish), which the visitor hears if the site's sound is on
-//   a MIDI instrument: anything plugged in and sending MIDI (a keyboard, or a DAW), through the browser's Web MIDI
-// Clicking or tapping a panel plays its note, in either. Dragging turns the column round. It turns slowly by itself.
+// It plays its own soundscape, like the piece's first mode: a generative stream of notes, standing in for the Raspberry
+// Pi running Sonic Pi (slow wandering notes, a low drone, and every so often a quick, irregular flourish), which the
+// visitor hears if the site's sound is on. (The piece's second mode, live MIDI, was an option here once, through the
+// browser's Web MIDI: see save/89-page-widths.) Clicking or tapping a panel plays its note.
+// Dragging turns the column round. It turns slowly by itself.
 //
 // Each panel has a note: the lowest panel the lowest note, up to the highest (see noteOf()), so runs up the scale flow
 // up the column.
@@ -57,8 +57,6 @@ if (figure) start(figure);
 function start(figure) {
   const canvas = figure.querySelector('canvas');
   const ctx = canvas.getContext('2d');
-  const modeLabel = figure.querySelector('.ghost-harp-mode');
-  const midiButton = figure.querySelector('.ghost-harp-midi');
   const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // The panels, each on a wire of its own from a jittered grid on the plate, and hanging at a height of its own.
@@ -212,7 +210,6 @@ function start(figure) {
   }
 
   // The soundscape, made up as it goes: which notes are due next
-  let mode = 'soundscape';
   let clock = 0;
   let nextWander = 0;
   let nextRun = 4;
@@ -277,50 +274,6 @@ function start(figure) {
       }, Math.max(0, at) * 1000);
     }
   }
-
-  // A MIDI instrument, or a DAW, through the browser
-  let midi = null;
-  async function connectMidi() {
-    if (!navigator.requestMIDIAccess) {
-      modeLabel.textContent = "this browser can't take MIDI: try Chrome or Edge";
-      return;
-    }
-    try {
-      midi ??= await navigator.requestMIDIAccess();
-    } catch {
-      modeLabel.textContent = 'MIDI was not allowed';
-      return;
-    }
-    const listen = () => {
-      const inputs = [...midi.inputs.values()];
-      inputs.forEach((input) => {
-        input.onmidimessage = ({ data }) => {
-          if (mode !== 'midi') return;
-          const [status, note, velocity] = data;
-          const kind = status & 0xf0;
-          if (kind === 0x90 && velocity > 0) {
-            noteOn(note, velocity / 127);
-            sound(note, velocity / 127, 0.8);
-          } else if (kind === 0x80 || (kind === 0x90 && velocity === 0)) noteOff(note);
-        };
-      });
-      modeLabel.textContent = inputs.length ? `playing from ${inputs.map((input) => input.name).join(', ')}` : 'waiting for a MIDI instrument to be plugged in';
-    };
-    midi.onstatechange = listen;
-    mode = 'midi';
-    panels.forEach((panel) => (panel.held = 0));
-    midiButton.textContent = 'back to its own soundscape';
-    listen();
-  }
-  midiButton.addEventListener('click', () => {
-    wireUp();
-    if (mode === 'midi') {
-      mode = 'soundscape';
-      panels.forEach((panel) => (panel.held = 0));
-      modeLabel.textContent = 'playing its own soundscape';
-      midiButton.textContent = 'play it from a MIDI instrument';
-    } else connectMidi();
-  });
 
   // Dragging turns it, and a click (rather than a drag) on a panel plays its note
   let drag = null;
@@ -438,7 +391,7 @@ function start(figure) {
     seconds += dt;
     if (!drag && !calm) turned += turnSpeed * dt;
     boil = calm ? 0 : Math.floor(seconds * boilRate);
-    if (mode === 'soundscape') compose(dt);
+    compose(dt);
 
     // Each panel fades toward on or off
     let glow = 0;

@@ -1,7 +1,8 @@
 // The sound sandbox's way into the project, while `npm run dev` runs (never in the build): it lists the site's
 // sections (see sections.js) with their pages, the sounds in public/sounds and the patches in src/sounds/patches/<section>,
 // saves patches there, and saves sounds dropped on it into the section's sound folder, so a saved patch's samples are
-// at URLs the site can play.
+// at URLs the site can play. It also keeps each scene's tracks (which sound plays when, in the sandbox's scene), in
+// src/sounds/scenes/<scene>.json.
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { extname, join, relative, resolve } from 'node:path';
 import { sections, sectionOf } from './sections.js';
@@ -36,6 +37,7 @@ const unix = (path) => path.split('\\').join('/');
 export function soundSandbox(root) {
   const soundsDir = resolve(root, 'public/sounds');
   const patchesDir = resolve(root, 'src/sounds/patches');
+  const scenesDir = resolve(root, 'src/sounds/scenes');
 
   // A section's pages: what it lists, or every page in its folder (leaving out the ones that only send you elsewhere)
   function pagesOf(section) {
@@ -83,7 +85,24 @@ export function soundSandbox(root) {
               ...patchesIn(patchesDir, 'shared'), // Any left loose in the patches folder
             ];
             const pages = Object.fromEntries(sections.map((section) => [section.id, pagesOf(section)]));
-            return reply(response, 200, { sounds, patches, pages });
+            const scenes = {};
+            if (existsSync(scenesDir)) {
+              for (const file of readdirSync(scenesDir).filter((f) => f.endsWith('.json'))) {
+                try {
+                  scenes[file.slice(0, -5)] = JSON.parse(readFileSync(join(scenesDir, file), 'utf-8'));
+                } catch {}
+              }
+            }
+            return reply(response, 200, { sounds, patches, pages, scenes });
+          }
+          if (request.method === 'POST' && url.pathname === '/scene') {
+            const name = slug(url.searchParams.get('name'));
+            if (!name) return reply(response, 400, { error: 'The scene needs a name' });
+            const scene = JSON.parse((await readBody(request)).toString('utf-8'));
+            mkdirSync(scenesDir, { recursive: true });
+            const file = join(scenesDir, name + '.json');
+            writeFileSync(file, JSON.stringify(scene, null, 2) + '\n');
+            return reply(response, 200, { file: unix(relative(root, file)) });
           }
           if (request.method === 'POST' && url.pathname === '/patch') {
             const name = slug(url.searchParams.get('name'));

@@ -9,13 +9,19 @@
 // one on the front page now.
 //
 // A link to one of the wormhole's stages (/#psychworm, /#flowers, /#noisy-spiral) skips the pond and goes straight there.
+//
+// The sound sandbox (tools/sound-sandbox) runs it too, as its scene, with `{ sandbox: { onDrop } }`: just the rain,
+// with no welcome, no sound switch and no entering. Pressing drops a drop there, and as each drop lands, instead of
+// playing a drip, it calls onDrop({ loud, pan, near, inColour, pressed }) with how loud (0 to 1) and how far to the
+// side (-1 to 1) the drip would have been, how near it landed (0 = as far off as the rain lands, 1 = as near), and
+// whether it was dropped by pressing, for the sandbox to play its sounds.
 
 import p5 from 'p5';
 import wormhole from './wormhole.js';
 import { soundButton, startAudio, soundWanted, setSound, soundChosen, onSoundChange, audioOut } from '../scripts/sound.js';
 import { diveScore } from './dive_score.js';
 
-export default function pond(p, container) {
+export default function pond(p, container, { sandbox = null } = {}) {
   // Raindrops fall, one into the middle of the screen at the start and then more, anywhere, now and then, and wherever
   // one lands a new wormhole grows: rings spreading out from there, over the ones before.
   let worms = []; // The wormholes, oldest first (each has its own xLoc and yLoc, and colours)
@@ -928,6 +934,16 @@ export default function pond(p, container) {
   }
 
   function playDrip(drop) {
+    if (sandbox) {
+      sandbox.onDrop?.({
+        loud: drop.inColour ? dripColourLoud : p.lerp(...dripLoud, Math.min(1, nearness(drop.at.y).near)),
+        pan: p.constrain((drop.at.x / p.width) * 2 - 1, -1, 1) * dripPan,
+        near: p.constrain((drop.at.y / p.height - dropTop) / (dropBottom - dropTop), 0, 1),
+        inColour: drop.inColour,
+        pressed: !!drop.pressed,
+      });
+      return;
+    }
     const out = audioOut();
     if (!out || !soundWanted()) return;
     loadDrips();
@@ -988,6 +1004,16 @@ export default function pond(p, container) {
     const canvas = p.createCanvas(container.clientWidth, container.clientHeight);
     p.pixelDensity(sharp ? p.displayDensity() : 1); // Standard resolution is a quarter of the pixels on a Retina screen
     p.noiseSeed(noiseSeed); // So the wormhole can be given the same (see handOver)
+    if (sandbox) {
+      // The sound sandbox's scene: just the rain, and a press drops a drop where it's pressed
+      dropRain(p.width / 2, p.lerp(dropTop, dropBottom, 0.5) * p.height);
+      canvas.elt.addEventListener('pointerdown', (event) => {
+        const box = container.getBoundingClientRect();
+        dropRain(event.clientX - box.left, event.clientY - box.top);
+        drops[drops.length - 1].pressed = true;
+      });
+      return;
+    }
     // A link straight to one of the wormhole's stages skips the pond
     if (location.hash) {
       handOver(true);

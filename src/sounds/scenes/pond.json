@@ -1,0 +1,142 @@
+{
+  "tracks": [
+    {
+      "kind": "sampler",
+      "patch": {
+        "name": "sampler",
+        "level": 1,
+        "ring": {
+          "low": 2,
+          "high": 0.8
+        },
+        "attack": 0.003,
+        "release": 0.3,
+        "spread": 0,
+        "wobble": {
+          "depth": 0,
+          "rate": 5
+        },
+        "range": {
+          "low": 62,
+          "high": 81,
+          "scale": "pentatonic",
+          "key": 2
+        },
+        "filter": {
+          "type": "lowpass",
+          "q": 0.5,
+          "start": {
+            "ratio": 0,
+            "add": 20000,
+            "velocity": 0
+          },
+          "end": {
+            "ratio": 0,
+            "add": 20000
+          },
+          "delay": 0.02,
+          "time": 0.35,
+          "sway": {
+            "depth": 0,
+            "rate": 0.1
+          },
+          "shift": 0
+        },
+        "layers": [
+          {
+            "kind": "sample",
+            "src": "/sounds/landing/worm-suck.m4a",
+            "root": 60,
+            "follow": false,
+            "tune": 0,
+            "start": 0,
+            "level": 1,
+            "fade": 0,
+            "decay": 0,
+            "sustain": 1,
+            "loop": false,
+            "reverse": false
+          }
+        ],
+        "echo": {
+          "time": 0.37,
+          "feedback": 0.35,
+          "wet": 0
+        },
+        "out": 1
+      },
+      "from": "landing/sampler.json",
+      "when": "drop",
+      "volume": 0.85,
+      "off": false
+    },
+    {
+      "kind": "synth",
+      "patch": {
+        "name": "",
+        "level": 0.15,
+        "ring": {
+          "low": 2,
+          "high": 0.8
+        },
+        "attack": 0.003,
+        "release": 0.3,
+        "spread": 0,
+        "wobble": {
+          "depth": 0,
+          "rate": 5
+        },
+        "range": {
+          "low": 62,
+          "high": 81,
+          "scale": "pentatonic",
+          "key": 2
+        },
+        "filter": {
+          "type": "lowpass",
+          "q": 0.5,
+          "start": {
+            "ratio": 12,
+            "add": 0,
+            "velocity": 2000
+          },
+          "end": {
+            "ratio": 4,
+            "add": 400
+          },
+          "delay": 0.02,
+          "time": 0.35,
+          "sway": {
+            "depth": 0,
+            "rate": 0.1
+          },
+          "shift": 0
+        },
+        "layers": [
+          {
+            "kind": "osc",
+            "wave": "sine",
+            "ratio": 1,
+            "detune": 0,
+            "glide": 0,
+            "glideTime": 0.05,
+            "level": 1,
+            "fade": 1,
+            "decay": 0,
+            "sustain": 0
+          }
+        ],
+        "echo": {
+          "time": 0.37,
+          "feedback": 0.35,
+          "wet": 0.25
+        },
+        "out": 0.5
+      },
+      "from": null,
+      "when": "always",
+      "volume": 0.8,
+      "off": false
+    }
+  ]
+}

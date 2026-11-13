@@ -15,14 +15,6 @@
   </nav>
 
   <header class="bar">
-    <label class="field">patch
-      <select id="patch-list"></select>
-    </label>
-    <label class="field">name
-      <input id="patch-name" type="text" spellcheck="false">
-    </label>
-    <button id="save" class="primary">save</button>
-    <button id="revert" hidden title="Throw away the changes since it was last saved">revert</button>
     <span id="status" class="status"></span>
     <span class="spacer"></span>
     <div class="mode-switch" role="group" aria-label="How many controls to show">
@@ -41,6 +33,7 @@
   </header>
 
   <main class="workspace" id="workspace">
+    <div class="column-handle" id="column-handle" title="Drag to make the columns wider or narrower (double-click: back as they were)"></div>
     <section class="preview card" id="preview">
       <div class="card-head">
         <button id="preview-hide" class="fold-text">▾ page</button>
@@ -49,11 +42,12 @@
         <button id="preview-size" title="Make the page bigger or smaller">bigger</button>
         <a id="preview-open" class="button" target="_blank" rel="noopener" title="Open it in its own tab">open ↗</a>
       </div>
-      <div class="frame-holder"><iframe id="preview-frame" title="The page being worked on"></iframe></div>
-      <p class="hint">Click into the page to hear it. A page that plays a patch follows the sliders here.</p>
+      <div class="frame-holder"><iframe id="preview-frame" title="The page being worked on"></iframe><div id="scene" aria-label="The scene: rain on the pond"></div></div>
+      <p class="hint" id="preview-hint"></p>
+      <div class="tracks" id="tracks" hidden></div>
     </section>
 
-    <section class="layers-column">
+    <section class="layers-column all-only"> <!-- Only with "all controls": the main screen is the scene, its tracks and the main controls -->
       <div class="column-head">
         <h2>layers</h2>
         <div class="adders">
@@ -67,6 +61,23 @@
     </section>
 
     <section class="shape-column">
+      <!-- The synth or sampler being worked on (the open track's, or a patch on its own): a saved patch can be loaded
+           into it, and it's saved as one only by naming it and pressing save -->
+      <div class="card instrument" id="instrument">
+        <div class="card-head">
+          <span class="kind" id="instrument-kind">patch</span>
+          <span class="instrument-of" id="instrument-of"></span>
+          <span class="spacer"></span>
+          <label class="field small">load
+            <select id="patch-list"></select>
+          </label>
+        </div>
+        <div class="instrument-save">
+          <input id="patch-name" type="text" spellcheck="false" placeholder="name it to save it as a patch">
+          <button id="save" class="primary">save</button>
+          <button id="revert" hidden title="Back to the patch as it was last saved">revert</button>
+        </div>
+      </div>
       <div id="sections"></div>
       <p class="hint simple-only">These are the main controls. <b>all controls</b>, at the top, shows every setting.</p>
       <details class="json all-only">
@@ -80,8 +91,14 @@
   <footer class="play">
     <div class="play-controls">
       <button id="sound-state" class="sound-state" title="The sandbox's own sound">sound: click to start</button>
-      <button id="play" class="play-button" aria-pressed="false">▶ play</button>
-      <label class="field small">as
+      <label class="field small master-volume" title="Everything the sandbox plays, louder or quieter">volume
+        <input id="master-volume" type="range" min="0" max="1.5" step="0.01">
+        <span id="master-volume-value"></span>
+      </label>
+      <!-- How the open patch plays on its own, with no tracks: no longer chosen here (the scene plays whenever it's
+           showing), but kept for the sandbox's own use -->
+      <span hidden>
+        <button id="play" aria-pressed="false"></button>
         <select id="play-mode">
           <option value="rain">rain</option>
           <option value="hold">one long note</option>
@@ -90,10 +107,8 @@
           <option value="chord">a chord</option>
           <option value="low">a low note and a high one</option>
         </select>
-      </label>
-      <label class="field small" title="Another saved patch playing along while you play: backgrounds as one long note, the rest as rain">with
         <select id="with-patch"></select>
-      </label>
+      </span>
       <span class="spacer"></span>
       <canvas id="scope" width="400" height="80" aria-hidden="true"></canvas>
       <span id="clip" class="clip">too loud</span>
