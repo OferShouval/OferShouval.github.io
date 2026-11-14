@@ -111,7 +111,7 @@ const roseReach = 2; // How far out it can go, compared to the body's width ther
 const spiralTime = 6; // How many seconds it's there before it starts unwinding
 // Opening on the portals (see choosing), it grows slowly out of its middle, from a point, and stays smaller, so the
 // portals can turn round it closer in
-const choosingSpiral = 0.55; // How big it gets, compared to its usual size
+const choosingSpiral = 0.45; // How big it gets, compared to its usual size
 // How the chosen portal grows once the worm launches, eased out and then in: shooting out of its point, steadier in the
 // middle, then racing to cover the screen
 const choiceGrowEase = 3; // How sharp the shooting out and the racing are (1 = none, higher = sharper)
@@ -157,7 +157,7 @@ const portals = [
 const portalAfter = 1.25; // How many seconds after it's let go they appear
 const portalOpen = 1.5; // How many seconds they take to fade in
 const portalPoint = 6; // How big each point is across, while they're waiting, in pixels
-const portalTriangle = 0.22; // How far each is from the middle of the screen, as a share of the screen's smaller side
+const portalTriangle = 0.3; // How far each is from the middle of the screen, as a share of the screen's smaller side
 const portalSpin = 0.25; // How quickly their triangle turns round the middle of the screen, in radians a second
 const portalRing = 1.5; // How thick the chosen one's ring is, in pixels, however big it grows
 const portalTime = 7; // How many seconds the chosen one takes to grow until it covers the screen
