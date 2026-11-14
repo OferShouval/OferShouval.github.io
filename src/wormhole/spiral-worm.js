@@ -148,7 +148,7 @@ const strikeClipCrop = [0.35, 0.8]; // How much of the width and height of the v
 // which grows until it covers the screen. Each fills, at the end, like the page it goes to: `fill` is 'white', 'black'
 // or 'static', and `inside` is how it looks inside while it's waiting. `towards` is which corner of the triangle it's at.
 const portals = [
-  { name: 'visual art', page: '/art/', inside: 'black', fill: 'white', fillTime: 1.5, note: 'wormArrives', towards: [0, -1] }, // The note's so a little worm comes out of the home hole (see src/sketches/hole_worm.js)
+  { name: 'visuals', page: '/art/', inside: 'black', fill: 'white', fillTime: 1.5, note: 'wormArrives', towards: [0, -1] }, // The note's so a little worm comes out of the home hole (see src/sketches/hole_worm.js)
   { name: 'music', page: '/music/', inside: 'black', fill: 'black', fillTime: 0.4, towards: [-0.87, 0.5] },
   { name: 'bio', page: '/bio/', inside: 'static', fill: 'static', fillTime: 0.6, towards: [0.87, 0.5] },
 ];
