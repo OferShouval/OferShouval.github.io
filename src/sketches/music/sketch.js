@@ -12,6 +12,7 @@ import Gate, { NAME_FONT, spreadTags } from './gate.js';
 import Wake from './wake.js';
 import Water from './water.js';
 import { depth } from './perspective.js';
+import { motion } from './motion.js';
 
 // The friendly-error checker slows every p5 call; it's for development, not the live site.
 p5.disableFriendlyErrors = import.meta.env.PROD;
@@ -46,6 +47,8 @@ let introNamed = true; // Is the band's name shown? Only the first time the page
 const HINT_FONT = 'Source Code Pro'; // Thin, like the notes on the site's other pages
 let hintHeight = 0.5; // How far down the screen it is (0 = the top, 1 = the bottom)
 let overGate = false; // Is the mouse over a gate or its name?
+let boatEntered = false; // Has the boat come onto the screen yet? The page's sound starts then (see loop.js)
+let lastAngle = null; // Which way the boat was facing last frame, to tell how fast it's turning (see motion.js)
 
 
 // The way home: a tag at the bottom of the screen, like the ones pointing to gates that are off the screen, as
@@ -183,6 +186,17 @@ function draw() {
     if (gate.position.y <= boatOnWater) gate.show(boat);
   }
   boat.run();
+  if (!boatEntered && boat.bow.y < height) {
+    boatEntered = true;
+    window.dispatchEvent(new Event('boatentered'));
+  }
+  motion.speed = boat.velocity.mag() / (boat.maxspeed * boat.fit());
+  motion.toward = boat.velocity.mag() > 0.001 ? boat.velocity.y / boat.velocity.mag() : 0;
+  let turned = lastAngle === null ? 0 : atan2(sin(boat.angle - lastAngle), cos(boat.angle - lastAngle));
+  motion.turn = turned / Math.max(deltaTime / 1000, 0.001);
+  lastAngle = boat.angle;
+  motion.x = constrain((boat.position.x - width / 2) / (width / 2), -1, 1);
+  motion.onScreen = boatEntered;
   for (let gate of gates) {
     if (gate.position.y > boatOnWater) gate.show(boat);
   }

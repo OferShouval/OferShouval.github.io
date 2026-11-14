@@ -63,7 +63,7 @@ ul {
   z-index: 2;
 }
 
-/* Home, visual art, music, teaching, bio, the menu: tabs that share the width, each as wide as its word plus an even share of what's left */
+/* Home, visuals, music, teaching, bio, the menu: tabs that share the width, each as wide as its word plus an even share of what's left */
 .navbar ul {
   display: flex;
   margin: 0;
@@ -2175,6 +2175,46 @@ body.art-inverted {
 /* Teaching page: a big opening line, and short headings over the statement's steps */
 .teaching-page > h3 { max-width: var(--column); margin: 40px auto 0; }
 .teaching-page > h3 + p { margin-top: 8px; }
+.page .course-list { /* The teaching page's list of courses: two columns where there's room, one on phones */
+  color: white;
+  font-family: 'Source Code Pro', monospace;
+  font-weight: 100;
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: var(--column);
+  margin: 32px auto;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 32px 48px;
+}
+.page .course-list li { margin: 0; }
+.page .course-list strong { display: block; font-weight: 400; font-size: 16px; } /* The course's name... */
+.page .course-list .course-where { /* ...where and when, small and dim, then its blurb */
+  display: block;
+  font-size: 12px;
+  opacity: 0.55;
+  margin: 2px 0 8px;
+}
+.page blockquote { /* A quote, opening a part of the page: a little bigger than the text, set off by a line */
+  color: white;
+  font-family: 'Source Code Pro', monospace;
+  font-weight: 200;
+  font-size: 16px;
+  line-height: 1.6;
+  max-width: calc(var(--column) - 32px);
+  margin: 56px auto 40px;
+  padding-left: 20px;
+  border-left: 1px solid white;
+}
+.page blockquote .quote-by { /* Who said it, on its own line, small and dim */
+  display: block;
+  margin-top: 10px;
+  font-size: 12px;
+  font-weight: 100;
+  opacity: 0.6;
+}
 .page .teaching-lede {
   font-family: 'Major Mono Display', monospace;
   font-weight: normal;
