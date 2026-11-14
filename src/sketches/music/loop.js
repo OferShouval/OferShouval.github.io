@@ -17,12 +17,14 @@ let loopEnd = 26.999; // ...and where it ends, going back to its start
 // The lowpass filter everything goes through. The frequency it starts cutting above sweeps up and down, smoothly (as
 // a sine wave), between these two, starting at the bottom. It's spread by octaves, as we hear pitch, so it takes as
 // long from 200 to 450 as from 450 to 1000.
-let sweepLow = 200; // In Hz
-let sweepHigh = 600;
+let sweepLow = 300; // In Hz
+let sweepHigh = 900;
 let sweepTime = 30; // How many seconds it takes to go up and back down again
 let resonance = 0.7; // ...and how much it rings at that frequency (0.7 = not at all)
 let bassRolloff = 180; // The bass is rolled off below this, in Hz, gently (higher = thinner)
 let startFade = 0.01; // How many seconds it takes to fade in each time it starts playing, so it doesn't click
+let openFade = 10; // ...except the first time, as the page opens: then it creeps in slowly, over this many seconds
+let loopLevel = 0.6; // How loud the loop is, at most (1 = as loud as the track, through the filters and radio)
 let backwards = true; // Is the loop played backwards? (From firstFrom back to its start, then round from its end)
 let firstFrom = 26.999; // Where it starts playing as the page opens, partway into the loop, on the chord for the boat
 let crossfade = 0.04; // How many seconds the end of the loop takes to blend into its start
@@ -37,6 +39,25 @@ let detuneTimes = [7.3, 3.1]; // How many seconds each wave takes to go round
 let doppler = 30; // How far it bends at the boat's usual top speed, in cents (100 = a semitone)
 let dopplerMost = 1.3; // How fast counts as fastest, for it (the boat goes up to about 1.5 hurrying to a gate)
 let dopplerGlide = 0.5; // How many seconds it takes to get most of the way to its new pitch (bigger = slower bend)
+// The AM station: the loop's heard like a faraway AM station, the signal swimming, fading down and coming back at
+// uneven times, with a hollow swirl moving through it, and soft static that rises as the station fades and sinks
+// back under it as it returns. It plays while the loop does.
+// The radio's box: a small cheap speaker in a wooden box, so only the middle comes through, honking
+let boxLow = 220; // Everything below this is cut, steeply, in Hz...
+let boxHigh = 3800; // ...and everything above this
+let boxPeaks = [[550, 6, 1.4], [1200, 3, 2]]; // Where the box rings: [in Hz, by how many decibels, how narrowly]
+let boxInput = 0.5; // How loud the loop is going into the box: lower = less breaking up
+let grit = 1.8; // How hard it's driven into the speaker, so it breaks up a little and fills the middle (1 = clean)
+let boxLevel = 0.65; // How loud it comes out of the box (raise it to make up for a lower boxInput, lower it if it clips)
+let fadeLow = 0.02; // How far the music fades, at its weakest (1 = it never fades, 0 = right out; 0.04 = barely heard)
+let fadeTimes = [40,35]; // How many seconds it takes to swell up, or to sink down (somewhere between these)
+let fadePeaks = [0.15,0.18]; // How high each swell reaches (somewhere between these; 1 = full)...
+let fadeTroughs = [0.1, 0.1]; // ...and how low each fade sinks (0 = right down to fadeLow)
+let swirl = [150, 900]; // The swirl's hollow moves between these, in Hz, slowly
+let swirlTime = 11; // How many seconds it takes to move up and back down
+let swirlDepth = -12; // How hollow it is, in decibels (0 = not at all)
+let staticFloor = 0.002; // How loud the static is with the station at its strongest...
+let staticMost = 0.01; // ...and how much it rises as it fades right down
 
 let buffer = null; // The decoded track
 let loopBuffer = null; // The loop, copied out of it with the crossfade (see makeLoop())
@@ -68,24 +89,146 @@ function driftFrom(context) {
   return drift;
 }
 
+// The AM station (see fadeLow): returns what the loop goes through, after its filters. Made once, the first time
+// it's needed (see radioInto()).
+let staticOn = null; // The static's on/off, following whether the loop's playing
+let radio = null; // Its way in
+export function radioInto(out) {
+  radio ??= station(out);
+  return radio;
+}
+function station(out) {
+  const context = out.context;
+  const rate = context.sampleRate;
+
+  // The signal's strength: 90 seconds of it, looping, from 0 (faded right down) to 1 (strongest), swelling up and
+  // sinking down in turn (see fadePeaks and fadeTroughs), easing smoothly from one to the next, each at its own pace.
+  // It changes slowly, so it's kept at a low sample rate (8000 a second), to save memory.
+  const slowRate = 8000;
+  const strength = context.createBuffer(1, 90 * slowRate, slowRate);
+  const s = strength.getChannelData(0);
+  const pick = ([low, high]) => low + Math.random() * (high - low);
+  const levels = [{ at: 0, level: pick(fadePeaks) }]; // Starting on a swell
+  while (levels[levels.length - 1].at < s.length) {
+    const at = levels[levels.length - 1].at + pick(fadeTimes) * slowRate;
+    levels.push({ at, level: pick(levels.length % 2 ? fadeTroughs : fadePeaks) }); // Down, up, down, up...
+  }
+  levels[levels.length - 1] = { at: s.length, level: levels[0].level }; // Ends where it starts, for the loop
+  let k = 0;
+  for (let i = 0; i < s.length; i++) {
+    while (levels[k + 1].at < i) k++;
+    const t = (i - levels[k].at) / (levels[k + 1].at - levels[k].at);
+    s[i] = levels[k].level + (levels[k + 1].level - levels[k].level) * (1 - Math.cos(Math.PI * t)) / 2;
+  }
+  const signal = context.createBufferSource();
+  signal.buffer = strength;
+  signal.loop = true;
+
+  // The loop's level follows it, from fadeLow up to 1
+  const swimming = context.createGain();
+  swimming.gain.value = fadeLow;
+  const swimDepth = context.createGain();
+  swimDepth.gain.value = 1 - fadeLow;
+  signal.connect(swimDepth).connect(swimming.gain);
+
+  // The swirl: a hollow (a dip in one part of the sound) moving slowly up and down, by octaves
+  const hollow = context.createBiquadFilter();
+  hollow.type = 'peaking';
+  hollow.gain.value = swirlDepth;
+  hollow.Q.value = 2;
+  hollow.frequency.value = Math.sqrt(swirl[0] * swirl[1]);
+  const wave = context.createOscillator();
+  wave.frequency.value = 1 / swirlTime;
+  const waveDepth = context.createGain();
+  waveDepth.gain.value = 1200 * Math.log2(Math.sqrt(swirl[1] / swirl[0])); // Half its range, in cents
+  wave.connect(waveDepth).connect(hollow.detune);
+  hollow.connect(swimming).connect(out);
+
+  // The box, before the swirl: driven a little into the speaker, then only the middle, honking
+  const input = context.createGain(); // Everything coming into the box, turned down first (see boxInput)
+  input.gain.value = boxInput;
+  const drive = context.createWaveShaper();
+  input.connect(drive);
+  const curve = new Float32Array(1024);
+  for (let i = 0; i < curve.length; i++) {
+    const x = (i / (curve.length - 1)) * 2 - 1;
+    curve[i] = Math.tanh(grit * x) / Math.tanh(grit);
+  }
+  drive.curve = curve;
+  drive.oversample = '2x';
+  let last = drive;
+  for (const [type, frequency] of [['highpass', boxLow], ['highpass', boxLow], ['lowpass', boxHigh], ['lowpass', boxHigh]]) {
+    const cut = context.createBiquadFilter(); // Two of each, so the cuts are steep
+    cut.type = type;
+    cut.frequency.value = frequency;
+    cut.Q.value = 0.7;
+    last = last.connect(cut);
+  }
+  for (const [frequency, gain, q] of boxPeaks) {
+    const ring = context.createBiquadFilter();
+    ring.type = 'peaking';
+    ring.frequency.value = frequency;
+    ring.gain.value = gain;
+    ring.Q.value = q;
+    last = last.connect(ring);
+  }
+  const trim = context.createGain(); // Brought back down (see boxLevel)
+  trim.gain.value = boxLevel;
+  last.connect(trim).connect(hollow);
+
+  // The static: soft noise in a thin radio range, seven seconds of it looping
+  const noise = context.createBuffer(1, 7 * rate, rate);
+  const n = noise.getChannelData(0);
+  for (let i = 0; i < n.length; i++) n[i] = (Math.random() * 2 - 1) * 0.35;
+  const hiss = context.createBufferSource();
+  hiss.buffer = noise;
+  hiss.loop = true;
+  const radioRange = context.createBiquadFilter();
+  radioRange.type = 'bandpass';
+  radioRange.frequency.value = 1800;
+  radioRange.Q.value = 0.7;
+  // Rising as the signal fades: staticFloor + staticMost at nothing, staticFloor at full strength
+  const staticLevel = context.createGain();
+  staticLevel.gain.value = staticFloor + staticMost;
+  const staticDepth = context.createGain();
+  staticDepth.gain.value = -staticMost;
+  signal.connect(staticDepth).connect(staticLevel.gain);
+  staticOn = context.createGain();
+  staticOn.gain.value = 0;
+  hiss.connect(radioRange).connect(staticLevel).connect(staticOn).connect(out);
+
+  for (const source of [signal, wave, hiss]) source.start();
+  return input;
+}
+
 // Stops what's playing the loop, letting go of the detune too
 function stopSource() {
   try { drift?.disconnect(source.detune); } catch {}
+  staticOn?.gain.setTargetAtTime(0, source.context.currentTime, 0.01);
   source.stop();
   source = null;
 }
 
-// The filter, made the first time it's needed, going to the switch's output
-function lowpassInto(out) {
+// The filter, made the first time it's needed, going to the switch's output: the sweep, then the bass roll-off, then
+// the radio
+let thin = null; // The bass roll-off
+let opening = null; // The slow fade in as the page opens (see openFade), before the filter
+export function lowpassInto(out) {
   if (!lowpass) {
+    // The first time it plays, it creeps in slowly, rising gently at first (as a cube), as we hear loudness. It's
+    // here, made once, so starting again (the trimming panel, or two presses at once) doesn't cut it short.
+    opening = out.context.createGain();
+    const curve = new Float32Array(256).map((_, i) => loopLevel * (i / 255) ** 3); // Up to loopLevel
+    opening.gain.setValueCurveAtTime(curve, out.context.currentTime, openFade);
     lowpass = out.context.createBiquadFilter();
+    opening.connect(lowpass);
     lowpass.type = 'lowpass';
     lowpass.Q.value = resonance;
-    const thin = out.context.createBiquadFilter(); // The bass rolled off (see bassRolloff), after the lowpass
+    thin = out.context.createBiquadFilter(); // The bass rolled off (see bassRolloff), after the lowpass
     thin.type = 'highpass';
     thin.frequency.value = bassRolloff;
     thin.Q.value = 0.5; // A gentle slope, with no bump at the edge
-    lowpass.connect(thin).connect(out);
+    lowpass.connect(thin).connect(radioInto(out)); // Then heard like a faraway AM station
     // The sweep: the filter's set to the middle of it (in octaves), and a slow wave tunes it up and down from there,
     // in cents (hundredths of a semitone). The wave's a cosine turned upside down, so it starts at the bottom.
     const context = out.context;
@@ -99,7 +242,7 @@ function lowpassInto(out) {
     wave.start();
     sweepSince = context.currentTime;
   }
-  return lowpass;
+  return opening;
 }
 
 // Decoded straight away too (an OfflineAudioContext can decode without a press), so it's ready for the boat
@@ -159,6 +302,7 @@ async function play(from = loopStart) {
   playingSince = context.currentTime;
   playingFrom = from;
   source.start(0, backwards ? loopEnd - from : from - loopStart);
+  staticOn?.gain.setTargetAtTime(1, context.currentTime, startFade);
 }
 
 // Where in the track it's playing now, in seconds

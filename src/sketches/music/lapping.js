@@ -6,7 +6,8 @@
 
 import { audioOut, onSoundChange } from '../../scripts/sound.js';
 
-let level = 0.50; // How loud it is, altogether (1 = as loud as the noise it's made from)
+let on = false; // Are the waves playing? (Off: a recording of a pond at dusk plays instead, see pond.js. Its bubbles and reverb are still used.)
+let level = 0.28; // How loud it is, altogether (1 = as loud as the noise it's made from; matched to the music through its radio, see loop.js)
 let gapLeast = 3; // The shortest time between laps, in seconds...
 let gapMost = 7; // ...and the longest
 let swellTime = [0.6, 1.3]; // How many seconds a lap takes to swell up (somewhere between these)...
@@ -150,7 +151,7 @@ function next() {
 
 function start() {
   const out = audioOut();
-  if (started || !out) return;
+  if (!on || started || !out) return;
   started = true;
   master = out.context.createGain();
   master.gain.value = level;
