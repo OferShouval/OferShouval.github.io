@@ -191,6 +191,7 @@ function draw() {
     window.dispatchEvent(new Event('boatentered'));
   }
   motion.speed = boat.velocity.mag() / (boat.maxspeed * boat.fit());
+  motion.toward = boat.velocity.mag() > 0.001 ? boat.velocity.y / boat.velocity.mag() : 0;
   let turned = lastAngle === null ? 0 : atan2(sin(boat.angle - lastAngle), cos(boat.angle - lastAngle));
   motion.turn = turned / Math.max(deltaTime / 1000, 0.001);
   lastAngle = boat.angle;

@@ -9,6 +9,7 @@
 // while it plays, and shows the seam, the end of the loop running into its start.
 
 import { audioOut, onSoundChange, startAudio } from '../../scripts/sound.js';
+import { motion } from './motion.js';
 
 const TRACK = '/sounds/unfamiliar-state/01-unfamiliar-state.m4a';
 let loopStart = 12.218; // Where the loop starts, in seconds into the track
@@ -20,10 +21,22 @@ let sweepLow = 200; // In Hz
 let sweepHigh = 600;
 let sweepTime = 30; // How many seconds it takes to go up and back down again
 let resonance = 0.7; // ...and how much it rings at that frequency (0.7 = not at all)
+let bassRolloff = 180; // The bass is rolled off below this, in Hz, gently (higher = thinner)
 let startFade = 0.01; // How many seconds it takes to fade in each time it starts playing, so it doesn't click
 let backwards = true; // Is the loop played backwards? (From firstFrom back to its start, then round from its end)
 let firstFrom = 26.999; // Where it starts playing as the page opens, partway into the loop, on the chord for the boat
 let crossfade = 0.04; // How many seconds the end of the loop takes to blend into its start
+// The detune: the loop's pitch drifts a little sharp and flat, slowly, like a warped tape (or the boat rocking), with
+// two slow waves drifting against each other so it never quite repeats
+let detune = 15; // How far it drifts, at most, in cents (hundredths of a semitone; 0 = steady)
+let detuneTimes = [7.3, 3.1]; // How many seconds each wave takes to go round
+// The doppler: as the boat speeds up, the loop's pitch sags, like a sound going past, and comes back up as it slows;
+// heading towards the camera, it rises instead (straight at it, as far up as it'd go down). Sideways or away, it's
+// down; in between, from sideways to straight at the camera, it eases from down to up, level at a diagonal (the sketch
+// keeps the boat's speed and heading up to date, see motion.js). Not in the trimming panel, so its timeline stays true.
+let doppler = 30; // How far it bends at the boat's usual top speed, in cents (100 = a semitone)
+let dopplerMost = 1.3; // How fast counts as fastest, for it (the boat goes up to about 1.5 hurrying to a gate)
+let dopplerGlide = 0.5; // How many seconds it takes to get most of the way to its new pitch (bigger = slower bend)
 
 let buffer = null; // The decoded track
 let loopBuffer = null; // The loop, copied out of it with the crossfade (see makeLoop())
@@ -37,6 +50,30 @@ let pausedAt = 0; // ...and where
 let snippet = null; // A moment played while scrubbing, paused
 let lowpass = null; // The filter (see sweepLow)
 let sweepSince = 0; // The context's time when the sweep started
+let drift = null; // The detune's waves, added together (see detune)
+
+// The detune's waves, made the first time they're needed, kept going and tuning whatever's playing the loop
+function driftFrom(context) {
+  if (!drift) {
+    drift = context.createGain();
+    for (const seconds of detuneTimes) {
+      const wave = context.createOscillator();
+      wave.frequency.value = 1 / seconds;
+      const depth = context.createGain();
+      depth.gain.value = detune / detuneTimes.length;
+      wave.connect(depth).connect(drift);
+      wave.start();
+    }
+  }
+  return drift;
+}
+
+// Stops what's playing the loop, letting go of the detune too
+function stopSource() {
+  try { drift?.disconnect(source.detune); } catch {}
+  source.stop();
+  source = null;
+}
 
 // The filter, made the first time it's needed, going to the switch's output
 function lowpassInto(out) {
@@ -44,7 +81,11 @@ function lowpassInto(out) {
     lowpass = out.context.createBiquadFilter();
     lowpass.type = 'lowpass';
     lowpass.Q.value = resonance;
-    lowpass.connect(out);
+    const thin = out.context.createBiquadFilter(); // The bass rolled off (see bassRolloff), after the lowpass
+    thin.type = 'highpass';
+    thin.frequency.value = bassRolloff;
+    thin.Q.value = 0.5; // A gentle slope, with no bump at the edge
+    lowpass.connect(thin).connect(out);
     // The sweep: the filter's set to the middle of it (in octaves), and a slow wave tunes it up and down from there,
     // in cents (hundredths of a semitone). The wave's a cosine turned upside down, so it starts at the bottom.
     const context = out.context;
@@ -101,7 +142,7 @@ async function play(from = loopStart) {
   await context.resume().catch(() => {});
   const out = audioOut();
   if (!out) return;
-  if (source) source.stop();
+  if (source) stopSource();
   if (!loopBuffer) makeLoop();
   // Outside the loop, it starts at the loop's start (its end, going backwards, as that's where it starts that way)
   const inside = backwards ? from > loopStart && from <= loopEnd : from >= loopStart && from < loopEnd;
@@ -110,6 +151,7 @@ async function play(from = loopStart) {
   source = context.createBufferSource();
   source.buffer = loopBuffer;
   source.loop = true;
+  driftFrom(context).connect(source.detune);
   const fade = context.createGain(); // A tiny fade in, so it doesn't click as it starts
   fade.gain.setValueAtTime(0, context.currentTime);
   fade.gain.linearRampToValueAtTime(1, context.currentTime + startFade);
@@ -144,8 +186,7 @@ function setLoop(start, end) {
 function pause() {
   if (!source) return;
   pausedAt = position();
-  source.stop();
-  source = null;
+  stopSource();
   paused = true;
 }
 
@@ -178,7 +219,19 @@ window.addEventListener('boatentered', () => {
   if (!source && !paused && audioOut()) play(firstFrom);
 });
 
-if (new URLSearchParams(location.search).has('trim')) trimPanel();
+const trimming = new URLSearchParams(location.search).has('trim');
+if (trimming) trimPanel();
+
+// Every frame: the doppler (see doppler) bends whatever's playing the loop with the boat's speed. It sets the
+// source's own detune; the drift's waves (see driftFrom()) are added on top of it.
+(function bend() {
+  if (source && !trimming) {
+    const pace = motion.onScreen ? Math.min(motion.speed, dopplerMost) : 0;
+    const way = motion.toward > 0 ? 2 * motion.toward - 1 : -1; // Up (1) towards the camera, down (-1) otherwise
+    source.detune.setTargetAtTime(doppler * pace * way, source.context.currentTime, dopplerGlide / 3);
+  }
+  requestAnimationFrame(bend);
+})();
 
 // The trimming panel: the loop's start and end, with buttons to nudge them, the seam drawn as a waveform, a timeline
 // to pause and scrub along (and set the start or end where it's got to), and a button that jumps to just before the

@@ -11,8 +11,8 @@ import { bubble, makeReverb } from './lapping.js';
 import { motion } from './motion.js';
 
 // The gurgle
-let rate = 60; // How many bubbles a second, at the boat's usual top speed
-let turnRate = 40; // How many more a second, turning hard
+let rate = 0; // How many bubbles a second, at the boat's usual top speed (was 60: off for now, while the hush is redone)
+let turnRate = 0; // How many more a second, turning hard (was 40)
 let hardTurn = 1.5; // How fast a turn counts as turning hard, in radians a second
 let loudness = [0.008, 0.02]; // How loud each bubble is (somewhere between these), at top speed
 let pitch = [400, 1100]; // Where each bubble's pitch starts, in Hz, standing still...
@@ -21,9 +21,12 @@ let shape = { attack: 0.012, life: [0.05, 0.14], rise: [1.2, 1.6] }; // Softer a
 let mellow = 2500; // The bubbles' sound is softened above this, in Hz, to take the edge off them
 let spread = 0.3; // How far the bubbles spread either side of the boat (in the stereo, 0 to 1)
 
-// The hush along the hull
-let hushLevel = 0.05; // How loud it is, at top speed
-let hushPitch = [500, 1200]; // The middle of its sound, in Hz, from slow to top speed
+// The hush along the hull: a dark rush of water, churning in quick uneven surges
+let hushLevel = 0.025; // How loud it is, at top speed
+let hushPitch = [180, 550]; // How bright it gets, in Hz (nothing much above this), from slow to top speed
+let churn = 0.7; // How much it churns, surging and dropping (0 = steady)
+let churnPace = [0.08, 0.4]; // How many seconds from one surge to the next (somewhere between these)
+let rush = [0.7, 1.3]; // How fast it churns, from slow to top speed (1 = churnPace as it is)
 let swell = 0.35; // How much it swells and falls as it goes, slowly (0 = steady)
 
 let wet = 0.4; // How much of it all is heard in the reverb
@@ -34,14 +37,31 @@ let started = false;
 const between = ([low, high]) => low + Math.random() * (high - low);
 const towards = (a, b, t) => a + (b - a) * t;
 
-// Ten seconds of soft noise, looping, for the hush
+// Twelve seconds of deep (brown) noise, churning, looping, for the hush
 function makeHush(context) {
-  const buffer = context.createBuffer(1, 10 * context.sampleRate, context.sampleRate);
+  const rate = context.sampleRate;
+  const buffer = context.createBuffer(1, 12 * rate, rate);
   const data = buffer.getChannelData(0);
   let low = 0;
+  let power = 0;
   for (let i = 0; i < data.length; i++) {
-    low = (low + 0.08 * (Math.random() * 2 - 1)) / 1.08;
-    data[i] = low * 4;
+    low = low * 0.998 + 0.02 * (Math.random() * 2 - 1); // Each sample wanders a little from the last, so it's deep
+    data[i] = low;
+    power += low * low;
+  }
+  const evenOut = 0.3 / Math.sqrt(power / data.length); // All brought to the same loudness, whatever the dice gave
+  // The churn: surges at uneven times, each to its own height, eased smoothly from one to the next
+  const surges = [{ at: 0, height: 1 - churn * Math.random() }];
+  while (surges[surges.length - 1].at < data.length) {
+    surges.push({ at: surges[surges.length - 1].at + between(churnPace) * rate, height: 1 - churn * Math.random() });
+  }
+  surges[surges.length - 1] = { at: data.length, height: surges[0].height }; // Ends where it starts, for the loop
+  let s = 0;
+  for (let i = 0; i < data.length; i++) {
+    while (surges[s + 1].at < i) s++;
+    const a = surges[s], b = surges[s + 1];
+    const t = (i - a.at) / (b.at - a.at);
+    data[i] *= evenOut * towards(a.height, b.height, (1 - Math.cos(Math.PI * t)) / 2);
   }
   const join = 4000; // Its ends faded into each other, so it loops without a click
   for (let i = 0; i < join; i++) {
@@ -80,9 +100,12 @@ function start() {
   hiss.buffer = makeHush(context);
   hiss.loop = true;
   hiss.loopEnd = hiss.buffer.duration - 4000 / context.sampleRate;
+  const rumble = context.createBiquadFilter(); // Takes out the deepest rumble, too low to hear but heavy
+  rumble.type = 'highpass';
+  rumble.frequency.value = 70;
   const hull = context.createBiquadFilter();
-  hull.type = 'bandpass';
-  hull.Q.value = 0.7;
+  hull.type = 'lowpass';
+  hull.Q.value = 0;
   const swelling = context.createGain();
   swelling.gain.value = 1;
   for (const speed of [0.23, 0.37]) {
@@ -95,7 +118,7 @@ function start() {
   }
   const hushGain = context.createGain();
   hushGain.gain.value = 0;
-  hiss.connect(hull).connect(swelling).connect(hushGain).connect(side);
+  hiss.connect(rumble).connect(hull).connect(swelling).connect(hushGain).connect(side);
   hiss.start();
 
   // Every frame: the hush follows the boat, and as many bubbles as its motion calls for, scattered through the frame
@@ -109,6 +132,7 @@ function start() {
     const fast = Math.min(pace, 1);
     hushGain.gain.setTargetAtTime(hushLevel * pace ** 1.5, now, react);
     hull.frequency.setTargetAtTime(towards(hushPitch[0], hushPitch[1], fast), now, react);
+    hiss.playbackRate.setTargetAtTime(towards(rush[0], rush[1], fast), now, react);
     side.pan.setTargetAtTime(motion.x * 0.7, now, react);
     if (pace > 0) {
       const turning = Math.min(1, Math.abs(motion.turn) / hardTurn);

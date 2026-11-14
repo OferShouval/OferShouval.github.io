@@ -3,6 +3,7 @@
 export const motion = {
   speed: 0, // How fast it's going, compared to its usual top speed (more than 1 when it's hurrying to a gate)
   turn: 0, // How fast it's turning, in radians a second (positive = clockwise, to the right)
+  toward: 0, // How much it's heading towards the camera: 1 = straight at it (down the screen), 0 = sideways, -1 = away
   x: 0, // Where it is across the screen, from -1 (the left edge) to 1 (the right)
   onScreen: false, // Is it on the screen yet?
 };
