@@ -234,7 +234,8 @@ export function paintMouse(name, weight, resolution) {
 
 // The mouse's face on its own, in thin lines laid out like its pictures (see paintMouse()): its eyes and nose as
 // dots, and its whiskers, for drawing over it when it's filled with colour instead of drawn in outline
-export function paintMouseFace(sheet, { line = 1.1, eye = 2.6, nose = 1.8 } = {}) {
+// whiskerLine is how thick its whiskers are (as thick as line unless it's given). With whiskers false, its whiskers are left out; with onlyWhiskers, they're all it draws (no eyes, nose or head)
+export function paintMouseFace(sheet, { line = 1.1, whiskerLine = line, eye = 2.6, nose = 1.8, whiskers = true, onlyWhiskers = false } = {}) {
   let face = document.createElement('canvas');
   face.width = sheet.width;
   face.height = sheet.height;
@@ -254,13 +255,14 @@ export function paintMouseFace(sheet, { line = 1.1, eye = 2.6, nose = 1.8 } = {}
       let headLines = features.eyes.length === 0;
       for (let { points, key, weight } of lines) {
         let whisker = key >= 7990 && key <= 8030;
-        let head = headLines && ((key >= 3000 && key < 4000) || (key >= 4985 && key <= 5015));
-        if (!whisker && !head) continue;
-        context.lineWidth = whisker ? line : line * (weight ?? 1);
+        let head = !onlyWhiskers && headLines && ((key >= 3000 && key < 4000) || (key >= 4985 && key <= 5015));
+        if (!(whisker && whiskers) && !head) continue;
+        context.lineWidth = whisker ? whiskerLine : line * (weight ?? 1);
         context.beginPath();
         points.forEach(([x, y]) => context.lineTo(x, y));
         context.stroke();
       }
+      if (onlyWhiskers) continue;
       for (let [x, y] of features.eyes) {
         context.beginPath();
         context.ellipse(x, y, eye, eye * 1.15, 0, 0, Math.PI * 2);

@@ -94,10 +94,10 @@ let tripSwerve = [0.2, 0.4]; // How far off the straight line it goes to each st
 let tripPause = [0.2, 0.45]; // How many seconds it stops for
 let tripShortest = 40; // A trip shorter than this, in pixels, doesn't stop on the way
 let mouseSpot = { x: 0.5, y: 0.8 }; // Where the camera keeps the mouse, as a fraction of the screen's width and height
-let mouseScale = 0.5; // How big it's drawn, compared to the people at the same distance
-let mouseWeight = 6; // How thick its lines are, before it's shrunk to that size
+let mouseScale = 0.35; // How big it's drawn, compared to the people at the same distance
+let mouseWeight = 8.5; // How thick its lines are, before it's shrunk to that size
 let mouseSwings = 6; // How many pictures of its tail swinging it goes through per second, sitting
-let mouseWalkSteps = 36; // ...and of its walk, walking. This sets how fast it goes, since it only moves as far as its feet push it.
+let mouseWalkSteps = 46; // ...and of its walk, walking. This sets how fast it goes, since it only moves as far as its feet push it.
 let mouseBowTime = 0.12; // How many seconds it takes to get up and lower its head before it sets off, or to sit back up after it stops
 let mouseViewStick = 1.2; // How far past halfway to the next way of facing it has to be heading before it changes to that
 // When the mouse stands still, the camera slowly dips lower, down toward it, so everything looks bigger while the
@@ -146,7 +146,8 @@ function setup() {
   resolution = constrain(bottomSize() * 1.1 * density * pushZoom, 1, 3); // (Sharp enough pushed in, too)
   setupHoles(); // (Before the sheets, since painting those finishes with the brush)
   mouseSheet = paintMouse(brushName, mouseWeight, resolution * mouseScale);
-  mouseFace = paintMouseFace(mouseSheet, { line: 0.55 }); // Its eyes, nose and whiskers in thin lines, for over its colours
+  mouseFace = paintMouseFace(mouseSheet, { line: 0.55, whiskerLine: 1.4 }); // Its eyes, nose and whiskers in thin lines, for over its colours
+  mouseWhiskers = paintMouseFace(mouseSheet, { line: 3, onlyWhiskers: true }); // Where its whiskers are, a little wider, kept out of its colours and hairline (so they're single black lines)
   setupMouseControls();
   sheets = paintSheets(brushName, lineWeights, resolution);
   buildCrowd();
@@ -314,7 +315,7 @@ function moveMouse() {
   let seconds = Math.min(deltaTime / 1000, 0.1); // (The frames can be far apart if the page has been in the background)
   let bottom = bottomSize();
   let size = sizeOf(mouse.depth);
-  let hurry = mouseTarget?.hurry ?? 1;
+  let hurry = (mouseTarget?.hurry ?? 1) * burst.boost; // (And faster in a burst of speed, so it knows it'll get there sooner)
   let follow = 1 - Math.exp(-seconds * mouseFollow * hurry);
   let followMouse = () => {
     view.x += (constrain(mouse.x, -cameraReach(), cameraReach()) - view.x) * follow;
@@ -373,6 +374,10 @@ function moveMouse() {
     }
   }
 
+  // Coming up close to someone, it dodges out of their way for a moment, then carries on its way
+  if ((right || down) && !mouseTarget?.walkingOn) [right, down] = dodge(right, down, seconds, size, bottom);
+  else dodging.for = 0;
+
   let edge = cameraReach() + (width / 2 - 8) / size;
   if ((right < 0 && mouse.x <= -edge) || (right > 0 && mouse.x >= edge)) right = 0;
   let goingBehind = mouseTarget?.hole?.behind; // Only a hole behind it can take it back off the bottom of the screen
@@ -391,6 +396,7 @@ function moveMouse() {
   // It sets off once its head's down
   mouse.bow = constrain(mouse.bow + ((going ? 1 : -1) * seconds) / mouseBowTime, 0, 1);
   mouse.walking = going && mouse.bow === 1;
+  burstSpeed(mouse.walking && !mouseTarget?.walkingOn, seconds, size, bottom); // (Running next frame, if it's clear)
   if (mouse.walking) {
     // It only moves when its walk cycle moves on, by exactly as far as its planted foot slides back
     // on the screen, the same as the crowd (see draw()), so that foot stays put on the ground
@@ -418,6 +424,73 @@ function moveMouse() {
   if (mouse.depth > mouseHome + 0.02) mouseWentForward = true;
 
   followMouse();
+}
+
+// The mouse dodging people as it walks: when its feet come within near of someone's, on much the same ground (both in
+// the figures' own pixels), it turns off its way by turn degrees, toward whichever side takes it away from them, for
+// lasts seconds, and then doesn't dodge again for rest seconds
+const dodges = {
+  near: [26, 9], // How close counts as too close, across and up and down
+  turn: [55, 80], // How far off its way it turns, in degrees (the least and the most)
+  lasts: [0.2, 0.35], // How long a dodge lasts, in seconds
+  rest: 0.25, // How long until it can dodge again
+};
+let dodging = { for: 0, angle: 0, rest: 0 };
+let nearMouse = []; // The people drawn last frame round about the mouse, as [x, ground, size] (see draw())
+function dodge(right, down, seconds, size, bottom) {
+  dodging.rest -= seconds;
+  if (dodging.for <= 0 && dodging.rest <= 0) {
+    let mouseX = screenX(mouse.x, size);
+    let mouseGround = groundAt(size, bottom);
+    let close = nearMouse.find(([x, ground, theirSize]) => Math.abs(ground - mouseGround) < dodges.near[1] * theirSize && Math.abs(x - mouseX) < dodges.near[0] * theirSize + (mouseWidth * mouseScale * size) / 2);
+    if (close) {
+      // Turned the way that takes it further across from them
+      let away = Math.sign(mouseX - close[0]) || random([-1, 1]);
+      let angle = radians(random(...dodges.turn));
+      let across = (a) => right * Math.cos(a) - down * Math.sin(a);
+      dodging.angle = across(angle) * away >= across(-angle) * away ? angle : -angle;
+      dodging.for = random(...dodges.lasts);
+      dodging.rest = dodging.for + dodges.rest;
+    }
+  }
+  if (dodging.for <= 0) return [right, down];
+  dodging.for -= seconds;
+  let [cos, sin] = [Math.cos(dodging.angle), Math.sin(dodging.angle)];
+  return [right * cos - down * sin, right * sin + down * cos];
+}
+
+// The mouse's bursts of speed: once there's been nobody within clear of it (across, and up and down, in the figures'
+// own pixels) for wait seconds, it runs, speed times as fast, for lasts seconds, easing up to it and back down over
+// ease seconds, and can't again for rest seconds
+const bursts = {
+  clear: [90, 45], // How much room it needs round it
+  wait: 0.4, // How long it has to have had it
+  speed: 2.2, // How much faster it goes
+  lasts: [0.5, 1], // How long a burst lasts, in seconds (the least and the most)
+  ease: 0.15, // How long it takes to speed up, and to slow back down
+  rest: 1.2, // How long until it can again
+};
+let burst = { clearFor: 0, for: 0, rest: 0, boost: 1 };
+function burstSpeed(going, seconds, size, bottom) {
+  burst.rest -= seconds;
+  if (!going) {
+    burst.clearFor = burst.for = 0;
+  } else {
+    let mouseX = screenX(mouse.x, size);
+    let mouseGround = groundAt(size, bottom);
+    let crowded = nearMouse.some(([x, ground, theirSize]) => Math.abs(x - mouseX) < bursts.clear[0] * theirSize && Math.abs(ground - mouseGround) < bursts.clear[1] * theirSize);
+    burst.clearFor = crowded ? 0 : burst.clearFor + seconds;
+    if (crowded) burst.for = 0; // (Someone's in the way again: it slows down)
+    if (burst.for <= 0 && burst.rest <= 0 && burst.clearFor >= bursts.wait) {
+      burst.for = random(...bursts.lasts);
+      burst.rest = burst.for + bursts.rest;
+    }
+    burst.for -= seconds;
+  }
+  let goal = burst.for > 0 ? bursts.speed : 1;
+  let step = ((bursts.speed - 1) * seconds) / bursts.ease;
+  burst.boost = goal > burst.boost ? Math.min(goal, burst.boost + step) : Math.max(goal, burst.boost - step);
+  return burst.boost;
 }
 
 // Start the mouse dropping into a hole
@@ -1036,6 +1109,7 @@ function draw() {
   let bottom = bottomSize();
   let mouseSize = sizeOf(mouse.depth);
   let mouseGround = groundAt(mouseSize, bottom);
+  nearMouse = [];
   let mouseLeft = screenX(mouse.x, mouseSize);
 
   // The rows in view, out to the furthest, and in to the last with anything still showing above the
@@ -1092,6 +1166,7 @@ function draw() {
       if (offTheScreen || !p.joined) continue;
 
       if (p.seenFrom !== view.depth) lookAt(p, near, bottom);
+      if (Math.abs(p.ground - mouseGround) < bursts.clear[1] * size) nearMouse.push([x, p.ground, size]); // (For it to dodge, or run)
       let scaleDown = p.sheetScale / resolution;
       let faded = 1;
       if (p.fadingFrom !== null) {
@@ -1234,9 +1309,11 @@ function showDusk(ctx) {
 // colours. lumininVideo is whichever's playing.
 let lumininVideo = null;
 let lumininPair = [];
-const lumininClip = '/media/lumininCloseupStabilized.mp4';
+// (A copy of lumininCloseupStabilized.mp4 made for this with ffmpeg: only its 2 to 7.7 seconds, 640px across, at half
+// speed with the frames in between worked out from the motion (minterpolate), so its colours flicker less)
+const lumininClip = '/media/lumininCloseupSlow.mp4';
 
-const lumininPlays = [2, 7.7]; // The part of it that plays, over and over, in seconds: not its start, where it looks close to white, or its paler end
+const lumininPlays = [0.05, 11.2]; // The part of it that plays, over and over, in seconds (all of it: it was cut to the part that works)
 
 function startLumininVideo() {
   lumininPair = [0, 1].map((n) => {
@@ -1483,6 +1560,10 @@ function showMouseInside(ctx, seconds, cellX, cellY, cellWidth, cellHeight) {
   context.globalCompositeOperation = 'destination-in';
   // (Without its outline, its whole shape takes the colours, lines and all; with it, only its white parts do)
   context.drawImage(mouseOutline ? mouseInside : mouseSheet, cellX, cellY, cellWidth, cellHeight, 0, 0, cut.width, cut.height);
+  if (!mouseOutline && mouseWhiskers) {
+    context.globalCompositeOperation = 'destination-out'; // (Its whiskers not in colour: they're its face's black lines)
+    context.drawImage(mouseWhiskers, cellX, cellY, cellWidth, cellHeight, 0, 0, cut.width, cut.height);
+  }
   context.globalCompositeOperation = 'source-over';
   if (!mouseOutline && mouseEdge > 0) {
     // A hairline round it: its shape in black, nudged a fraction of a pixel every way, under its colours
@@ -1498,6 +1579,10 @@ function showMouseInside(ctx, seconds, cellX, cellY, cellWidth, cellHeight) {
     edgeContext.globalCompositeOperation = 'source-in';
     edgeContext.fillStyle = 'black';
     edgeContext.fillRect(0, 0, edge.width, edge.height);
+    if (mouseWhiskers) {
+      edgeContext.globalCompositeOperation = 'destination-out'; // (Not round its whiskers)
+      edgeContext.drawImage(mouseWhiskers, cellX, cellY, cellWidth, cellHeight, 0, 0, edge.width, edge.height);
+    }
     edgeContext.globalCompositeOperation = 'source-over';
     const unit = Math.abs(ctx.getTransform().a) / density; // Screen pixels in one of the mouse's own
     const nudge = mouseEdge / unit;
@@ -1512,6 +1597,7 @@ function showMouseInside(ctx, seconds, cellX, cellY, cellWidth, cellHeight) {
 
 let mouseEdgeCut = null; // Its shape in black, for the hairline
 let mouseFace = null; // Its face in thin lines (see paintMouseFace())
+let mouseWhiskers = null; // Where its whiskers are, to keep its colours and hairline off them
 
 // The map of the ground the trail's painted on (see trailOn): x across, as in the world, and its depth, further away
 // further up, each scaled so a round dab of paint looks the way a flat round thing on the ground would. It goes on as
@@ -1575,7 +1661,7 @@ function paintTrailRow(x, y, wide, colour) {
 // lumpy, keeping its shape as it grows, until the mouse moves on (and it stays where it was left, like the rest of it)
 const trailBlob = {
   wait: 1, // How many seconds the mouse has to have been still before it starts
-  grow: 5, // How quickly it spreads, in the map's pixels a second
+  grow: 8, // How quickly it spreads, in the map's pixels a second
   most: 2.5, // The biggest it gets across, from its middle to its edge, compared to the mouse's width
   bumps: 0.3, // How lumpy its edge is (0 = round)
   points: 72, // How many points round its edge
