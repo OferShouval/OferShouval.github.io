@@ -9,40 +9,82 @@
 <body bgcolor="#171717">
   <!-- @include navbar.html -->
 
-  <section>
-    <div class="grid-flex">
-      <div class="col col-image" style="background-image: url(/media/profile2.png);">
-      </div>
-      <div class="col col-text">
-        <div class="Aligner-item">
-          <p>
-            Ofer Shouval is a Brooklyn-based musician, visual artist, and educator whose performances
-            and interactive installations explore the interplay between movement and light.
+  <!-- The text is from the Claude doc "Ofer Shouval — Bio (draft)" -->
+  <!-- Ofer, filmed (public/media/bio_loop_*.mp4), in jump cuts through the bio streaks sketch, filling the window behind
+       the text; as the page scrolls, it moves to keep his head in the window below the intro (.bio-window) -->
+  <div class="bio-portrait bio-streaks" data-video="/media/bio_loop_6.mp4 /media/bio_loop_7.mp4" data-alternate data-speed="0.5" data-blend="exclusion" data-blend-strength="0.4" data-fade="3" data-cut-lengths="2 5" data-nudges="0,0 0.06,-0.06" data-shift-y="-50" data-follow=".bio-window" data-reflect=".bio-frame" data-reflect-fade="none" data-reflect-until=".bio-reflect-end" data-head-y="0.42" data-mirror data-cuts data-preset="1" data-keys="page" role="img" aria-label="Ofer Shouval, in streaks of light"><canvas></canvas></div>
+  <main class="bio">
+    <!-- The name, the box and the intro, filling the first screen together -->
+    <div class="bio-first">
+    <div class="bio-band"><div class="bio-text">
+      <h1 class="bio-name">ofer shouval</h1>
+    </div></div>
 
-            After graduating from UT Austin with a BS in Radio Television Film,
-            Shouval spent the next few years playing in and touring with bands, in the process
-            becoming very interested in the intersection of technology and art - specifically
-            in developing new technological tools which could transform the visual language of live performance.
-
-            This interest led him to enroll in the Interactive Arts program at Pratt Institute,
-            receiving his MFA in May 2021. Now an adjunct professor at NYU and Parsons, he continues to produce music under the moniker O. Wake,
-            developing interactive lighting systems and incorporating them into his live performances,
-            and fostering a community of like minded artists.
-
-            <a href="/Resume.pdf">resume</a> </p>
-        </div>
+    <!-- A window onto the background: a box of dashed lines, the only part of the background not darkened. The video
+         moves to keep Ofer's head in it. The intro is right under it -->
+    <div class="bio-window">
+      <div class="bio-text">
+        <span class="bio-frame" aria-hidden="true"><span class="bio-side bio-side-right"></span><span class="bio-side bio-side-left"></span></span>
+        <p class="bio-rule-line bio-rule-right" aria-hidden="true"><span class="bio-rule"></span><span>&gt;</span></p>
+        <p class="bio-rule-line bio-rule-left" aria-hidden="true"><span>&lt;</span><span class="bio-rule"></span></p>
       </div>
     </div>
-  </section>
 
-  <footer>
-    <div class="socialBar">
-      <ul>
-        <a href="mailto:ofer.shouval@gmail.com"> ofer.shouval@gmail.com </a>
-        <a href="https://www.instagram.com/o.wake_music/">instagram</a>
-      </ul>
+    <div class="bio-band bio-intro-band"><div class="bio-text">
+      <p class="bio-intro">A Brooklyn-based musician, visual artist, and educator whose albums, live
+        shows and interactive installations explore the interplay between people and the machines we live with.</p>
+    </div></div>
     </div>
-  </footer>
+
+    <div class="bio-band"><div class="bio-text">
+      <h2><span class="bio-rule-end">&lt;</span><span class="bio-rule"></span> <a href="/music/">music</a> <span class="bio-rule"></span><span class="bio-rule-end">&gt;</span></h2>
+      <p>Under the name O.&nbsp;Wake, Shouval writes, arranges, performs, and produces conceptual albums that are
+        cinematic in scope, sweeping listeners into vivid stories that comment on the state of the world.</p>
+      <p>His debut album, <a href="/music/unfamiliar-state.html"><em>Unfamiliar State</em></a> (2024), is a descent
+        into algorithmic hell that ends in a meditation on acceptance, “Just Keep On Living in the Moment.” It draws on
+        psychedelia, post-punk and dance music: riff-driven guitars ride over grooves built for dancing, woven through
+        with computer-programmed elements, with the lyrics at the center.</p>
+      <p>One of the best kept secrets of the Brooklyn music scene, the album is proof, in BandsDoBK’s words, that “music
+        that dares to go deep can also make you dance.” Nonewwavenofun called it “unashamedly conceptual in its appeal”
+        and “one of the most fascinating records I’ve heard in years.”</p>
+      <p>The next record, due in early 2028, is darker and more personal: an album about what it means to belong, and
+        what happens to a person when that sense of belonging disintegrates.</p>
+
+      <h2><span class="bio-rule-end">&lt;</span><span class="bio-rule"></span> <a href="/art/">visual art</a> <span class="bio-rule"></span><span class="bio-rule-end">&gt;</span></h2>
+      <p>Shouval’s interest in creative technology and interactive art started in service of his music. Recognizing the
+        power of immersive experiences to draw an audience into a shared moment, he developed a creative practice of
+        building the tools and media that carry his songs beyond the sound.</p>
+      <p>The most ambitious of those tools is the <a href="/art/luminin.html">Luminin</a>, the visual instrument he built
+        for his MFA thesis in Interactive Art at Pratt Institute (2021). Most light shows are programmed in advance or
+        controlled by someone offstage, leaving the musician with no hand in what the audience sees. He wanted one he
+        could play live, with all the risk and life that live playing brings. A motion sensor on his guitar’s headstock
+        reads every tilt, swing and jolt, and turns them into light as he plays. The light is meant to work the way a
+        film score does: it serves the song rather than competing with it.</p>
+      <p>O.&nbsp;Wake’s shows became its testing ground, from the band’s own hand-built LED screens to the house lights
+        of <a href="/art/luminin.html#babys-all-right">Baby’s All Right</a> at the <em>Unfamiliar State</em> release
+        show. But the Luminin was never meant for one band alone. Built from cheap, easy-to-find parts, it’s a step
+        toward a tool that gives working musicians a dynamic, affordable light show of their own. That goal still drives
+        his work: instruments and experiences that turn people’s movement into something they can see and feel, and
+        pull them out of their screens.</p>
+
+      <h2 class="bio-reflect-end"><span class="bio-rule-end">&lt;</span><span class="bio-rule"></span> <a href="/teaching/">teaching</a> <span class="bio-rule"></span><span class="bio-rule-end">&gt;</span></h2>
+      <p>That same impulse, to put tools in other people’s hands, carries into his teaching. He teaches creative coding and interaction design at
+        NYU, and interactive media and audio for digital media at Pratt, where he also looks after the modular synth
+        lab. For his Pratt animation students, he is building a curriculum that demystifies sound design and teaches
+        them to listen critically to the world around them. He has also taught physical computing in the graduate
+        Design &amp; Technology program at Parsons School of Design.</p>
+      <p>His classes draw on a knowledge base as broad as his practice: code, electronics, sound, video and fabrication.
+        Each one starts with a crash course in the tools, then turns to the question that matters most: what do
+        <em>you</em> want to make? From there, his job is to help students bring their own ideas to life, the part of
+        teaching he loves most.</p>
+
+      <p class="bio-papers"><a href="mailto:ofer.shouval@gmail.com">email</a> &middot;
+        <a href="https://www.instagram.com/o.wake_music/">instagram</a> &middot; <a href="/Resume.pdf">resume</a> &middot;
+        <a href="/CV.pdf">CV</a></p>
+    </div></div>
+  </main>
+  <script type="module" src="/src/sketches/bio_streaks.js"></script>
+
 </body>
 
 </html>

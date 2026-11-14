@@ -63,7 +63,7 @@ ul {
   z-index: 2;
 }
 
-/* Home, art, music, bio, the menu, in five equal tabs */
+/* Home, visual art, music, teaching, bio, the menu: tabs that share the width, each as wide as its word plus an even share of what's left */
 .navbar ul {
   display: flex;
   margin: 0;
@@ -80,8 +80,9 @@ ul {
 
 .navbar ul > a,
 .nav-menu {
-  flex: none;
-  width: 20%;
+  flex: 1 1 0;
+  min-width: max-content;
+  white-space: nowrap;
 }
 
 .navbar ul > a,
@@ -193,6 +194,24 @@ ul {
   .nav-menu-button {
     padding: 16px 0;
     font-size: 12px;
+  }
+
+  /* On a phone the word tabs take the room, and the home and menu tabs, only icons, stay narrow */
+  .navbar ul > a {
+    flex: 1 1 auto;
+  }
+
+  .navbar ul > a[aria-label="home"],
+  .nav-menu {
+    flex: 0 0 40px;
+    min-width: 0;
+  }
+}
+
+/* The smallest phones (320px wide): teaching is only in the menu, so the other tabs have room */
+@media screen and (max-width: 359px) {
+  .navbar ul > a[href="/teaching/"] {
+    display: none;
   }
 }
 
@@ -1437,56 +1456,195 @@ a.card:hover {
 }
 
 
-/* Bio page */
+/* Bio page: one column of text, in the middle, over the streaked portrait */
 
-.grid-flex {
-  height: 90vh;
-  display: flex;
-  flex-grow: 1;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-around;
+.bio-portrait {
+  position: fixed;
+  inset: 50px 0 0; /* Under the navbar, to the bottom of the window */
+  z-index: 0;
+  background: black;
+  opacity: 0.85; /* A little dimmed (the darkening outside the box does the rest) */
 }
 
-.col {
-  flex: 1;
+/* The bio streaks sketch (src/sketches/bio_streaks.js), drawing the background. Its canvas reaches a window's height
+   further up, hidden behind the navbar, so all of the box is drawn, for the reflection under it, as it scrolls up (the
+   video's still sized to the part that's seen) */
+.bio-portrait canvas { position: absolute; left: 0; bottom: 0; display: block; width: 100%; height: calc(100% + 100vh); }
+
+
+
+.bio {
+  position: relative; /* Over the background */
+  z-index: 1;
 }
 
-.col-text {
+/* The text, in a column in the middle */
+.bio-band {
   display: flex;
-  align-items: flex-start;
   justify-content: center;
 }
 
-.Aligner-item {
-  width: 90%;
+/* The name, the intro and the box fill the first screen (under the navbar) together, the box taking what's left */
+.bio-first {
+  display: flex;
+  flex-direction: column;
+  height: calc(100svh - 50px);
+  min-height: 420px;
+}
+.bio-first > .bio-band:first-child .bio-text { padding-bottom: 0; } /* The name, its own margin above the box */
+/* The name, the box, the intro and the music label, the same space apart (about 36px between what can be seen) */
+.bio-first > .bio-intro-band .bio-text { padding-bottom: 24px; } /* The intro, at the bottom of the screen */
+.bio-first + .bio-band .bio-text { padding-top: 0; }
+.bio-first + .bio-band h2:first-child { margin-top: 0; }
+.bio-first > .bio-window { flex: 1; min-height: 0; }
+
+/* Between the intro and the sections: a window onto the background, a box of dashed lines, and the only part of the
+   background that isn't darkened */
+.bio-window {
+  display: flex;
+  justify-content: center;
+}
+.bio-window .bio-text {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-top: 0;
+  padding-bottom: 14px; /* A little room under the box, above the intro */
+  --side: 40px; /* The column's padding, where the box's sides go */
+}
+/* The box: from the middle of the top line to the middle of the bottom line, its sides dashed, and around it, as far as
+   the screen goes, a shadow that darkens the rest of the background (under all the text). Its four lines are vectors
+   going round it clockwise, each from one corner to an arrowhead on the next: the top one right, the right side down,
+   the bottom one left, the left side up */
+.bio-window .bio-frame {
+  position: absolute;
+  z-index: -1;
+  top: 0.8em; /* (The middles of the top and bottom lines) */
+  bottom: calc(0.8em + 14px);
+  left: calc(var(--side) + 4px);
+  right: calc(var(--side) + 4px);
+  box-shadow: 0 0 0 200vmax rgba(0, 0, 0, 0.6);
+}
+/* The sides: the same dashes as the top and bottom lines, set on end, stopping where their arrowheads begin */
+.bio-window .bio-side {
+  position: absolute;
+  width: 18px;
+  overflow: hidden;
+  writing-mode: vertical-rl; /* (Which turns the dashes on end) */
+  font-family: 'Inconsolata', monospace;
+  font-size: 18px;
+  line-height: 18px;
+  white-space: pre;
+  color: #7a7a7a;
+}
+.bio-window .bio-side::before { content: '--------------------------------------------------------------------------------------------------------------------------------'; }
+.bio-window .bio-side-right { right: -9.5px; top: 0; bottom: 6px; }
+.bio-window .bio-side-left { left: -9.5px; bottom: 0; top: 6px; display: flex; justify-content: flex-end; } /* (Its dashes from the bottom corner up) */
+/* The sides' arrowheads: the lines' > turned to point down (right side) and up (left side), their tips on the corners */
+.bio-window .bio-frame::before,
+.bio-window .bio-frame::after {
+  content: '>';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  font-family: 'Inconsolata', monospace;
+  font-size: 18px;
+  line-height: 18px;
+  text-align: center;
+  color: #7a7a7a;
+}
+.bio-window .bio-frame::after { right: -9.5px; bottom: 0; transform: translateY(var(--tip, 4px)) rotate(90deg); }
+.bio-window .bio-frame::before { left: -9.5px; top: 0; transform: translateY(calc(-1 * var(--tip, 4px))) rotate(-90deg); }
+/* The top and bottom lines start at the corners, where the sides are (no arrowhead there) */
+.bio-text .bio-rule-right { padding-left: 4px; }
+.bio-text .bio-rule-left { padding-right: 4px; }
+/* The intro, right under the box */
+.bio-window + .bio-band .bio-text { padding-top: 0; }
+.bio-text .bio-rule-line {
+  display: flex;
+  margin: 0;
+  font-family: 'Inconsolata', monospace;
+  font-size: 18px;
+  white-space: pre;
+  color: #7a7a7a;
 }
 
-.col-text p {
+.bio-text {
+  flex: 1 1 50%;
+  min-width: 0;
+  box-sizing: border-box;
+  max-width: 720px;
+  padding: 24px 40px 48px;
+  color: #c4c4c4; /* A soft grey (the album page's tracks are #a0a0a0, but here it has the background to stand out from) */
+  font-family: 'Inconsolata', monospace; /* As on the album page's track list */
+  font-size: 16px;
+  line-height: 1.6;
+  text-shadow: 0 0 8px rgba(0, 0, 0, 0.7); /* A soft dark halo, so the letters stand clear of the background's lines */
+}
+
+.bio-text p { margin: 0 0 1em; }
+
+/* His name, as the page's title, in the site's headings' typeface */
+.bio-text .bio-name {
+  display: block;
+  margin: 0.3em 0 18px;
+  font-family: 'Major Mono Display', monospace;
+  font-weight: normal;
+  font-size: 44px;
+  line-height: 1.1;
+  text-align: center;
   color: white;
-  font-family: 'Source Code Pro', monospace;
-  font-size: 2vh;
+}
+
+.bio-opening { display: flow-root; } /* Holds the photo beside the intro, so the music label keeps its space below */
+
+.bio-text .bio-intro {
+  color: #e2e2e2; /* A little brighter than the rest */
+  font-size: 1.15em;
+  text-align: center;
   line-height: 1.5;
+  margin-bottom: 0;
 }
 
-.col-image {
-  background-size: cover;
-  background-position: center;
+/* Section labels, as a line of old code: <------------ music ------------>, in the middle (the dashes fill the column),
+   each label linking to its part of the site */
+.bio-text h2 {
+  display: flex;
+  align-items: baseline;
+  margin: 2.6em 0 0.9em;
+  font-family: 'Inconsolata', monospace;
+  font-weight: normal;
+  font-size: 18px;
+  white-space: pre;
+  color: #7a7a7a;
+  min-width: 0;
 }
 
+.bio-text h2 a { padding: 0 0.6em; color: var(--bio-link, #ffc66d); text-decoration: none; } /* In the links' colour, a space either side */
+.bio-text h2 a:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+/* The dashes, either side: more than enough, each cut off to half of what's left */
+.bio-text .bio-rule { flex: 1; min-width: 0; overflow: hidden; } /* (min-width, so it can shrink to fit the column) */
+.bio-text .bio-rule::before { content: '--------------------------------------------------------------------------------------------------------------------------------'; }
+
+.bio-text a { color: white; }
+.bio-text p a, .bio-text h2 a { font: inherit; } /* In the text's typeface (links are otherwise Source Code Pro) */
+/* Links in the text: a colour of their own instead of an underline (which comes back when they're pointed at) */
+.bio-text p a { color: var(--bio-link, #ffc66d); text-decoration: none; }
+.bio-text p a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+.bio-text .bio-papers {
+  margin-top: 3em;
+  font-family: 'Inconsolata', monospace;
+}
+
+/* On a phone: the photo on top, as wide as the screen, and the text under it */
 @media (max-width: 700px) {
-  .grid-flex {
-    height: 60em;
-    flex-direction: column;
-  }
-
-  .col-text div p {
-    line-height: 1.2;
-  }
-
-  .Aligner-item {
-    width: 95%;
-  }
+  .bio-text { max-width: none; padding: 20px 16px 40px; font-size: 14px; }
+  .bio-window .bio-text { --side: 16px; }
+  .bio-text .bio-intro { font-size: 1.08em; }
+  .bio-text .bio-name { font-size: 32px; }
 }
 
 /* Luminin page */
@@ -2029,4 +2187,49 @@ body.art-inverted {
 }
 @media (max-width: 600px) {
   .page .teaching-lede { font-size: 20px; }
+}
+
+/* Teaching: an "under construction" sign until the page is ready (teaching/index.html) */
+.under-construction {
+  min-height: calc(100vh - 60px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  box-sizing: border-box;
+}
+
+.construction-sign {
+  width: min(100%, 420px);
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+/* Black and white hazard stripes, top and bottom */
+.construction-stripes {
+  height: 14px;
+  background: repeating-linear-gradient(-45deg, #ccc 0 10px, transparent 10px 20px);
+}
+
+.construction-sign h1 {
+  display: block;
+  margin: 4px 16px 0;
+  font-size: 22px;
+  font-weight: normal;
+}
+
+.construction-section {
+  margin: 28px 16px 0;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: 'Major Mono Display', monospace;
+  font-size: 13px;
+}
+
+.construction-note {
+  margin: 14px 24px 28px;
+  color: rgba(255, 255, 255, 0.8);
+  font-family: 'Source Code Pro', monospace;
+  font-weight: 300;
+  font-size: 13px;
+  line-height: 1.6;
 }

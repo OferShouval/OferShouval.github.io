@@ -25,12 +25,12 @@ Updated 9 November 2026 (save point 77). Placeholders on the site show as dashed
 - [x] The list of everything (`art/all.html`) is archived in `archive/art-list/`, with its links taken out. (Its cards were the only place that needed years for Sun Deity, the visualizers and the animation work.)
 
 ### Bio
-- [ ] Update the text for the last 5 years (it still reads as written in 2021)
+- [ ] Update the text for the last 5 years (it still reads as written in 2021). **In progress:** the new bio is drafted in the Claude doc "Ofer Shouval — Bio (draft)" (https://claude.ai/artifact/VmuzUtSTfrdr63WRzpotTT): intro, Music, Creative technology and Teaching are done. Next: decide whether to drop the three unwritten sections (What connects it all, Background, What's next), then put it on the page: photo stays put while the text scrolls, intro a bit larger, small lowercase section labels, links to the album, Luminin and Baby's video, "resume · CV" at the bottom. The section headings (Music, Visual art, Teaching) match the site's sections and link to them
 - [ ] Give the page its own look (the TV static idea)
-- [ ] Resume PDF: replace with a current one
+- [x] Resume PDF: replaced with the 2026 one
 
-### Teaching (left out of the site for now)
-- [ ] Teaching statement, courses, student projects and their permission
+### Teaching (in the navbar, showing an "under construction" sign)
+- [ ] Teaching statement, courses, student projects and their permission. The earlier draft of the page (statement, course cards) is in `archive/teaching-draft/`
 
 ## Things to decide or finish building
 - [ ] **Your own sounds**: the front page and music page sounds in `public/sounds/landing` and `public/sounds/music` aren't playing on any page yet

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Bio streaks (test)</title>
+  <!-- @include head.html -->
+  <style>
+    /* A test page for the bio picture's sketch (src/sketches/bio_streaks.js), in npm run dev only */
+    .bio-streaks { max-width: 960px; margin: 24px auto; padding: 0 16px; }
+    .bio-streaks canvas {
+      display: block;
+      width: 100%;
+      aspect-ratio: 1707 / 1595; /* The bio picture's shape */
+      background: black;
+      image-rendering: pixelated;
+      outline: none;
+    }
+    .bio-streaks-controls { display: flex; gap: 16px; align-items: center; margin-top: 10px; color: rgba(255, 255, 255, 0.7); font-family: 'Inconsolata', monospace; font-size: 13px; }
+    /* (The camera and record buttons) */
+    .bio-streaks-camera, .bio-streaks-record { padding: 4px 8px; border: 1px solid #7a7a7a; background: none; color: white; font-family: inherit; cursor: pointer; }
+    .bio-streaks-record:disabled { opacity: 0.4; cursor: default; }
+    .bio-streaks-record.recording { border-color: #e33; color: #f66; }
+  </style>
+</head>
+
+<body bgcolor="#171717">
+  <!-- @include navbar.html -->
+
+  <div class="bio-streaks" data-preset="1">
+    <canvas tabindex="0"></canvas>
+    <div class="bio-streaks-controls">
+      <button class="bio-streaks-camera">turn on your camera</button>
+      <button class="bio-streaks-record" disabled>record the camera</button>
+      <span class="bio-streaks-readout"></span>
+    </div>
+  </div>
+
+  <script type="module" src="/src/sketches/bio_streaks.js"></script>
+</body>
+
+</html>
