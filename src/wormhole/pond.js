@@ -19,6 +19,7 @@
 import p5 from 'p5';
 import wormhole from './wormhole.js';
 import { soundButton, startAudio, soundWanted, setSound, soundChosen, onSoundChange, audioOut } from '../scripts/sound.js';
+import { frontPageSound } from './front_sound.js';
 import { diveScore } from './dive_score.js';
 
 export default function pond(p, container, { sandbox = null } = {}) {
@@ -908,7 +909,7 @@ export default function pond(p, container, { sandbox = null } = {}) {
   lines.append(welcomeWords, pressWords);
   welcome.append(lines);
 
-  onSoundChange((on) => on && loadDrips());
+  onSoundChange((on) => frontPageSound && on && loadDrips());
   let introTimers = [];
 
   // The rain's sound: one of Ofer's drips (public/sounds/landing) as each drop lands, louder and further to the side
@@ -945,7 +946,7 @@ export default function pond(p, container, { sandbox = null } = {}) {
       return;
     }
     const out = audioOut();
-    if (!out || !soundWanted()) return;
+    if (!frontPageSound || !out || !soundWanted()) return; // (Silent for now, see front_sound.js)
     loadDrips();
     if (!drips.length) return;
     const context = out.context;
@@ -992,7 +993,7 @@ export default function pond(p, container, { sandbox = null } = {}) {
   function enter(x, y) {
     if (dive) return; // Only once
     saveScore();
-    startAudio(); // With sound, if that's what's chosen (see the switch at the bottom); nothing, if not
+    if (frontPageSound) startAudio(); // With sound, if that's what's chosen (see the switch at the bottom); nothing, if not
     introTimers.forEach(clearTimeout);
     welcome.classList.add('gone');
     soundSpot.classList.remove('waiting'); // In case it's not shown yet
@@ -1020,10 +1021,13 @@ export default function pond(p, container, { sandbox = null } = {}) {
       return;
     }
     dropRain(p.width / 2, p.lerp(dropTop, dropBottom, 0.5) * p.height); // The first one, into the middle of where they land
-    soundSpot.append(soundButton({ track: true }));
-    // Off unless they turned it on last time, but only for now: not choosing isn't saved as a choice
-    if (soundChosen() !== 'on') setSound(false, { remember: false });
-    container.append(welcome, soundSpot);
+    if (frontPageSound) {
+      soundSpot.append(soundButton({ track: true }));
+      // Off unless they turned it on last time, but only for now: not choosing isn't saved as a choice
+      if (soundChosen() !== 'on') setSound(false, { remember: false });
+      container.append(soundSpot);
+    }
+    container.append(welcome);
     runIntro();
     // Pressing anywhere, or a key, enters (a key drops it in the middle of where the rain lands)
     canvas.elt.addEventListener('pointerdown', (event) => {
