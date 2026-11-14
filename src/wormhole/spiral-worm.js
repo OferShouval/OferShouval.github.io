@@ -19,8 +19,8 @@
 //
 // It's the last stage of the wormhole on the front page (see wormhole.js). It opens, once the old TV's switched off, on
 // the noisy spiral, big, as it is in the wormhole (see spiralTime), loose at first and winding tighter, with its lines
-// closer and closer together and the line longer and longer, always as big, and round it three portals, to art, music
-// and bio (see portals): each a point, with its name on top of it like a link, at the corners of a triangle that turns
+// closer and closer together and the line longer and longer, always as big, and round it four portals, to visuals,
+// music, bio and teaching (see portals): each a point, with its name on top of it like a link, at the corners of a diamond that turns
 // slowly round the middle of the screen (see drawChoosing()). The spiral waits, wound up, until one's chosen. Then the
 // worm comes out of it. Once the worm's let go and jolted forward, it flies on for a moment, and the
 // portal that was chosen opens ahead of it. (With chooseFirst: false in its options, it plays first instead, and all
@@ -144,13 +144,15 @@ const strikeClip = '/media/lumininCloseupStabilized.mp4';
 const strikeInColour = 1; // How often a strike's in colour (1 = always). The rest would be white, so there are none: if the video isn't ready, there's no flash.
 const strikeClipLength = 0.1; // How many seconds a strike in colour lasts. It cuts in and out, without fading.
 const strikeClipCrop = [0.35, 0.8]; // How much of the width and height of the video a fragment shows, at the least and the most
-// The end: once it's flown on a while, three portals open ahead of it, in a triangle, and wait for one to be chosen,
-// which grows until it covers the screen. Each fills, at the end, like the page it goes to: `fill` is 'white', 'black'
-// or 'static', and `inside` is how it looks inside while it's waiting. `towards` is which corner of the triangle it's at.
+// The end: once it's flown on a while, four portals open ahead of it, at the corners of a diamond (still called the
+// triangle below, from when there were three), and wait for one to be chosen, which grows until it covers the screen.
+// Each fills, at the end, like the page it goes to: `fill` is 'white', 'black' or 'static', and `inside` is how it
+// looks inside while it's waiting. `towards` is which corner it's at.
 const portals = [
   { name: 'visuals', page: '/art/', inside: 'black', fill: 'white', fillTime: 1.5, note: 'wormArrives', towards: [0, -1] }, // The note's so a little worm comes out of the home hole (see src/sketches/hole_worm.js)
-  { name: 'music', page: '/music/', inside: 'black', fill: 'black', fillTime: 0.4, towards: [-0.87, 0.5] },
-  { name: 'bio', page: '/bio/', inside: 'static', fill: 'static', fillTime: 0.6, towards: [0.87, 0.5] },
+  { name: 'music', page: '/music/', inside: 'black', fill: 'black', fillTime: 0.4, towards: [-1, 0] },
+  { name: 'bio', page: '/bio/', inside: 'static', fill: 'static', fillTime: 0.6, towards: [1, 0] },
+  { name: 'teaching', page: '/teaching/', inside: 'black', fill: 'black', fillTime: 0.4, towards: [0, 1] },
 ];
 const portalAfter = 1.25; // How many seconds after it's let go they appear
 const portalOpen = 1.5; // How many seconds they take to fade in
