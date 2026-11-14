@@ -65,8 +65,11 @@ function fadeTo(level, seconds) {
   out.gain.linearRampToValueAtTime(level, now + seconds);
 }
 
-// The page's AudioContext, running, if sound's wanted (and null if it isn't). Only call it from a click or press.
-export function startAudio() {
+// The page's AudioContext, running, if sound's wanted (and null if it isn't). Only call it from a click or press, or
+// try it without one: browsers that let the page make sound by then (as they may when it's been opened from a click on
+// another of the site's pages) start it, and others leave it waiting for a press. `fade` is how many seconds the
+// sound takes to come up, if it's starting.
+export function startAudio({ fade = fadeIn } = {}) {
   if (!wanted) return null;
   if (!context) {
     context = new AudioContext();
@@ -79,7 +82,7 @@ export function startAudio() {
     out.connect(context.destination);
   }
   context.resume().catch(() => {});
-  fadeTo(1, fadeIn);
+  if (out.gain.value < 1) fadeTo(1, fade);
   return context;
 }
 

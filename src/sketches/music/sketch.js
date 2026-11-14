@@ -46,6 +46,7 @@ let introNamed = true; // Is the band's name shown? Only the first time the page
 const HINT_FONT = 'Source Code Pro'; // Thin, like the notes on the site's other pages
 let hintHeight = 0.5; // How far down the screen it is (0 = the top, 1 = the bottom)
 let overGate = false; // Is the mouse over a gate or its name?
+let boatEntered = false; // Has the boat come onto the screen yet? The page's sound starts then (see loop.js)
 
 
 // The way home: a tag at the bottom of the screen, like the ones pointing to gates that are off the screen, as
@@ -183,6 +184,10 @@ function draw() {
     if (gate.position.y <= boatOnWater) gate.show(boat);
   }
   boat.run();
+  if (!boatEntered && boat.bow.y < height) {
+    boatEntered = true;
+    window.dispatchEvent(new Event('boatentered'));
+  }
   for (let gate of gates) {
     if (gate.position.y > boatOnWater) gate.show(boat);
   }
