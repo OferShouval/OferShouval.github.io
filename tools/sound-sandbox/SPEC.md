@@ -46,7 +46,29 @@ is a real decision.
 - A very simple analog-style synth, something like a Korg minilogue:
   a couple of oscillators, a filter, envelopes, an LFO, and not much more.
 
-## Where things stand (save 88)
+## Where things stand: the sound studio (2026-11-15)
+
+A second tool was built from this spec in one go, next to the sandbox: **tools/sound-studio**
+(http://localhost:5173/tools/sound-studio/). The sandbox is untouched. Its sound engine is
+src/scripts/soundscape/ (plain Web Audio, no libraries: the research step above was skipped,
+at Ofer's asking, and can still be done).
+
+- a) Scenes: the front page's (the rain alone, entering, from the top, psychworm, flowers,
+  the portals) and every page of the other sections. Transitions: entering is set off by
+  itself, and can repeat; a portal chosen in the portals scene carries on to its page.
+  Going home isn't a scene yet.
+- b) Events: the pond, wormhole and portals say what happens (src/scripts/scene_events.js,
+  listed in tools/sound-studio/catalogue.js), and the visitor's clicks, keys, hovers, mouse
+  and scroll are heard on every page. The music, art, bio and teaching pages don't say
+  anything of their own yet.
+- c) Linking: a track's triggers (play, start, stop, with chance and delay), and "changes":
+  an event moves a setting somewhere new over some seconds, or a setting follows a movement.
+- d) Sampler: several sounds, trim, fades, reverse, stretch, loop with a blended join,
+  low and high cut, drive, bit-crush, downsample, echo, the shared room, and presets.
+- e) Synth: two oscillators with shape, noise, filter, two envelopes, LFO.
+- Not done: no page plays a soundscape yet (src/scripts/soundscape/index.js is ready for it).
+
+## Where the sandbox stands (save 88)
 
 - Scenes: only the pond, as a live preview (scene.js). No transitions yet.
 - Events: the pond's drops only (every / far / near / clicked), plus "all the time".

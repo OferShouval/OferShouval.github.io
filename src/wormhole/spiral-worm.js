@@ -33,6 +33,8 @@
 // and letting go snaps it back, as it was let go the first time (see stretchTime), with a few flashes.
 // Run it by itself at /art/sketchbook/test.html?sketch=spiral-worm.
 
+import { sceneEvent, sceneSignal } from '../scripts/scene_events.js'; // Saying what's happening, for the page's soundscape
+
 // The worm
 const turns = 18; // How many times the line coils round its body, from its tail to its head
 const size = 1; // How fat it is, compared to the psychworm
@@ -190,6 +192,7 @@ const thinnest = 1; // How thick the line is, in pixels, at the head
 const thickest = 3; // ...and at the tail
 
 export default function spiralWorm(p, container, options = {}) {
+  let pointedAt = null; // The portal the mouse was over last frame (for the page's soundscape: see sceneEvent)
   let spiralRoughness = spiralRoughest;
   let unwindStart = 0; // When it started unwinding, in seconds
   let openedAt = 0; // When the noisy spiral opened, in seconds
@@ -336,6 +339,7 @@ export default function spiralWorm(p, container, options = {}) {
   // The spiral bursts into a rose, while there's still some of it. Lightning sets it off, and so does letting go of the mouse.
   function roseBurst() {
     if (choosing || seconds >= unwindStart + unwindTime) return; // (None while it waits for a portal to be chosen)
+    sceneEvent('rose');
     spiralRoughness = spiralRoughest;
     roseFloor = roseTightness;
   }
@@ -356,6 +360,7 @@ export default function spiralWorm(p, container, options = {}) {
     if (seconds >= nextStrike) {
       asked = false;
       strikeStarted = seconds;
+      sceneEvent('lightning');
       pickFragment();
       // Only in colour: without a fragment of the video to show, it doesn't flash at all
       strikeFades = false;
@@ -453,6 +458,7 @@ export default function spiralWorm(p, container, options = {}) {
         if (picked) {
           choosing = false;
           choice = picked;
+          sceneEvent('portal-chosen', { pan: picked.towards[0] * 0.6 });
           choiceAt = seconds;
           p.canvas.style.cursor = '';
           // At once a flash in colour, and the spiral bursts into a rose, as lightning sets it off, which a moment later
@@ -470,6 +476,7 @@ export default function spiralWorm(p, container, options = {}) {
       const picked = portalsUp && !chosen ? portalAtMouse() : null;
       if (picked) {
         chosen = { portal: picked, at: seconds };
+        sceneEvent('portal-chosen', { pan: picked.towards[0] * 0.6 });
         p.canvas.style.cursor = '';
         return;
       }
@@ -629,6 +636,8 @@ export default function spiralWorm(p, container, options = {}) {
     const fadedIn = opened * opened * (3 - 2 * opened);
     const over = choosing ? portalAtMouse() : null;
     if (choosing) p.canvas.style.cursor = over ? 'pointer' : '';
+    if (over && over !== pointedAt) sceneEvent('portal-hover', { pan: over.towards[0] * 0.6 });
+    pointedAt = over;
     for (const portal of portals) {
       // Once one's chosen, it stays, and the others fade away
       const shown = fadedIn * (choice && portal !== choice ? Math.max(0, 1 - (seconds - choiceAt) / gateFade) : 1);
@@ -692,6 +701,7 @@ export default function spiralWorm(p, container, options = {}) {
     const camera = cameraAt(seconds);
     // The rubber band: pulled out just before it's let go, as the camera rises, then snapping back
     const sinceLetGo = freeFor - setOffTime;
+    if (!letGo && sinceLetGo > 0) sceneEvent('worm-launch');
     letGo = sinceLetGo > 0;
     // ...and once it's flown on a while, rushing faster and faster until the screen's white
     // The portals opening, growing from a point, easing in and out, and once one's chosen, it growing until it covers the screen
@@ -703,6 +713,7 @@ export default function spiralWorm(p, container, options = {}) {
     portalsOpen = choice ? 1 : opened * opened * (3 - 2 * opened); // (Chosen first, it's already showing: it mustn't fade out and in again as the worm flies at it)
     if (!portalsUp) portalsFrom = seconds;
     const exiting = chosen ? Math.min(1, (seconds - chosen.at) / (choice ? choiceGrowTime : portalTime)) : 0; // How far the chosen one's grown
+    sceneSignal('portal', exiting);
     // The ground, with any lightning: the spiral's, or the flashes that come with the worm snapping back
     const sinceBoltFlash = boltFlashAt === null ? Infinity : seconds - boltFlashAt;
     let fullBoltFlash = 0;
@@ -930,7 +941,10 @@ export default function spiralWorm(p, container, options = {}) {
             // coming nearer
             radius = from * Math.pow(covers / from, exiting);
           }
-          if (fillsAt === null && radius * 2 >= Math.min(p.width, p.height)) fillsAt = seconds;
+          if (fillsAt === null && radius * 2 >= Math.min(p.width, p.height)) {
+            fillsAt = seconds;
+            sceneEvent('portal-fills');
+          }
         }
         const { x, y } = portal.at;
         context.save();
@@ -1058,6 +1072,7 @@ export default function spiralWorm(p, container, options = {}) {
     const filled = chosen && fillsAt !== null && seconds - fillsAt >= chosen.portal.fillTime;
     if (chosen && ((wormIn && filled) || (exiting >= 1 && (fillsAt === null || filled))) && !leaving) {
       leaving = true;
+      sceneEvent('leaving');
       if (chosen.portal.note) {
         try {
           sessionStorage.setItem(chosen.portal.note, '1');

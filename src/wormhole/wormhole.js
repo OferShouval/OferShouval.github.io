@@ -2,6 +2,7 @@ import p5 from 'p5';
 import spiralWorm from './spiral-worm.js';
 import { soundButton, startAudio, soundWanted, onSoundChange } from '../scripts/sound.js';
 import { frontPageSound } from './front_sound.js';
+import { sceneEvent, sceneSignal } from '../scripts/scene_events.js';
 
 // The wormhole on the front page: old sketches from the sketchbook, as one continuous piece, that turn into each other on the same canvas.
 //
@@ -505,6 +506,7 @@ export default function wormhole(p, container, options = {}) {
   // The flowers fly by in the same way as the stars (see drawStars()), from the same point. They start
   // far away, a steady stream of them, which comes to fieldCount by the time the first have passed.
   function burst() {
+    sceneEvent('burst');
     burstStart = seconds;
     for (const flower of segments) {
       if (flower) flower.burstAngle = p.random(p.TWO_PI);
@@ -700,6 +702,7 @@ export default function wormhole(p, container, options = {}) {
     if (stages[current].settings.bloom) bloomStart = seconds; // It waits, wobbles and bursts (see bloomFade)
     else bloomStart = null;
     const { name, hint, settings } = stages[current];
+    sceneEvent(`stage-${slug(name)}`); // Said out loud, for the page's soundscape (see src/scripts/scene_events.js)
     if (settings.bloom && !clip.src) clip.src = strikeClip;
     if (begun) showCaption(name, hint);
     history.replaceState(null, '', `#${slug(name)}`);
@@ -1011,6 +1014,7 @@ export default function wormhole(p, container, options = {}) {
   }
 
   function bringRing() {
+    sceneEvent('ring-comes');
     ringWaiting = false;
     ringMeets = pathTime + ringLead;
   }
@@ -1346,6 +1350,7 @@ export default function wormhole(p, container, options = {}) {
     window.addEventListener('pointerup', () => {
       if (pointer.down && stages[current].settings.bloom) {
         const charge = Math.min(1, (seconds - heldFrom) / explodeCharge);
+        sceneEvent('explode', { loud: p.lerp(0.4, 1, charge) });
         explode(p.lerp(explodeLeast, explodeMost, charge) * Math.min(p.width, p.height));
       }
       pointer.down = false;
@@ -1450,6 +1455,8 @@ export default function wormhole(p, container, options = {}) {
     focus.x += (p.lerp(at.x, heading, now.space) - focus.x) * focusFollow;
     focus.y += (p.lerp(at.y, level, now.space) - focus.y) * focusFollow;
     drawPixelArray(dt);
+    sceneSignal('boost', boost / boostMost); // (For the page's soundscape: things that keep moving)
+    sceneSignal('array', arrayOpening);
     frameTime = dt;
     if (pointer.down && moved > 0 && stages[current].settings.bloom) plantInField(at.x, at.y);
     // The stars, the flowers and the worm stay inside the old TV's screen, once the pixel array's taking on its shape
@@ -1479,11 +1486,13 @@ export default function wormhole(p, container, options = {}) {
       tvPicture.height = screen.height;
       tvPicture.getContext('2d').drawImage(screen, 0, 0);
       tvOffAt = seconds;
+      sceneEvent('tv-off');
       const density = screen.width / p.width;
       const crt = tvShaped();
       const inset = crtInset * Math.min(p.width, p.height) * crt * density;
       tvScreen = { x: inset, y: inset, wide: screen.width - inset * 2, tall: screen.height - inset * 2, round: crtCorner * Math.min(p.width, p.height) * crt * density };
     } else if (bloom && arrayOpening >= 1) {
+      if (arrayFullAt === null) sceneEvent('array-covers');
       arrayFullAt ??= seconds;
     } else if (!bloom && progress >= 1 && !usesRing) {
       goTo(current + 1);

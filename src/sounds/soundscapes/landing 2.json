@@ -1,0 +1,507 @@
+{
+  "version": 1,
+  "name": "landing",
+  "master": {
+    "volume": 0.9
+  },
+  "room": {
+    "size": 2.2,
+    "tone": 6000
+  },
+  "tracks": [
+    {
+      "id": "tmwhfx0k10",
+      "name": "rain",
+      "kind": "sampler",
+      "colour": 0,
+      "mute": false,
+      "solo": false,
+      "triggers": [
+        {
+          "on": "drop",
+          "does": "play"
+        }
+      ],
+      "notes": {
+        "spread": 0.8
+      },
+      "fx": {},
+      "mix": {
+        "volume": 0.8,
+        "space": 0.3
+      },
+      "sampler": {
+        "samples": [
+          {
+            "src": "/sounds/landing/drip01.m4a",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "src": "/sounds/landing/drip02.m4a",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "src": "/sounds/landing/drip03.m4a",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "src": "/sounds/landing/drip04.m4a",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "src": "/sounds/landing/drip05.m4a",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "src": "/sounds/landing/drip06.m4a",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "src": "/sounds/landing/drip07.m4a",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "src": "/sounds/landing/drip08.m4a",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "src": "/sounds/landing/drip09.m4a",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "src": "/sounds/landing/drip10.m4a",
+            "start": 0,
+            "end": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "tmwhfx0k11",
+      "name": "plink",
+      "kind": "synth",
+      "colour": 1,
+      "mute": false,
+      "solo": false,
+      "triggers": [
+        {
+          "on": "drop-near",
+          "does": "play",
+          "chance": 0.6
+        }
+      ],
+      "notes": {
+        "mode": "a scale",
+        "low": 72,
+        "high": 96,
+        "scale": "pentatonic",
+        "key": "D",
+        "spread": 0.6,
+        "length": 0.05
+      },
+      "fx": {
+        "echoMix": 0.12,
+        "echoTime": 0.19,
+        "echoFeedback": 0.3
+      },
+      "mix": {
+        "space": 0.35,
+        "volume": 0.4
+      },
+      "synth": {
+        "wave1": "sine",
+        "mix1": 1,
+        "mix2": 0,
+        "noise": 0.02,
+        "cutoff": 9000,
+        "reso": 0.05,
+        "egInt": 0,
+        "ampA": 0.002,
+        "ampD": 0.09,
+        "ampS": 0,
+        "ampR": 0.08,
+        "egA": 0.045,
+        "egD": 0.05,
+        "egS": 1,
+        "egR": 0.05,
+        "egPitch": 14
+      },
+      "preset": "test preset"
+    },
+    {
+      "id": "tmwhfx0k22",
+      "name": "water pad",
+      "kind": "synth",
+      "colour": 4,
+      "mute": false,
+      "solo": false,
+      "triggers": [
+        {
+          "on": "open",
+          "does": "start"
+        }
+      ],
+      "notes": {
+        "mode": "one note",
+        "note": 50,
+        "length": 4
+      },
+      "fx": {},
+      "mix": {
+        "space": 0.5,
+        "volume": 0.35
+      },
+      "synth": {
+        "wave1": "sawtooth",
+        "wave2": "sawtooth",
+        "pitch2": 0.08,
+        "mix1": 0.6,
+        "mix2": 0.6,
+        "cutoff": 700,
+        "reso": 0.12,
+        "egInt": 0.15,
+        "keyTrack": 0.6,
+        "ampA": 1.8,
+        "ampD": 2,
+        "ampS": 0.8,
+        "ampR": 3.5,
+        "egA": 2.5,
+        "egD": 3,
+        "egS": 0.5,
+        "egR": 3,
+        "lfoWave": "triangle",
+        "lfoRate": 0.12,
+        "lfoInt": 0.22,
+        "lfoTo": "cutoff"
+      },
+      "preset": "soft pad"
+    },
+    {
+      "id": "tmwhfx0k23",
+      "name": "going in",
+      "kind": "sampler",
+      "colour": 5,
+      "mute": false,
+      "solo": false,
+      "triggers": [
+        {
+          "on": "enter",
+          "does": "play"
+        }
+      ],
+      "notes": {},
+      "fx": {},
+      "mix": {
+        "volume": 0.7,
+        "space": 0.25
+      },
+      "sampler": {
+        "samples": [
+          {
+            "src": "/sounds/landing/worm-suck.m4a",
+            "start": 0,
+            "end": 1
+          }
+        ],
+        "fadeOut": 2
+      }
+    },
+    {
+      "id": "tmwhfx3ae7",
+      "name": "glass bell",
+      "kind": "synth",
+      "colour": 2,
+      "mute": false,
+      "solo": false,
+      "triggers": [],
+      "notes": {
+        "mode": "a scale",
+        "low": 67,
+        "high": 91,
+        "scale": "pentatonic",
+        "key": "D",
+        "length": 0.3
+      },
+      "fx": {
+        "echoMix": 0.2,
+        "echoTime": 0.38,
+        "echoFeedback": 0.4,
+        "crush": 0.47058823529411764
+      },
+      "mix": {
+        "space": 0.45
+      },
+      "synth": {
+        "wave1": "triangle",
+        "wave2": "sine",
+        "oct2": 1,
+        "pitch2": 7.02,
+        "mix1": 0.7,
+        "mix2": 0.45,
+        "cutoff": 5000,
+        "reso": 0,
+        "egInt": 0.25,
+        "keyTrack": 0.8,
+        "ampA": 0.002,
+        "ampD": 2.2,
+        "ampS": 0,
+        "ampR": 2,
+        "egA": 0.001,
+        "egD": 0.6,
+        "egS": 0,
+        "egR": 0.6
+      },
+      "preset": "glass bell"
+    },
+    {
+      "id": "tmwhfx54n9",
+      "name": "sampler",
+      "kind": "sampler",
+      "colour": 3,
+      "mute": false,
+      "solo": false,
+      "triggers": [],
+      "notes": {},
+      "fx": {},
+      "mix": {},
+      "sampler": {
+        "samples": [
+          {
+            "src": "/sounds/landing/drip01.m4a",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "src": "/sounds/landing/drip02.m4a",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "src": "/sounds/landing/drip03.m4a",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "src": "/sounds/landing/drip04.m4a",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "src": "/sounds/landing/drip05.m4a",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "src": "/sounds/landing/drip06.m4a",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "src": "/sounds/landing/drip07.m4a",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "src": "/sounds/landing/drip08.m4a",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "src": "/sounds/landing/drip09.m4a",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "src": "/sounds/landing/drip10.m4a",
+            "start": 0,
+            "end": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "tmwhfyfcj0",
+      "name": "sampler 2",
+      "kind": "sampler",
+      "colour": 6,
+      "mute": false,
+      "solo": false,
+      "triggers": [],
+      "notes": {},
+      "fx": {},
+      "mix": {},
+      "sampler": {
+        "samples": [
+          {
+            "src": "/sounds/landing/drip01.m4a",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "src": "/sounds/landing/drip02.m4a",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "src": "/sounds/landing/drip03.m4a",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "src": "/sounds/landing/drip04.m4a",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "src": "/sounds/landing/drip05.m4a",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "src": "/sounds/landing/drip06.m4a",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "src": "/sounds/landing/drip07.m4a",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "src": "/sounds/landing/drip08.m4a",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "src": "/sounds/landing/drip09.m4a",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "src": "/sounds/landing/drip10.m4a",
+            "start": 0,
+            "end": 1
+          }
+        ],
+        "stretch": 2,
+        "reverse": true
+      }
+    },
+    {
+      "id": "tmwhfyrc70",
+      "name": "sampler 3",
+      "kind": "sampler",
+      "colour": 7,
+      "mute": false,
+      "solo": false,
+      "triggers": [],
+      "notes": {},
+      "fx": {},
+      "mix": {},
+      "sampler": {
+        "samples": [
+          {
+            "src": "/sounds/landing/drip01.m4a",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "src": "/sounds/landing/drip02.m4a",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "src": "/sounds/landing/drip03.m4a",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "src": "/sounds/landing/drip04.m4a",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "src": "/sounds/landing/drip05.m4a",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "src": "/sounds/landing/drip06.m4a",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "src": "/sounds/landing/drip07.m4a",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "src": "/sounds/landing/drip08.m4a",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "src": "/sounds/landing/drip09.m4a",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "src": "/sounds/landing/drip10.m4a",
+            "start": 0,
+            "end": 1
+          }
+        ],
+        "stretch": 2,
+        "reverse": true
+      }
+    }
+  ],
+  "links": [
+    {
+      "id": "lmwhfx0k24",
+      "kind": "set",
+      "on": "enter",
+      "track": "tmwhfx0k10",
+      "param": "fx.echoMix",
+      "to": 0.55,
+      "over": 3
+    },
+    {
+      "id": "lmwhfx0k25",
+      "kind": "set",
+      "on": "enter",
+      "track": "tmwhfx0k10",
+      "param": "notes.transpose",
+      "to": -7,
+      "over": 4
+    },
+    {
+      "id": "lmwhfx0k26",
+      "kind": "set",
+      "on": "enter",
+      "track": "tmwhfx0k22",
+      "param": "synth.cutoff",
+      "to": 3500,
+      "over": 5
+    },
+    {
+      "id": "lmwhfx4k88",
+      "track": "tmwhfx3ae7",
+      "param": "synth.cutoff",
+      "kind": "follow",
+      "signal": "mouse-x",
+      "from": 5000,
+      "to": 20000,
+      "smooth": 0.15
+    }
+  ]
+}

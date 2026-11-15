@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import { readdirSync, readFileSync } from 'node:fs';
 import { relative, resolve } from 'node:path';
 import { soundSandbox } from './tools/sound-sandbox/dev-server.js';
+import { soundStudio } from './tools/sound-studio/dev-server.js';
 
 const root = import.meta.dirname;
 const partialsDir = resolve(root, 'src/partials');
@@ -47,7 +48,8 @@ function findPages() {
 }
 
 export default defineConfig({
-  plugins: [htmlPartials(), soundSandbox(root)], // The sound sandbox (tools/sound-sandbox) saves into the project, in dev only
+  // The sound sandbox (tools/sound-sandbox) and the sound studio (tools/sound-studio) save into the project, in dev only
+  plugins: [htmlPartials(), soundSandbox(root), soundStudio(root)],
   // Pre-bundle p5 at startup from the real pages only (not dist/ or archive/), so the dev server
   // never discovers it mid-session and serves pages a stale copy ("504 Outdated Optimize Dep").
   optimizeDeps: {

@@ -111,7 +111,11 @@ let video = document.createElement('video');
 video.playsInline = true;
 video.muted = true;
 let stream = null;
-let file = holder.dataset.video || null; // The videos it plays, if it's been given them
+// The videos it plays, if it's been given them. On a phone-sized screen, data-video-small's instead, if it's given
+// (smaller copies: the grid there only looks at about 190 by 140 pixels of the video, so they look the same, and
+// arrive far sooner on a slow connection)
+const PHONE = matchMedia('(max-width: 820px)').matches;
+let file = (PHONE && holder.dataset.videoSmall) || holder.dataset.video || null;
 const SPEED = Number(holder.dataset.speed) || 1; // How fast the videos play (data-speed; 0.25 is four times slower)
 // Players for each video: as many as there are stretches of it mixed in at once
 let sources = [];
@@ -230,6 +234,21 @@ if (holder.dataset.image) {
   still = new Image();
   still.src = holder.dataset.image;
 }
+// With data-poster (a still frame from the first video), that's what the lines run over until the video's arrived, so a
+// slow connection shows him straight away. It's placed just as the video will be, so there's no jump when it takes over
+let poster = null;
+let posterUp = false; // Still waiting on the video
+let posterGone = 0; // When the video took over (from performance.now()): the poster fades out over it, over POSTER_FADE
+const POSTER_FADE = 1; // (Seconds)
+// With a video, the whole picture fades in from black over SHOW_FADE seconds once there's something to show, rather
+// than appearing all at once
+const SHOW_FADE = 1.5;
+let shown = false;
+if (file && holder.dataset.poster) {
+  poster = new Image();
+  poster.src = holder.dataset.poster;
+  posterUp = true;
+}
 let width, height, cols, rows;
 let lastTime = -1;
 let frames = []; // The lines of the last few frames, newest first: each line is [from, to, y, grey]
@@ -263,9 +282,9 @@ function brightness(pixels, spot, channel, dark) {
 function drawFrame() {
   // The picture, one pixel to each cell of the grid, cropped to fit, and the camera mirrored like a mirror
   let camera = !!stream || !!file; // (Or a video: either way, the video element)
-  let source = camera ? video : still;
-  let sourceWidth = camera ? video.videoWidth : still.naturalWidth;
-  let sourceHeight = camera ? video.videoHeight : still.naturalHeight;
+  let source = posterUp ? poster : camera ? video : still;
+  let sourceWidth = posterUp ? poster.naturalWidth : camera ? video.videoWidth : still.naturalWidth;
+  let sourceHeight = posterUp ? poster.naturalHeight : camera ? video.videoHeight : still.naturalHeight;
   // (Sized to the holder, which on the bio page is the part that's seen: the canvas reaches further up, out of sight)
   let seenRows = Math.min(rows, holder.clientHeight / ZOOM / GRID);
   let scale = Math.max(cols / sourceWidth, seenRows / sourceHeight) * (file ? VIDEO_ZOOM : 1);
@@ -353,6 +372,14 @@ function drawFrame() {
       samplerContext.globalCompositeOperation = 'source-over';
     }
   }
+  // The poster fading out over the video, just after it's taken over (the two the same size and place: the poster's a
+  // frame of the first video)
+  let posterLeft = poster && posterGone ? 1 - (performance.now() - posterGone) / (POSTER_FADE * 1000) : 0;
+  if (posterLeft > 0 && !posterUp) {
+    samplerContext.globalAlpha = posterLeft;
+    samplerContext.drawImage(poster, left, top, drawnWidth, drawnHeight);
+    samplerContext.globalAlpha = 1;
+  }
   samplerContext.restore();
   let pixels = samplerContext.getImageData(0, 0, cols, rows).data;
   if (!camera && STILL_GAIN !== 1) for (let i = 0; i < pixels.length; i++) if (i % 4 !== 3) pixels[i] *= STILL_GAIN; // (They stop at 255)
@@ -403,6 +430,11 @@ function drawFrame() {
   }
   context.globalCompositeOperation = 'source-over';
   if (reflectAt) reflect();
+  if (file && !shown) {
+    shown = true;
+    canvas.style.opacity = '';
+    canvas.animate([{ opacity: 0 }, { opacity: 1 }], { duration: SHOW_FADE * 1000, easing: 'ease-out' });
+  }
 }
 
 // With data-reflect (an element on the page, the bio's frame), the picture is reflected under that element's bottom
@@ -635,9 +667,21 @@ recordButton?.addEventListener('click', () => (recorder ? stopRecording() : star
 if (PRESETS[Number(holder.dataset.preset) - 1]) ({ threshold, jitter, trail, mode } = PRESETS[Number(holder.dataset.preset) - 1]);
 
 fit();
+if (file) canvas.style.opacity = 0; // (Faded in once it's drawn, in drawFrame)
 if (file) {
   // Plays by itself (it's silent), or, for those who'd rather things didn't move, shows its first frame
   let calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // The poster's lines, STILL_FPS times a second (or once), until the video's here
+  let posterLoop = (now) => {
+    if (!posterUp) return;
+    if (now - lastDrawn >= 1000 / STILL_FPS) {
+      lastDrawn = now;
+      drawFrame();
+    }
+    if (!calm) requestAnimationFrame(posterLoop);
+  };
+  poster?.decode().then(() => posterUp && requestAnimationFrame(posterLoop), () => (posterUp = false));
+  video.addEventListener('loadeddata', () => posterUp && ((posterUp = false), (posterGone = performance.now())), { once: true });
   video.addEventListener('loadeddata', () => (calm ? drawFrame() : ('cuts' in holder.dataset && jumpCut(), video.play()).then(() => requestAnimationFrame(loop), () => drawFrame())), { once: true });
   video.load();
 } else if (still) still.decode().then(startStill, () => {});

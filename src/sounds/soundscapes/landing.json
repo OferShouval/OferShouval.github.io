@@ -1,0 +1,200 @@
+{
+  "version": 1,
+  "name": "landing",
+  "master": {
+    "volume": 0.36332011543153886
+  },
+  "room": {
+    "size": 1.7010770336615406,
+    "tone": 2264.7359145952105
+  },
+  "tracks": [
+    {
+      "id": "tmwhg6s348",
+      "name": "drip",
+      "kind": "synth",
+      "colour": 0,
+      "mute": false,
+      "solo": false,
+      "triggers": [
+        {
+          "on": "drop-far",
+          "does": "play"
+        }
+      ],
+      "notes": {
+        "mode": "a scale",
+        "low": 72,
+        "high": 76,
+        "scale": "chromatic",
+        "key": "D",
+        "spread": 0.7463327803265544,
+        "length": 0.6750714541975509,
+        "transpose": 9.062867647058873
+      },
+      "fx": {
+        "echoMix": 0.12,
+        "echoTime": 0.19,
+        "echoFeedback": 0.3
+      },
+      "mix": {
+        "space": 0.35
+      },
+      "synth": {
+        "wave1": "sine",
+        "mix1": 0.18400735294117623,
+        "mix2": 0.0984375,
+        "noise": 0.02,
+        "cutoff": 9000,
+        "reso": 0.05,
+        "egInt": 0,
+        "ampA": 0.002,
+        "ampD": 0.09,
+        "ampS": 0,
+        "ampR": 0.08,
+        "egA": 0.005,
+        "egD": 0.05,
+        "egS": 1,
+        "egR": 0.05,
+        "egPitch": 14,
+        "shape2": 0.18380055147058816
+      },
+      "preset": "drip"
+    },
+    {
+      "id": "tmwhgb3bz9",
+      "name": "synth",
+      "kind": "synth",
+      "colour": 1,
+      "mute": false,
+      "solo": false,
+      "triggers": [
+        {
+          "on": "open",
+          "does": "start"
+        }
+      ],
+      "notes": {
+        "mode": "a scale",
+        "note": 60,
+        "spread": 11.708955574431634,
+        "length": 0.15
+      },
+      "fx": {
+        "echoMix": 0.15680147058823526,
+        "echoTime": 0.8631877666575072,
+        "echoFeedback": 0.45,
+        "highcut": 1479.4547510038642,
+        "lowcut": 20,
+        "drive": 0,
+        "downsample": 0
+      },
+      "mix": {
+        "space": 0.25
+      },
+      "synth": {
+        "wave1": "sawtooth",
+        "wave2": "square",
+        "oct2": -2,
+        "mix1": 0.6,
+        "mix2": 0.4,
+        "cutoff": 3000,
+        "reso": 0.5,
+        "egInt": 0.5,
+        "ampA": 0.2427333099071422,
+        "ampD": 0.25,
+        "ampS": 1,
+        "ampR": 0.2,
+        "egA": 1.5345072683751124,
+        "egD": 0.18,
+        "egS": 0,
+        "egR": 0.2,
+        "egPitch": 36,
+        "oct1": 0
+      },
+      "preset": "zap"
+    },
+    {
+      "id": "tmwhgs4ax1",
+      "name": "shimmer",
+      "kind": "synth",
+      "colour": 2,
+      "mute": false,
+      "solo": false,
+      "triggers": [
+        {
+          "on": "enter",
+          "does": "play"
+        }
+      ],
+      "notes": {
+        "mode": "one note",
+        "note": 57,
+        "length": 10,
+        "spread": 0,
+        "transpose": -12.140073529411772
+      },
+      "fx": {
+        "drive": 0.4027343749999997
+      },
+      "mix": {
+        "space": 0.5
+      },
+      "synth": {
+        "wave1": "sawtooth",
+        "wave2": "sawtooth",
+        "pitch2": 0.08,
+        "mix1": 0.6,
+        "mix2": 0.6,
+        "cutoff": 700,
+        "reso": 0.12,
+        "egInt": 0.15,
+        "keyTrack": 0.6,
+        "ampA": 0.4754407671490384,
+        "ampD": 7.000802656853774,
+        "ampS": 0.9148667279411781,
+        "ampR": 12,
+        "egA": 2.5,
+        "egD": 3,
+        "egS": 0.8438189338235307,
+        "egR": 3,
+        "lfoWave": "triangle",
+        "lfoRate": 3.4007426135631933,
+        "lfoInt": 0.22,
+        "lfoTo": "cutoff",
+        "pitch1": -12,
+        "oct1": 1
+      },
+      "preset": "soft pad"
+    }
+  ],
+  "links": [
+    {
+      "id": "lmwhgj2o4b",
+      "track": "tmwhgb3bz9",
+      "param": "synth.ampA",
+      "kind": "set",
+      "on": "drop-near",
+      "to": 0.007712918828538101,
+      "over": 7.4
+    },
+    {
+      "id": "lmwhgkdlzc",
+      "track": "tmwhgb3bz9",
+      "param": "notes.transpose",
+      "kind": "set",
+      "on": "drop",
+      "to": 1.1294117647060489,
+      "over": 2
+    },
+    {
+      "id": "lmwhgnwqw0",
+      "track": "tmwhgb3bz9",
+      "param": "fx.echoTime",
+      "kind": "set",
+      "on": "enter",
+      "to": 0.5956881575025122,
+      "over": 2
+    }
+  ]
+}

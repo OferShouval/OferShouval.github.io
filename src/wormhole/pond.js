@@ -21,6 +21,7 @@ import wormhole from './wormhole.js';
 import { soundButton, startAudio, soundWanted, setSound, soundChosen, onSoundChange, audioOut } from '../scripts/sound.js';
 import { frontPageSound } from './front_sound.js';
 import { diveScore } from './dive_score.js';
+import { sceneEvent, sceneEventsIn, sceneRamp } from '../scripts/scene_events.js';
 
 export default function pond(p, container, { sandbox = null } = {}) {
   // Raindrops fall, one into the middle of the screen at the start and then more, anywhere, now and then, and wherever
@@ -935,6 +936,16 @@ export default function pond(p, container, { sandbox = null } = {}) {
   }
 
   function playDrip(drop) {
+    // Said out loud, for the page's soundscape (see src/scripts/scene_events.js): a drop's landed, how loud and where
+    const landed = {
+      loud: drop.inColour ? dripColourLoud : p.lerp(...dripLoud, Math.min(1, nearness(drop.at.y).near)),
+      pan: p.constrain((drop.at.x / p.width) * 2 - 1, -1, 1) * dripPan,
+    };
+    if (drop.inColour) sceneEvent('colour-drop', landed);
+    else {
+      sceneEvent('drop', landed);
+      sceneEvent((drop.at.y / p.height - dropTop) / (dropBottom - dropTop) >= 0.5 ? 'drop-near' : 'drop-far', landed);
+    }
     if (sandbox) {
       sandbox.onDrop?.({
         loud: drop.inColour ? dripColourLoud : p.lerp(...dripLoud, Math.min(1, nearness(drop.at.y).near)),
@@ -999,6 +1010,10 @@ export default function pond(p, container, { sandbox = null } = {}) {
     soundSpot.classList.remove('waiting'); // In case it's not shown yet
     dropRain(x, y, true);
     dive = { start: p.millis() / 1000, at: { x, y }, from: horizon, fromFlat: flatness, glow: glowAt(y) };
+    // Said out loud, for the page's soundscape: entering, and what's to come, when (see the dive, and handOverAt)
+    sceneEvent('enter', { pan: p.constrain((x / p.width) * 2 - 1, -1, 1) * dripPan });
+    sceneEventsIn({ 'camera-above': aboveTime + wormAt, 'worm-springs': aboveTime + wormAt + springAt });
+    sceneRamp('dive', aboveTime + handOverAt);
   }
 
   p.setup = () => {

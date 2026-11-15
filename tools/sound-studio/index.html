@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sound Studio</title>
+  <link rel="stylesheet" href="./studio.css">
+</head>
+
+<body>
+  <!-- The sound studio: see studio.js. Along the top, the site's sections (each has a soundscape of its own). Then the
+       scene on the left, with what's happening in it underneath, and the tracks on the right. Along the bottom, the
+       open track's sound. -->
+  <header class="bar">
+    <span class="app-name">sound studio</span>
+    <nav id="sections" class="tabs" aria-label="Sections of the site"></nav>
+    <span class="spacer"></span>
+    <button id="undo" title="Undo (⌘Z)">↶</button>
+    <button id="redo" title="Redo (⇧⌘Z)">↷</button>
+    <span id="saved" class="saved"></span>
+    <div class="master" title="Everything together">
+      <div class="master-meter"><i id="master-level"></i></div>
+      <i id="limit" class="limit" title="Lit when it's all too loud and being squashed: turn something down">limit</i>
+      <span id="master-knob"></span>
+    </div>
+    <button id="sound-state" class="sound-state" title="The studio's own sound"></button>
+  </header>
+
+  <main class="workspace" id="workspace">
+    <section class="left">
+      <div class="scene-bar">
+        <select id="scene-select" aria-label="Scene" title="Which scene, or which transition between scenes"></select>
+        <button id="restart" title="Start the scene again, from its beginning (space)">⟲ again</button>
+        <label class="repeat" title="Start it again by itself every so often, for working on a transition hands-free">
+          <input id="repeat" type="checkbox"> every <input id="repeat-seconds" type="number" min="2" max="300" value="16"> s
+        </label>
+      </div>
+      <div class="scene-holder" id="scene"></div>
+      <p class="hint" id="scene-hint"></p>
+      <div class="panel-head">
+        <h2>what's happening</h2>
+        <span class="hint">click a name to make it happen</span>
+        <span class="spacer"></span>
+        <label class="hint"><input id="all-events" type="checkbox"> the whole page's</label>
+      </div>
+      <div class="lanes" id="lanes"></div>
+    </section>
+    <div class="split" id="split" title="Drag to make the scene wider or narrower"></div>
+    <section class="right">
+      <div class="panel-head">
+        <h2>tracks</h2>
+        <span class="hint">each is a sound, and what plays it</span>
+      </div>
+      <div class="tracks" id="tracks"></div>
+    </section>
+  </main>
+
+  <section class="device" id="device" aria-label="The open track's sound"></section>
+
+  <div id="say" class="say" role="status"></div>
+  <div class="drop">drop sounds to add them to a sampler</div>
+
+  <script type="module" src="./studio.js"></script>
+</body>
+
+</html>
