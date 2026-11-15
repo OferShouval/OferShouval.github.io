@@ -701,18 +701,52 @@ if (file) canvas.style.opacity = 0; // (Faded in once it's drawn, in drawFrame)
 if (file) {
   // Plays by itself (it's silent), or, for those who'd rather things didn't move, shows its first frame
   let calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  // The poster's lines, STILL_FPS times a second (or once), until the video's here
-  let posterLoop = (now) => {
+  // The poster's lines, redrawn as often as the video's will be (every frame the screen shows; or once), until the
+  // video's playing, so it doesn't start off slower
+  let posterLoop = () => {
     if (!posterUp) return;
-    if (now - lastDrawn >= 1000 / STILL_FPS) {
-      lastDrawn = now;
-      drawFrame();
-    }
+    drawFrame();
     if (!calm) requestAnimationFrame(posterLoop);
   };
   poster?.decode().then(() => posterUp && requestAnimationFrame(posterLoop), () => (posterUp = false));
-  video.addEventListener('loadeddata', () => posterUp && ((posterUp = false), (posterGone = performance.now())), { once: true });
-  video.addEventListener('loadeddata', () => (calm ? drawFrame() : ('cuts' in holder.dataset && jumpCut(), video.play()).then(() => requestAnimationFrame(loop), () => drawFrame())), { once: true });
+  // The poster gives way once the video's actually moving (or, for those who'd rather things didn't move, once it's here)
+  let posterGoes = () => posterUp && ((posterUp = false), (posterGone = performance.now()));
+  // It plays by itself; or, if the phone won't let it (an iPhone in Low Power Mode won't, until the page is touched),
+  // the poster's lines carry on, and it plays on the first touch
+  let looping = false;
+  let listening = false;
+  let start = () =>
+    video.play().then(
+      () => {
+        if (looping) return;
+        looping = true;
+        posterGoes();
+        requestAnimationFrame(loop);
+      },
+      () => {
+        if (!posterUp) drawFrame();
+        // Tried again on every tap (a scroll doesn't count), listened for on the page's own parts, not the window: an
+        // iPhone only sends a tap's click to something listening for one, and only a click counts as leave to play. On
+        // that tap every other player's started (and stopped) too, since the phone wants a tap for each, and the jump
+        // cuts move on to them
+        let tapped = (e) => {
+          if (looping) return;
+          for (let clip of pools.flat()) if (clip !== video) clip.play().then(() => layers.some((layer) => layer.clip === clip) || clip.pause(), () => {});
+          start(e);
+        };
+        if (!listening) for (let part of [holder, document.querySelector('main'), document.body]) part?.addEventListener('click', tapped);
+        listening = true;
+      },
+    );
+  video.addEventListener(
+    'loadeddata',
+    () => {
+      if (calm) return posterGoes(), drawFrame();
+      if ('cuts' in holder.dataset) jumpCut();
+      start();
+    },
+    { once: true },
+  );
   video.load();
 } else if (still) still.decode().then(startStill, () => {});
 else stopCamera();
