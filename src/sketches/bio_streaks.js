@@ -253,7 +253,18 @@ let width, height, cols, rows;
 let lastTime = -1;
 let frames = []; // The lines of the last few frames, newest first: each line is [from, to, y, grey]
 
+// On the bio page the picture's part of the page, scrolling with it (see .bio-portrait in main.css): the canvas reaches
+// from the top down to the reflections' end, and positions on it stay put as the page scrolls, so scrolling needs no
+// redrawing. The video's sized to the screen (screenRows), not to all that
+const ON_PAGE = getComputedStyle(holder).position === 'absolute';
+let screenRows = Infinity;
 function fit() {
+  if (ON_PAGE) {
+    let until = holder.dataset.reflectUntil && document.querySelector(holder.dataset.reflectUntil);
+    let top = holder.getBoundingClientRect().top;
+    canvas.style.height = until ? `${Math.ceil(until.getBoundingClientRect().bottom - top)}px` : '';
+    screenRows = (innerHeight - holder.offsetTop) / ZOOM / GRID;
+  }
   width = Math.max(1, Math.round(canvas.clientWidth / ZOOM));
   height = Math.max(1, Math.round(canvas.clientHeight / ZOOM));
   canvas.width = width;
@@ -286,7 +297,7 @@ function drawFrame() {
   let sourceWidth = posterUp ? poster.naturalWidth : camera ? video.videoWidth : still.naturalWidth;
   let sourceHeight = posterUp ? poster.naturalHeight : camera ? video.videoHeight : still.naturalHeight;
   // (Sized to the holder, which on the bio page is the part that's seen: the canvas reaches further up, out of sight)
-  let seenRows = Math.min(rows, holder.clientHeight / ZOOM / GRID);
+  let seenRows = Math.min(rows, screenRows, holder.clientHeight / ZOOM / GRID);
   let scale = Math.max(cols / sourceWidth, seenRows / sourceHeight) * (file ? VIDEO_ZOOM : 1);
   let drawnWidth = sourceWidth * scale;
   let drawnHeight = sourceHeight * scale;
@@ -528,7 +539,7 @@ function loop() {
   if (!stream && !file) return;
   if (file && 'cuts' in holder.dataset && video.currentTime >= cutEnd) jumpCut();
   // A new frame of the video, or (if it follows the page) the page scrolled
-  if (video.readyState >= 2 && (video.currentTime !== lastTime || (follow && scrollY !== lastScroll))) {
+  if (video.readyState >= 2 && (video.currentTime !== lastTime || (follow && !ON_PAGE && scrollY !== lastScroll))) {
     lastTime = video.currentTime;
     lastScroll = scrollY;
     drawFrame();
@@ -629,10 +640,29 @@ canvas.addEventListener('keydown', (event) => {
 });
 
 let resizing;
+// Fitted again, and drawn again straight away (fitting clears it), if there's anything to draw yet
+function refit() {
+  fit();
+  if (posterUp ? poster.complete : file ? video.readyState >= 2 : stream || still?.complete) drawFrame();
+}
 new ResizeObserver(() => {
   clearTimeout(resizing);
-  resizing = setTimeout(fit, 150);
+  resizing = setTimeout(refit, 150);
 }).observe(canvas);
+// (On the page, also when the page's text moves, as its fonts arrive, or the window's width changes)
+if (ON_PAGE) {
+  let lastWidth = innerWidth;
+  new ResizeObserver(() => {
+    clearTimeout(resizing);
+    resizing = setTimeout(refit, 150);
+  }).observe(document.querySelector('main') || document.body);
+  addEventListener('resize', () => {
+    if (innerWidth === lastWidth) return; // (Not for a phone's address bar coming and going)
+    lastWidth = innerWidth;
+    clearTimeout(resizing);
+    resizing = setTimeout(refit, 150);
+  });
+}
 
 // Recording (where there's a record button, on the test page): what's drawn, as a video file, saved when it stops
 let recordButton = holder.querySelector('.bio-streaks-record');

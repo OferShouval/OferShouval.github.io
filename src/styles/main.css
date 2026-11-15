@@ -1458,18 +1458,28 @@ a.card:hover {
 
 /* Bio page: one column of text, in the middle, over the streaked portrait */
 
+/* No rubber-band bounce past the top or bottom: the page would spring about while the portrait, placed by the sketch,
+   lagged behind it */
+html:has(.bio-portrait),
+body:has(.bio-portrait) {
+  overscroll-behavior: none;
+}
+
 .bio-portrait {
-  position: fixed;
-  inset: 50px 0 0; /* Under the navbar, to the bottom of the window */
+  /* Part of the page, under the navbar, all the way down it, so it scrolls with the page: the phone moves it and the
+     text together. (Fixed to the screen, the sketch had to redraw it to follow the box on every scroll, and on a phone
+     it fell behind while scrolling and caught up after) */
+  position: absolute;
+  inset: 50px 0 0;
   z-index: 0;
   background: black;
   opacity: 0.85; /* A little dimmed (the darkening outside the box does the rest) */
 }
+body:has(.bio-portrait) { position: relative; } /* (What it reaches the bottom of) */
 
-/* The bio streaks sketch (src/sketches/bio_streaks.js), drawing the background. Its canvas reaches a window's height
-   further up, hidden behind the navbar, so all of the box is drawn, for the reflection under it, as it scrolls up (the
-   video's still sized to the part that's seen) */
-.bio-portrait canvas { position: absolute; left: 0; bottom: 0; display: block; width: 100%; height: calc(100% + 100vh); }
+/* The bio streaks sketch (src/sketches/bio_streaks.js), drawing the background: its canvas reaches down to the
+   reflections' end (set by the sketch, data-reflect-until), with the holder's black below that */
+.bio-portrait canvas { position: absolute; left: 0; top: 0; display: block; width: 100%; height: 100%; }
 
 
 
